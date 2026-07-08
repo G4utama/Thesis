@@ -1,0 +1,16 @@
+*.acn
+*.acr
+*.alg
+*.aux
+*.fdb_latexmk
+*.fls
+*.glg
+*.glo
+*.gls
+*.ist
+*.lof
+*.log
+*.lot
+*.out
+*.synctex.gz
+*.toc
