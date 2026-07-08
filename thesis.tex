@@ -1,0 +1,49 @@
+% \documentclass[
+%     table,
+%     12pt,
+%     oneside,
+%     a4paper,
+%     italian
+% ]{book}
+
+\documentclass{book}
+
+\input{config/packages.tex}
+\input{config/variables.tex}
+
+\input{references/acronyms.tex}
+\input{references/glossary.tex}
+\makeglossaries
+
+\begin{document}
+    \let\clearpage\relax
+    \let\cleardoublepage\relax
+
+    \frontmatter
+    \input{preface/title_page}
+    \input{preface/copyright}
+    \input{preface/acknowledgements}
+    \input{preface/abstract}
+    \input{preface/table_of_contents}
+
+    
+
+    \mainmatter
+    \input{chapters/1_introduzione}
+    \input{chapters/2_descrizione_stage}
+    \input{chapters/3_analisi_requisiti}
+    \input{chapters/4_microservizi}
+    \input{chapters/5_codifica}
+    \input{chapters/6_conclusioni}
+
+    \backmatter
+    \printglossary[type=\acronymtype, title=Acronimi]
+    \printglossary[type=main, title=Glossario]
+    \glsaddallunused
+    \newpage
+    % \input{references/acronyms}
+    % \input{references/glossary}
+    \input{references/bibliography}
+    % \printglossaries
+    
+\end{document}
