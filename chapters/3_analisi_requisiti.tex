@@ -1,5 +1,9 @@
 \chapter{Analisi dei Requisiti}
 
+\section{Introduzione}
+L'analisi dei requisiti è un'attività preliminare allo sviluppo di un sistema software, il cui scopo è quello di definire le funzionalità che il nuovo prodotto deve offrire, ovvero i requisiti che devono essere soddisfatti dal software sviluppato. 
+L'analisi dei requisiti è di fondamentale importanza, in quanto essa guida le successive fasi di sviluppo del prodotto.
+
 \section{Obiettivi dello stage}
 
 \subsection*{Notazione}
@@ -18,42 +22,91 @@ Si prevede lo svolgimento dei seguenti obiettivi:
     \begin{itemize}
         \item \textbf{O01}: Studio framework \nameref{sec:Spring};
         \item \textbf{O02}: Implementazione flusso mediante \nameref{sec:Spring};
-        \item \textbf{O03}: Relazione tecnica che descriva le scelte tecniche prese durante il percorso e le motivazioni a riguardo;
-        \item \dots
+        \item \textbf{O03}: Relazione tecnica che descriva le scelte tecniche prese durante il percorso e le motivazioni a riguardo.
     \end{itemize}
     \item Desiderabili
     \begin{itemize}
         \item \textbf{D01}: Studio Apache Flink;
         \item \textbf{D02}: Implementazione flusso mediante Apache Flink;
-        \item \textbf{D03}: Affrontare un'analisi comparativa usando metriche ben precise e coerenti con il contesto applicativo;
-        \item \dots
+        \item \textbf{D03}: Affrontare un'analisi comparativa usando metriche ben precise e coerenti con il contesto applicativo.
     \end{itemize}
     \item Facoltativi
     \begin{itemize}
         \item \textbf{F01}: Effettuare dei test di performance mediante strumenti di misurazione dedicati;
-        \item \textbf{F02}: Implementare il flusso anche su tecnologie alternative (Apache Camel, Apache NiFi);
-        \item \dots
+        \item \textbf{F02}: Implementare il flusso anche su tecnologie alternative (Apache Camel, Apache NiFi).
     \end{itemize}
 \end{itemize}
 
 \section{Tracciamento dei requisiti}
+Da un'analisi degli obiettivi e dei requisiti effettuata sul progetto è stata stilata la tabella che traccia i requisiti.
+Sono stati individuati diversi tipi di requisiti e si è quindi fatto utilizzo di un codice identificativo per distinguerli.
+Il codice dei requisiti, dove ogni requisito è identificato con il carattere \textbf{R}, è strutturato nel seguente modo: 
+\begin{center}
+    \textbf{R[tipologia][importanza]-[numero]}
+\end{center}
+In particolare le tipologie sono:
+\begin{itemize}
+    \item \textbf{F} per i requisiti funzionali;
+    \item \textbf{Q} per i requisiti qualitativi;
+    \item \textbf{V} per i requisiti di vincolo.
+\end{itemize}
+In particolare le importanze sono:
+\begin{itemize}
+    \item \textbf{O} per i requisiti obbligatori;
+    \item \textbf{D} per i requisiti desiderabili;
+    \item \textbf{F} per i requisiti facoltativi.
+\end{itemize}
 
+\newpage
 \section{Tabella dei requisiti}
 
 \begin{table}[H]
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\def\arraystretch{1.5} % Default value: 1
 \centering
-\begin{tabular}{|l|l|l|}
+\begin{tabular}{|l|p{0.5\linewidth}|l|}
 \hline
-Requisito & Descrizione & Stato \\ \hline
-asd & asd & asd \\ \hline
-asd & asd &  \\ \hline
-asd &  &  \\ \hline
+\textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
+RFO-01 & Il sistema deve leggere (consumare) messaggi da un \gls{Topic Kafka} sorgente & Soddisfatto \\ \hline
+RFO-02 & Il sistema deve interrogare un database per recuperare dati di arricchimento correlati al messaggio ricevuto & Soddisfatto \\ \hline
+RFO-03 & Il sistema deve combinare (arricchire) il dato originale ricevuto da \nameref{sec:Apache Kafka} con i dati letti dal database & Soddisfatto \\ \hline
+RFO-04 & Il sistema deve pubblicare (produrre) il dato arricchito su un \gls{Topic Kafka} di destinazione, diverso da quello sorgente & Soddisfatto \\ \hline
+RFO-05 & Il sistema deve gestire la connessione e configurazione verso \nameref{sec:Apache Kafka} (consumer e producer) tramite \nameref{sec:Spring} & Soddisfatto \\ \hline
+RFD-06 & Il sistema deve gestire gli errori di elaborazione, come dato non trovato sul database, prevedendo una strategia & Soddisfatto \\ \hline
+RFD-07 & Deve essere realizzata un'implementazione equivalente delle stesse funzionalità utilizzando Apache Flink, per permettere il confronto & Insoddisfatto \\ \hline
 \end{tabular}
-\caption{Tabella requisiti}
+\caption{Tabella del tracciamento dei requisiti funzionali}
 \label{}
 \end{table}
 
-asdasd
+\begin{table}[H]
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\def\arraystretch{1.5} % Default value: 1
+\centering
+\begin{tabular}{|l|p{0.5\linewidth}|l|}
+\hline
+\textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
+RQD-01 & Il codice deve essere organizzato in modo modulare, con separazione tra strato di ingestion, arricchimento e produzione, per favorire manutenzione e test & Soddisfatto \\ \hline
+RQD-02 & Le due implementazioni (\nameref{sec:Spring} vs Flink) devono essere progettate in modo da poter essere confrontate su metriche omogenee & Insoddisfatto \\ \hline
 
+\end{tabular}
+\caption{Tabella del tracciamento dei requisiti qualitativi}
+\label{}
+\end{table}
+
+\begin{table}[H]
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\def\arraystretch{1.5} % Default value: 1
+\centering
+\begin{tabular}{|l|p{0.5\linewidth}|l|}
+\hline
+\textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
+RVO-01 & Deve essere utilizzato il framework \nameref{sec:Spring} & Soddisfatto \\ \hline
+RVO-02 & La sorgente dati di input è vincolata a essere un \gls{Topic Kafka} & Soddisfatto \\ \hline
+RVO-03 & L'output deve essere vincolato a un \gls{Topic Kafka} di destinazione (diverso da quello di input) & Soddisfatto \\ \hline
+\end{tabular}
+\caption{Tabella del tracciamento dei requisiti di vincolo}
+\label{}
+\end{table}
 
 \newpage
