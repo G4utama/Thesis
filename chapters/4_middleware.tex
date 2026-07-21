@@ -1,0 +1,35 @@
+\chapter{Middleware}
+
+\section{Introduzione al concetto di Middleware}
+Nell'ambito dei sistemi informativi moderni, la crescente necessità di integrare applicazioni eterogenee, spesso sviluppate con tecnologie diverse e distribuite su più nodi, ha reso centrale il ruolo del middleware. Con questo termine si indica genericamente quello strato software che si colloca tra il sistema operativo e le applicazioni, con lo scopo di semplificare la comunicazione, la gestione dei dati e l'interoperabilità tra componenti distinte di un sistema distribuito. \\ \\
+Il presente tirocinio si colloca proprio in questo ambito: l'obiettivo è studiare, progettare e implementare un middleware in grado di leggere dati da un topic Apache Kafka, arricchirli con informazioni provenienti da un database relazionale PostgreSQL, e pubblicare il risultato su un secondo topic Kafka. Questo capitolo introduce i concetti teorici alla base del middleware in generale, per poi restringere il campo alle tecnologie specifiche impiegate nel progetto: Spring Boot, Spring Data JPA e Apache Kafka.
+
+\section{Definizione e ruolo del Middleware}
+Il middleware è un software che funge da strato intermedio tra le applicazioni e le componenti sottostanti, come ad esempio sistemi operativi, database o hardware, facilitando la comunicazione, l'integrazione e la gestione delle risorse nei sistemi distribuiti. 
+Il suo ruolo primario è quello di nascondere la complessità dell'infrastruttura sottostante, garantendo interoperabilità, scalabilità e sicurezza. \\ \\
+Le sue funzioni principali possono essere riassunte come segue:
+\begin{itemize}
+    \item \textbf{Disaccoppiamento:} i sistemi produttori e consumatori di informazioni non devono conoscersi direttamente, né condividere lo stesso linguaggio, piattaforma o formato dati.
+    \item \textbf{Interoperabilità:} consente la comunicazione tra applicazioni scritte in linguaggi diversi o eseguite su piattaforme differenti.
+    \item \textbf{Scalabilità e affidabilità:} molti middleware offrono meccanismi di bilanciamento del carico, tolleranza ai guasti e garanzie di consegna dei messaggi.
+    \item \textbf{Astrazione della complessità:} lo sviluppatore applicativo può concentrarsi sulla logica di business, delegando al middleware gli aspetti infrastrutturali.
+\end{itemize}
+Nel contesto di questo progetto, il middleware sviluppato assolve una funzione ben precisa: fungere da ponte tra due flussi di eventi Kafka, arricchendo il dato in transito con informazioni persistenti recuperate da PostgreSQL. 
+Si tratta quindi di un middleware orientato ai dati e agli eventi, piuttosto che di un semplice bus di comunicazione RPC.
+
+\section{Classificazione dei Middleware}
+I middleware possono essere classificati secondo diversi criteri. 
+Una distinzione utile ai fini di questo lavoro è la seguente:
+\begin{itemize}
+    \item \textbf{Middleware di comunicazione (RPC-based):} consentono l'invocazione di procedure remote come se fossero locali (es. gRPC, CORBA).
+    \item \textbf{Message-Oriented Middleware (MOM):} basati sullo scambio di messaggi asincroni attraverso code o topic (es. Apache Kafka, RabbitMQ, ActiveMQ). La comunicazione è disaccoppiata sia nello spazio che nel tempo.
+    \item \textbf{Middleware di integrazione dati (Data Integration / ETL):} orientati alla trasformazione, arricchimento e trasporto di dati tra sistemi, spesso basati su pipeline (es. Apache NiFi, Spring Batch).
+    \item \textbf{Middleware transazionali:} garantiscono proprietà ACID su operazioni distribuite (es. Transaction Processing Monitor).
+\end{itemize}
+Il progetto oggetto del tirocinio si colloca all'incrocio tra la seconda e la terza categoria: si tratta infatti di un Message-Oriented Middleware con funzionalità di arricchimento dati (data enrichment), in cui il canale di comunicazione è rappresentato da Kafka e la logica di trasformazione è delegata a un componente applicativo (Spring).
+
+\section{Enterprise Integration Patterns}
+Per inquadrare correttamente il problema dal punto di vista architetturale, è utile fare riferimento agli Enterprise Integration Patterns (\acrshort{EIP}), un catalogo di pattern ricorrenti nell'integrazione di sistemi enterprise, che permette di descrivere il problema del progetto in termini standard e riconosciuti in letteratura.
+\dots
+
+\newpage
