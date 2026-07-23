@@ -2,34 +2,84 @@
 
 \section{Introduzione al concetto di Middleware}
 Nell'ambito dei sistemi informativi moderni, la crescente necessità di integrare applicazioni eterogenee, spesso sviluppate con tecnologie diverse e distribuite su più nodi, ha reso centrale il ruolo del middleware. Con questo termine si indica genericamente quello strato software che si colloca tra il sistema operativo e le applicazioni, con lo scopo di semplificare la comunicazione, la gestione dei dati e l'interoperabilità tra componenti distinte di un sistema distribuito. \\ \\
-Il presente tirocinio si colloca proprio in questo ambito: l'obiettivo è studiare, progettare e implementare un middleware in grado di leggere dati da un topic Apache Kafka, arricchirli con informazioni provenienti da un database relazionale PostgreSQL, e pubblicare il risultato su un secondo topic Kafka. Questo capitolo introduce i concetti teorici alla base del middleware in generale, per poi restringere il campo alle tecnologie specifiche impiegate nel progetto: Spring Boot, Spring Data JPA e Apache Kafka.
+Il presente tirocinio si colloca proprio in questo ambito: l'obiettivo è studiare, progettare e implementare un middleware in grado di leggere dati da un topic Kafka, arricchirli con informazioni provenienti da un database relazionale \nameref{sec:PostgreSQL}, e pubblicare il risultato su un secondo topic Kafka. Questo capitolo introduce i concetti teorici alla base del middleware in generale, per poi restringere il campo alle tecnologie specifiche impiegate nel progetto: \nameref{sec:Spring} Boot, \nameref{sec:Spring} Data JPA e \nameref{sec:Apache Kafka}.
 
 \section{Definizione e ruolo del Middleware}
-Il middleware è un software che funge da strato intermedio tra le applicazioni e le componenti sottostanti, come ad esempio sistemi operativi, database o hardware, facilitando la comunicazione, l'integrazione e la gestione delle risorse nei sistemi distribuiti. 
+Il middleware è un tipo di programma software che fornisce alle applicazioni software servizi che vanno oltre quelli offerti dal sistema operativo.
+È lo strato intermedio tra le applicazioni e le componenti sottostanti, come sistemi operativi o database, facilitando cpsì la comunicazione, l'integrazione e la gestione delle risorse nei sistemi distribuiti. 
 Il suo ruolo primario è quello di nascondere la complessità dell'infrastruttura sottostante, garantendo interoperabilità, scalabilità e sicurezza. \\ \\
-Le sue funzioni principali possono essere riassunte come segue:
+Le caratteristiche principali sono:
 \begin{itemize}
-    \item \textbf{Disaccoppiamento:} i sistemi produttori e consumatori di informazioni non devono conoscersi direttamente, né condividere lo stesso linguaggio, piattaforma o formato dati.
+    \item \textbf{Disaccoppiamento:} i sistemi produttori e consumatori di informazioni non devono obbligatoriamente conoscersi o condividere lo stesso linguaggio, piattaforma o formato dati.
     \item \textbf{Interoperabilità:} consente la comunicazione tra applicazioni scritte in linguaggi diversi o eseguite su piattaforme differenti.
-    \item \textbf{Scalabilità e affidabilità:} molti middleware offrono meccanismi di bilanciamento del carico, tolleranza ai guasti e garanzie di consegna dei messaggi.
-    \item \textbf{Astrazione della complessità:} lo sviluppatore applicativo può concentrarsi sulla logica di business, delegando al middleware gli aspetti infrastrutturali.
+    \item \textbf{Scalabilità e affidabilità:} molti middleware offrono tolleranza ai guasti e garanzie di consegna dei messaggi.
 \end{itemize}
-Nel contesto di questo progetto, il middleware sviluppato assolve una funzione ben precisa: fungere da ponte tra due flussi di eventi Kafka, arricchendo il dato in transito con informazioni persistenti recuperate da PostgreSQL. 
-Si tratta quindi di un middleware orientato ai dati e agli eventi, piuttosto che di un semplice bus di comunicazione RPC.
+Il middleware sviluppato in questo progetto ha la funzione di ponte tra due flussi di eventi Kafka, arricchendo il dato in transito con informazioni recuperate da \nameref{sec:PostgreSQL}. 
+Si tratta quindi di un middleware orientato ai dati e agli eventi, piuttosto che di un semplice bus di comunicazione \acrshort{RPC}.
 
 \section{Classificazione dei Middleware}
-I middleware possono essere classificati secondo diversi criteri. 
-Una distinzione utile ai fini di questo lavoro è la seguente:
+Sono state definite numerose categorie di middleware, in base al settore in cui vengono impiegate o al modulo applicativo che servono. 
+Una bibliografia recente ha identificato le principali categorie di middleware come segue: 
 \begin{itemize}
-    \item \textbf{Middleware di comunicazione (RPC-based):} consentono l'invocazione di procedure remote come se fossero locali (es. gRPC, CORBA).
-    \item \textbf{Message-Oriented Middleware (MOM):} basati sullo scambio di messaggi asincroni attraverso code o topic (es. Apache Kafka, RabbitMQ, ActiveMQ). La comunicazione è disaccoppiata sia nello spazio che nel tempo.
-    \item \textbf{Middleware di integrazione dati (Data Integration / ETL):} orientati alla trasformazione, arricchimento e trasporto di dati tra sistemi, spesso basati su pipeline (es. Apache NiFi, Spring Batch).
-    \item \textbf{Middleware transazionali:} garantiscono proprietà ACID su operazioni distribuite (es. Transaction Processing Monitor).
+    \item \textbf{Transactional Middleware:} elaborazione di transazioni multiple sincrone/asincrone, fungendo da cluster di richieste associate provenienti da sistemi distribuiti (es. transazioni bancarie o pagamenti con carta di credito).
+    \item \textbf{Message-Oriented Middleware (\acrshort{MOM}):} basati sullo scambio di messaggi asincroni attraverso code o topic (es. \nameref{sec:Apache Kafka}).
+    \item \textbf{Procedural Middleware:} architetture remote e locali per connettersi, trasmettere e recuperare le risposte software delle comunicazioni tra sistemi asincroni (operazione di chiamata).
+    \item \textbf{Object-Oriented Middleware:} simile al middleware procedurale, ma incorpora i principi di progettazione della programmazione orientata agli oggetti. Dal punto di vista analitico, i suoi componenti software comprendono riferimenti agli oggetti, eccezioni ed ereditarietà delle proprietà tramite richieste di oggetti distribuiti.
 \end{itemize}
-Il progetto oggetto del tirocinio si colloca all'incrocio tra la seconda e la terza categoria: si tratta infatti di un Message-Oriented Middleware con funzionalità di arricchimento dati (data enrichment), in cui il canale di comunicazione è rappresentato da Kafka e la logica di trasformazione è delegata a un componente applicativo (Spring).
+Il progetto oggetto del tirocinio si colloca nella seconda categoria: si tratta infatti di un Message-Oriented Middleware con funzionalità di arricchimento dati (data enrichment), in cui il canale di comunicazione è rappresentato da Kafka e la logica di trasformazione è delegata a un componente applicativo (\nameref{sec:Spring}).
 
 \section{Enterprise Integration Patterns}
 Per inquadrare correttamente il problema dal punto di vista architetturale, è utile fare riferimento agli Enterprise Integration Patterns (\acrshort{EIP}), un catalogo di pattern ricorrenti nell'integrazione di sistemi enterprise, che permette di descrivere il problema del progetto in termini standard e riconosciuti in letteratura.
-\dots
+
+\subsection{Content Enricher}
+Il pattern più rilevante per questo lavoro è il Content Enricher: un componente che riceve un messaggio contenente informazioni parziali e lo arricchisce con dati aggiuntivi provenienti da una fonte esterna (database relazionale), producendo un messaggio più completo da inoltrare al passo successivo della pipeline.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/contentEnricher.drawio.png}
+    \caption{Content Enricher}
+\end{figure}
+\noindent
+Nell'implementazione sviluppata, questo pattern è realizzato concretamente dalla classe \textcolor{purple}{EnrichmentService}, che riceve in input un \textcolor{purple}{OrderEvent} (contenente, tra gli altri campi, un \textcolor{purple}{customerId}), interroga \nameref{sec:PostgreSQL} tramite \textcolor{purple}{CustomerRepository} (Spring Data JPA) per recuperare i dati del cliente corrispondente, e produce in output un \textcolor{purple}{EnrichedOrder}, ovvero il messaggio arricchito con le informazioni mancanti.
+
+\subsection{Dead Letter Channel}
+Un secondo pattern, altrettanto rilevante, è il Dead Letter Channel. Questo pattern affronta un problema tipico dei sistemi di integrazione basati su messaggi: cosa fare quando un messaggio non può essere elaborato correttamente? Le opzioni alternative sono entrambe insoddisfacenti:
+\begin{itemize}
+    \item Bloccare la pipeline, in attesa che il problema venga risolto manualmente, con il rischio di fermare l'elaborazione di tutti i messaggi successivi (in Kafka, il blocco su una partizione impedisce l'avanzamento dell'offset per l'intera partizione);
+    \item Scartare silenziosamente il messaggio, con conseguente perdita di dati e nessuna possibilità di analisi o recupero successivo.
+\end{itemize}
+Il pattern Dead Letter Channel propone invece una terza via: i messaggi che non possono essere elaborati vengono instradati su un canale separato (la dead letter queue, o \acrshort{DLQ}), dedicato esclusivamente alla raccolta dei messaggi "falliti". 
+Questo consente al flusso principale di proseguire senza interruzioni, mantenendo al contempo traccia dei messaggi problematici per un'analisi o un riprocessamento successivo.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/deadLetterChannel.drawio.png}
+    \caption{Content Enricher}
+\end{figure}
+\noindent
+Nel progetto, questo pattern è implementato nel modo seguente: quando \textcolor{purple}{EnrichmentService} tenta di arricchire un \textcolor{purple}{OrderEvent} con un \textcolor{purple}{customerId} non presente su PostgreSQL, viene sollevata una \textcolor{purple}{CustomerNotFoundException}. 
+Questa eccezione viene intercettata e gestita instradando il messaggio originale sul topic \textcolor{purple}{orders-input-dlq}, anziché proseguire verso \textcolor{purple}{EnrichedProducer} e il topic \textcolor{purple}{orders-output}. 
+In questo modo, un singolo dato incompleto o malformato non compromette l'elaborazione degli ordini successivi, e resta comunque disponibile per un'ispezione a posteriori (ad esempio tramite la Kafka UI predisposta nell'ambiente di sviluppo).
+
+\subsection{Altri pattern rilevanti}
+Altri pattern \acrshort{EIP} utili e applicabili al progetto sono:
+\begin{itemize}
+    \item \textbf{Message Channel:} collega le applicazioni tramite un canale di messaggi, in cui un’applicazione scrive le informazioni nel canale e l’altra le legge dal canale. I messaggi qui rappresentato dai topic Kafka (\textcolor{purple}{orders-input}, \textcolor{purple}{orders-output}, \textcolor{purple}{orders-input-dlq}).
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.75\textwidth]{assets/messageChannel.drawio.png}
+        \caption{Message Channel}
+    \end{figure}
+    \item \textbf{Point-to-Point Channel:} invia il messaggio su un canale Point-to-Point, che garantisce che solo un destinatario riceva un determinato messaggio.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.75\textwidth]{assets/pointToPointChannel.drawio.png}
+        \caption{Point-to-Point Channel}
+    \end{figure}
+    \item \textbf{Message Translator:} utilizza un filtro speciale (Translator), tra altri filtri o applicazioni per convertire un formato di dati in un altro. Nel progetto è usato nella conversione tra \textcolor{purple}{OrderEvent} e \textcolor{purple}{EnrichedOrder}, entrambi \acrshort{DTO} distinti nel package \textcolor{purple}{dto/}.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth]{assets/messageTranslator.drawio.png}
+        \caption{Message Translator}
+    \end{figure}
+\end{itemize}
 
 \newpage

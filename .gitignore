@@ -14,3 +14,4 @@
 *.out
 *.synctex.gz
 *.toc
+_minted

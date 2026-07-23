@@ -32,17 +32,18 @@
     \input{chapters/3_analisi_requisiti}
     \input{chapters/4_middleware}
     % \input{chapters/4_spring}
-    \input{chapters/5_codifica}
+    \input{chapters/5_codifica} % \nameref{sec:}
     \input{chapters/6_conclusioni}
 
     \backmatter
-    \printglossary[type=\acronymtype, title=Acronimi]
-    \printglossary[type=main, title=Glossario]
+    \printglossary[type=\acronymtype, title=Acronimi] % \acrshort{}
+    \printglossary[type=main, title=Glossario] % \gls{}
     \glsaddallunused
     \newpage
     % \input{references/acronyms}
     % \input{references/glossary}
     \input{references/bibliography}
-    % \printglossaries
-    
+    % \printbibliography[type=article, title={Articles}]
+    % \printbibliography[type=book, title={Books}]
+
 \end{document}
