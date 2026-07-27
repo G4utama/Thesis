@@ -21,8 +21,8 @@ Si prevede lo svolgimento dei seguenti obiettivi:
 \begin{itemize}
     \item Obbligatori
     \begin{itemize}
-        \item \textbf{O01}: Studio framework \nameref{sec:Spring};
-        \item \textbf{O02}: Implementazione flusso mediante \nameref{sec:Spring};
+        \item \textbf{O01}: Studio framework \nameref{Spring};
+        \item \textbf{O02}: Implementazione flusso mediante \nameref{Spring};
         \item \textbf{O03}: Relazione tecnica che descriva le scelte tecniche prese durante il percorso e le motivazioni a riguardo.
     \end{itemize}
     \item Desiderabili
@@ -70,9 +70,9 @@ In particolare le importanze sono:
 \textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
 RFO-01 & Il sistema deve leggere (consumare) messaggi da un \gls{Topic Kafka} sorgente & Soddisfatto \\ \hline
 RFO-02 & Il sistema deve interrogare un database per recuperare dati di arricchimento correlati al messaggio ricevuto & Soddisfatto \\ \hline
-RFO-03 & Il sistema deve combinare (arricchire) il dato originale ricevuto da \nameref{sec:Apache Kafka} con i dati letti dal database & Soddisfatto \\ \hline
+RFO-03 & Il sistema deve combinare (arricchire) il dato originale ricevuto da \nameref{Apache Kafka} con i dati letti dal database & Soddisfatto \\ \hline
 RFO-04 & Il sistema deve pubblicare (produrre) il dato arricchito su un \gls{Topic Kafka} di destinazione, diverso da quello sorgente & Soddisfatto \\ \hline
-RFO-05 & Il sistema deve gestire la connessione e configurazione verso \nameref{sec:Apache Kafka} (consumer e producer) tramite \nameref{sec:Spring} & Soddisfatto \\ \hline
+RFO-05 & Il sistema deve gestire la connessione e configurazione verso \nameref{Apache Kafka} (consumer e producer) tramite \nameref{Spring} & Soddisfatto \\ \hline
 RFD-06 & Il sistema deve gestire gli errori di elaborazione, come dato non trovato sul database, prevedendo una strategia & Soddisfatto \\ \hline
 RFD-07 & Deve essere realizzata un'implementazione equivalente delle stesse funzionalità utilizzando Apache Flink, per permettere il confronto & Insoddisfatto \\ \hline
 \end{tabular}
@@ -88,7 +88,7 @@ RFD-07 & Deve essere realizzata un'implementazione equivalente delle stesse funz
 \hline
 \textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
 RQD-01 & Il codice deve essere organizzato in modo modulare, con separazione tra strato di ingestion, arricchimento e produzione, per favorire manutenzione e test & Soddisfatto \\ \hline
-RQD-02 & Le due implementazioni (\nameref{sec:Spring} vs Flink) devono essere progettate in modo da poter essere confrontate su metriche omogenee & Insoddisfatto \\ \hline
+RQD-02 & Le due implementazioni (\nameref{Spring} vs Flink) devono essere progettate in modo da poter essere confrontate su metriche omogenee & Insoddisfatto \\ \hline
 
 \end{tabular}
 \caption{Tabella del tracciamento dei requisiti qualitativi}
@@ -102,7 +102,7 @@ RQD-02 & Le due implementazioni (\nameref{sec:Spring} vs Flink) devono essere pr
 \begin{tabular}{|l|p{0.5\linewidth}|l|}
 \hline
 \textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
-RVO-01 & Deve essere utilizzato il framework \nameref{sec:Spring} & Soddisfatto \\ \hline
+RVO-01 & Deve essere utilizzato il framework \nameref{Spring} & Soddisfatto \\ \hline
 RVO-02 & La sorgente dati di input è vincolata a essere un \gls{Topic Kafka} & Soddisfatto \\ \hline
 RVO-03 & L'output deve essere vincolato a un \gls{Topic Kafka} di destinazione (diverso da quello di input) & Soddisfatto \\ \hline
 \end{tabular}
