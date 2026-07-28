@@ -120,6 +120,7 @@ L'\textit{event streaming} garantisce quindi un flusso continuo e l'interpretazi
 % \end{itemize}
 
 \subsection{Architettura e concetti fondamentali}
+\label{Architettura e concetti fondamentali}
 \paragraph{Producer e Consumer} I produttori sono quelle applicazioni client che pubblicano (scrivono) eventi su Kafka, mentre i consumatori sono quelle che si abbonano (leggono ed elaborano) a tali eventi. 
 In Kafka, produttori e consumatori sono completamente disaccoppiati e indipendenti l'uno dall'altro, il che costituisce un elemento chiave del design per ottenere l'elevata scalabilità (i produttori non devono mai attendere i consumatori). \\ \\
 Nel middleware sviluppato, l'applicazione stessa riveste entrambi i ruoli: agisce come consumer rispetto al topic sorgente (da cui legge i dati grezzi da arricchire) e come producer rispetto al topic di destinazione (su cui scrive il dato arricchito).
@@ -202,5 +203,69 @@ Nel contesto del middleware sviluppato, la scelta della semantica di consegna è
 %     \caption{Middleware}
 %     \label{fig:Middleware}
 % \end{figure}
+
+\section{Spring come piattaforma middleware}
+\label{Spring Framework}
+% La prima implementazione del middleware, oggetto principale del tirocinio, è stata realizzata utilizzando l'ecosistema Spring, largamente adottato in ambito enterprise per la costruzione di applicazioni Java robuste e modulari. \\ \\
+% \textbf{Spring Boot} costituisce il framework di base, offrendo auto-configurazione, gestione semplificata delle dipendenze e un modello a container leggero (embedded server), che riduce drasticamente il tempo necessario per portare in produzione un servizio. \\ \\
+% \textbf{Spring Data JPA} viene impiegato per la gestione dell'accesso al database PostgreSQL, secondo cui i dati necessari all'arricchimento del messaggio Kafka sono modellati tramite entità JPA e recuperati tramite repository, astraendo la scrittura di query SQL esplicite. \\ \\
+% \textbf{Spring Kafka} viene utilizzato per orchestrare il flusso di elaborazione: lettura del messaggio dal topic sorgente, invocazione della logica di arricchimento tramite interrogazione al database, e scrittura del messaggio arricchito sul topic di destinazione.
+Spring è tra i framework più diffusi in ambito enterprise per la costruzione di applicazioni Java robuste, modulari e facilmente integrabili con infrastrutture di messaggistica e basi di dati.
+
+\subsection{Spring Boot}
+\label{Spring Boot}
+Spring Boot rappresenta l'evoluzione del framework Spring pensata per semplificare la configurazione e l'avvio di applicazioni Java, tramite il paradigma dell'auto-configuration e della convention over configuration. \\ \\
+Alla base del framework resta il principio di \textit{Inversion of Control} (IoC), realizzato tramite \textit{Dependency Injection}: i componenti applicativi non istanziano direttamente le proprie dipendenze, ma le ricevono da un contenitore (l'application context), che ne gestisce il ciclo di vita. \\ \\
+Ai fini della realizzazione di un middleware, questo approccio offre alcuni vantaggi rilevanti:
+\begin{itemize}
+    \item disaccoppiamento tra i vari componenti logici del sistema (lettura dei messaggi, logica di arricchimento, scrittura dei messaggi), che possono essere sviluppati, testati e sostituiti in modo indipendente;
+    \item integrazione facile e veloce con le principali infrastrutture \textit{enterprise} (\textit{broker} di messaggistica, basi di dati, sistemi di monitoraggio), grazie a un ricco ecosistema di starter e librerie ufficiali;
+    \item riduzione del codice infrastrutturale a carico dello sviluppatore, che può concentrarsi sulla logica di dominio.
+\end{itemize}
+\subsubsection{Auto-configuration}
+La configurazione automatica di Spring Boot è una funzionalità che configura automaticamente i componenti dell'applicazione in base alle dipendenze disponibili. \\ \\
+Crea e configura automaticamente i servizi e le impostazioni necessari per l'applicazione.
+Riduce la configurazione manuale e accelera lo sviluppo. \\ \\
+La configurazione automatica funziona tramite l'annotazione \textcolor{purple}{@EnableAutoConfiguration}.
+\subsubsection{Convention over configuration}
+Il principio \textit{Convention over configuration} (noto anche come \textit{coding by convention}) è un paradigma di progettazione software utilizzato dai framework che mira a ridurre il numero di decisioni che uno sviluppatore che utilizza il framework è tenuto a prendere, senza necessariamente rinunciare alla flessibilità e ai principi del \textit{Don't Repeat Yourself} (DRY). \\ \\
+La frase significa essenzialmente che uno sviluppatore deve specificare solo gli aspetti non convenzionali dell'applicazione.
+Quando la convenzione implementata dallo strumento corrisponde al comportamento desiderato, il sistema si comporta come previsto senza dover scrivere file di configurazione. Solo quando il comportamento desiderato si discosta dalla convenzione implementata è necessaria una configurazione esplicita.
+
+\subsection{Spring Data JPA}
+\label{Spring Data JPA}
+Spring Data JPA è il modulo dell'ecosistema Spring dedicato alla persistenza dei dati, costruito sopra la specifica JPA (Java Persistence API) e sull'implementazione di riferimento Hibernate. \\ \\
+Il suo contributo principale, dal punto di vista architetturale, è l'astrazione dell'accesso ai dati tramite il pattern Repository.
+Lo sviluppatore definisce un'interfaccia che descrive le operazioni di accesso desiderate, senza doverne scrivere l'implementazione e le query SQL, che vengono generate automaticamente dal framework a partire dalle convenzioni di naming o da annotazioni dedicate. \\ \\
+Nel contesto di un middleware di enrichment, questo modulo assume un ruolo centrale: è il componente che permette di interrogare la fonte dati esterna (PostgreSQL) necessaria a completare le informazioni presenti nel messaggio in transito, disaccoppiando la logica di arricchimento dal dettaglio implementativo dell'accesso al database.
+
+\subsection{Spring Kafka}
+\label{Spring Kafka}
+Per la parte di integrazione con Apache Kafka, l'ecosistema Spring mette a disposizione Spring Kafka, un modulo che fornisce un'astrazione ad alto livello sopra il client Kafka nativo, semplificando la configurazione dei producer e dei consumer e integrandoli pienamente con il modello di \textit{dependency injection} tipico di Spring Boot. \\ \\
+Il concetto centrale su cui si fonda Spring Kafka è quello di \textit{listener}: un componente applicativo si registra come consumatore di uno o più topic e viene invocato automaticamente ogni volta che un nuovo messaggio è disponibile, senza che lo sviluppatore lo debba gestire. Il modello di elaborazione risultante è quindi \textit{event-driven} e continuo: l'applicazione resta costantemente in ascolto, reagendo agli eventi non appena questi si presentano, senza necessità di una schedulazione periodica. \\ \\
+Questo paradigma si adatta molto bene a scenari come quello affrontato nel presente lavoro, in cui il flusso di dati non ha una fine definita a priori (uno stream potenzialmente illimitato di eventi) e in cui è desiderabile minimizzare la latenza tra la produzione di un evento e la sua elaborazione. Spring Kafka realizza , a livello applicativo, le astrazioni Kafka già introdotte nella sezione \ref{Architettura e concetti fondamentali} (topic, consumer group, offset). \\ \\
+Questi elementi rendono Spring Kafka una scelta architetturale coerente con il pattern Content Enricher (descritto in \ref{Content Enricher}): il \textit{listener} funge da punto di ingresso del messaggio grezzo, delega la logica di arricchimento a un componente dedicato (tipicamente interfacciato con la base dati tramite Spring Data JPA), e infine si occupa della pubblicazione del messaggio arricchito sul topic di destinazione, chiudendo così il ciclo di elaborazione descritto nello schema architetturale generale del middleware.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.4\textwidth]{assets/app.drawio.png}
+%     \caption{Topic Kafka}
+% \end{figure}
+
+% \section{Apache Flink come alternativo paradigma}
+% Differenza concettuale chiave: Flink è un motore di stream processing nativo (elaborazione continua, stateful), mentre Spring Boot/Batch è più orientato a job schedulati o microservizi request/event-driven
+% Concetti Flink rilevanti: DataStream API, operatori di enrichment (es. join con stato esterno, async I/O verso PostgreSQL)
+% Nota: se il confronto è "se possibile", puoi strutturarlo come sezione facoltativa/di prospettiva, da sviluppare solo se arrivi a implementare un prototipo Flink
+
+% \section{Confronto Spring vs Flink (tabella riassuntiva)}
+% Un buon modo per chiudere il capitolo è una tabella con criteri come:
+% Modello di elaborazione (batch/microservizio vs stream nativo)
+% Gestione dello stato
+% Curva di apprendimento / ecosistema
+% Scalabilità e fault tolerance
+% Adeguatezza al caso d'uso specifico (enrichment Kafka→PostgreSQL→Kafka)
+
+% \section{Conclusioni del capitolo}
+% Riepiloga perché per l'implementazione pratica hai scelto (o proverai) queste tecnologie, aprendo il collegamento al capitolo successivo (progettazione/architettura del sistema)
 
 \newpage
