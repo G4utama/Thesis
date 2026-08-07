@@ -69,11 +69,11 @@ In particolare le importanze sono:
 \hline
 \textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
 RFO-01 & Il sistema deve leggere (consumare) messaggi da un \gls{Topic Kafka} sorgente & Soddisfatto \\ \hline
-RFO-02 & Il sistema deve interrogare un database per recuperare dati di arricchimento correlati al messaggio ricevuto & Soddisfatto \\ \hline
-RFO-03 & Il sistema deve combinare (arricchire) il dato originale ricevuto da \nameref{Apache Kafka} con i dati letti dal database & Soddisfatto \\ \hline
+RFO-02 & Il sistema deve interrogare un \textit{database} per recuperare dati di arricchimento correlati al messaggio ricevuto & Soddisfatto \\ \hline
+RFO-03 & Il sistema deve combinare (arricchire) il dato originale ricevuto da \nameref{Apache Kafka} con i dati letti dal \textit{database} & Soddisfatto \\ \hline
 RFO-04 & Il sistema deve pubblicare (produrre) il dato arricchito su un \gls{Topic Kafka} di destinazione, diverso da quello sorgente & Soddisfatto \\ \hline
 RFO-05 & Il sistema deve gestire la connessione e configurazione verso \nameref{Apache Kafka} (consumer e producer) tramite \nameref{Spring} & Soddisfatto \\ \hline
-RFD-06 & Il sistema deve gestire gli errori di elaborazione, come dato non trovato sul database, prevedendo una strategia & Soddisfatto \\ \hline
+RFD-06 & Il sistema deve gestire gli errori di elaborazione, come dato non trovato sul \textit{database}, prevedendo una strategia & Soddisfatto \\ \hline
 RFD-07 & Deve essere realizzata un'implementazione equivalente delle stesse funzionalità utilizzando Apache Flink, per permettere il confronto & Insoddisfatto \\ \hline
 \end{tabular}
 \caption{Tabella del tracciamento dei requisiti funzionali}

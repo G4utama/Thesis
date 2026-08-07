@@ -6,7 +6,7 @@
 %     italian
 % ]{book}
 
-\documentclass{book}
+\documentclass[11pt,a4paper]{book}
 
 \input{config/packages.tex}
 \input{config/variables.tex}
@@ -18,7 +18,7 @@
 \begin{document}
     \let\clearpage\relax
     \let\cleardoublepage\relax
-
+    
     \frontmatter
     \input{preface/title_page}
     \input{preface/copyright}
@@ -36,6 +36,7 @@
     \input{chapters/6_conclusioni}
 
     \backmatter
+    \pagenumbering{roman}
     \printglossary[type=\acronymtype, title=Acronimi] % \acrshort{}
     \printglossary[type=main, title=Glossario] % \gls{}
     \glsaddallunused
