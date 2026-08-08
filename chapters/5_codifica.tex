@@ -82,4 +82,55 @@ Questo progetto viene usato principalmente per tutte le applicazioni di elaboraz
     \caption{Apache Kafka}
 \end{figure}
 
+\section{Progettazione}
+\label{Progettazione}
+Prima di procedere all'implementazione, sono state definite alcune scelte progettuali riguardanti il modello dei dati, la struttura dei \gls{Topic Kafka} e la gestione degli errori.
+
+\subsection{Modello dei dati}
+Sono stati definiti tre tipi di oggetti, ciascuno con una responsabilità precisa:
+\begin{itemize}
+    \item \textcolor{purple}{OrderEvent}: rappresenta il messaggio grezzo in ingresso, contenente un identificativo dell'ordine (\textcolor{purple}{orderId}), un riferimento al cliente (\textcolor{purple}{customerId}) e i dati dell'ordine stesso (\textcolor{purple}{product}, \textcolor{purple}{amount});
+    \item \textcolor{purple}{Customer}: entità contenente i dati del cliente (\textcolor{purple}{fullName}, \textcolor{purple}{email}, \textcolor{purple}{city}) necessari all'arricchimento;
+    \item \textcolor{purple}{EnrichedOrder}: rappresenta il messaggio finale pubblicato in uscita, che unisce i dati dell'ordine originario con i dati del cliente recuperati da \nameref{PostgreSQL}, più un \textit{timestamp} (\textcolor{purple}{enrichedAt}) che documenta il momento dell'arricchimento.
+\end{itemize}
+Questa separazione segue il pattern \nameref{Content Enricher}: il messaggio in ingresso è  "povero", mentre il contratto in uscita è "arricchito" con informazioni che il produttore originario dell'evento non possiede.
+
+\subsection{Progettazione dei topic Kafka}
+Sono stati previsti tre topic, ciascuno con un numero di partizioni proporzionato al ruolo previsto:
+\begin{table}[H]
+    \setlength{\tabcolsep}{10pt} % Default value: 6pt
+    \def\arraystretch{1.5} % Default value: 1
+    \centering
+    \begin{tabular}{|l|l|p{0.45\linewidth}|}
+        \hline
+        \textbf{Topic} & \textbf{Partizioni} & \textbf{Ruolo} \\ \hline
+        \textcolor{purple}{orders-input} & 3 & ingresso degli ordini grezzi \\ \hline
+        \textcolor{purple}{orders-output} & 3 & uscita degli ordini arricchiti \\ \hline
+        \textcolor{purple}{orders-input-dlq} & 1 & dead letter queue per ordini non arricchibili \\ \hline
+    \end{tabular}
+    \caption{Tabella dei topic}
+    \label{Tabella dei topic}
+\end{table}
+\noindent
+Il numero di partizioni maggiore per i topic di flusso principale (\textcolor{purple}{orders-input}, \textcolor{purple}{orders-output}) consente il parallelismo in lettura/scrittura descritto in \ref{Event Streaming}.
+La singola partizione per la \acrshort{DLQ} riflette invece un volume atteso più basso e la priorità data alla semplicità di ispezione rispetto al parallelismo.
+
+\subsection{Progettazione del flusso di elaborazione}
+Il flusso di elaborazione è stato progettato secondo la seguente sequenza logica:
+\begin{enumerate}
+    \item un evento ordine viene pubblicato su \textcolor{purple}{orders-input};
+    \item il middleware consuma il messaggio;
+    \item il middleware tenta di recuperare i dati del cliente corrispondente su \nameref{PostgreSQL};
+    \begin{enumerate}
+        \item se il cliente viene trovato, viene composto il messaggio arricchito e pubblicato su \textcolor{purple}{orders-output};
+        \item se il cliente non viene trovato, l'evento originario viene instradato su \textcolor{purple}{orders-input-dlq}, secondo il pattern \nameref{Dead Letter Channel} descritto in \ref{Dead Letter Channel};
+    \end{enumerate}
+\end{enumerate}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/flusso.drawio.png}
+    \caption{Flusso di elaborazione}
+\end{figure}
+Questa progettazione garantisce che, in caso di arresto anomalo dell'applicazione tra la lettura del messaggio e la sua elaborazione completa, il messaggio venga riletto al riavvio (semantica at-least-once, discussa in \ref{Semantica di consegna}), evitando così perdite di dati a scapito di un'eventuale elaborazione duplicata.
+
 \newpage
