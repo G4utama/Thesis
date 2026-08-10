@@ -6,9 +6,29 @@
 
 % \newpage
 
+\newglossaryentry{Annotazioni}{
+    name={Annotazioni},
+    description={nel linguaggio di programmazione \nameref{Java}, un'annotazione è una forma di metadati sintattici che può essere aggiunta al codice sorgente \nameref{Java}, proprio come un attributo. È possibile annotare classi, metodi, variabili, parametri e pacchetti \nameref{Java}}    
+}
+
+\newglossaryentry{Bean}{
+    name={Bean},
+    description={classi che incapsulano uno o più oggetti in un unico oggetto standardizzato (il \textit{bean}). Questa standardizzazione consente di gestire i \textit{bean} in modo più generico, facilitando il riutilizzo del codice e l'introspezione. Ciò permette, a sua volta, di trattare i \textit{bean} come componenti software e di manipolarli visivamente tramite editor e \acrshort{IDE} senza bisogno di alcuna configurazione iniziale né di conoscere alcun dettaglio di implementazione interna.}  
+}
+
+\newglossaryentry{Hibernate}{
+    name={Hibernate},
+    description={strumento di mappatura oggetto-relazionale per il linguaggio di programmazione Java. Fornisce un framework per la mappatura di un modello di dominio orientato agli oggetti su un database relazionale. Hibernate risolve i problemi di disallineamento oggetto-relazionale sostituendo gli accessi diretti e persistenti al database con funzioni di gestione degli oggetti di alto livello.}  
+}
+
+\newglossaryentry{Lombok}{
+    name={Lombok},
+    description={libreria \nameref{Java} che si integra automaticamente con l'editor e gli strumenti di compilazione, arricchendo il codice \nameref{Java}.}  
+}
+
 \newglossaryentry{Middleware}{
     name={Middleware},
-    description={Il \textit{middleware} è un software che funge da strato intermedio tra le applicazioni e le componenti sottostanti, come ad esempio sistemi operativi, \textit{database} o hardware, facilitando la comunicazione, l'integrazione e la gestione delle risorse nei sistemi distribuiti. Il suo ruolo primario è quello di nascondere la complessità dell'infrastruttura sottostante, garantendo interoperabilità, scalabilità e sicurezza}    
+    description={software che funge da strato intermedio tra le applicazioni e le componenti sottostanti, come ad esempio sistemi operativi, \textit{database} o hardware, facilitando la comunicazione, l'integrazione e la gestione delle risorse nei sistemi distribuiti. Il suo ruolo primario è quello di nascondere la complessità dell'infrastruttura sottostante, garantendo interoperabilità, scalabilità e sicurezza}    
 }
 
 \newglossaryentry{Open Source}{
@@ -18,7 +38,7 @@
 
 \newglossaryentry{Topic Kafka}{
     name={Topic Kafka},
-    description={I Topic di Kafka sono le categorie utilizzate per organizzare i messaggi. Ogni topic ha un nome unico per l'intero cluster Kafka.
+    description={categorie utilizzate per organizzare i messaggi. Ogni topic ha un nome unico per l'intero cluster Kafka.
     I messaggi vengono inviati e letti da argomenti specifici. I produttori scrivono dati negli argomenti e i consumatori leggono dati dagli argomenti. 
     In Kafka, gli argomenti sono partizionati e replicati attraverso i broker per tutta l'implementazione.  I broker si riferiscono a ciascuno dei nodi di un cluster Kafka. Le partizioni sono importanti perché permettono la parallelizzazione degli argomenti, consentendo un elevato throughput dei messaggi}
 }

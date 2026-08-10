@@ -133,4 +133,289 @@ Il flusso di elaborazione è stato progettato secondo la seguente sequenza logic
 \end{figure}
 Questa progettazione garantisce che, in caso di arresto anomalo dell'applicazione tra la lettura del messaggio e la sua elaborazione completa, il messaggio venga riletto al riavvio (semantica at-least-once, discussa in \ref{Semantica di consegna}), evitando così perdite di dati a scapito di un'eventuale elaborazione duplicata.
 
+\section{Implementazione}
+\label{Implementazione}
+L'implementazione riprende le scelte progettuali descritte in \ref{Progettazione}, organizzandole in \textit{package} distinti secondo una logica di separazione delle responsabilità.
+In questa sezione, oltre a presentare il codice, viene data particolare attenzione al significato e alla funzione delle \gls{Annotazioni} impiegate, elemento caratterizzante dello stile dichiarativo tipico di \nameref{Spring Boot}.
+
+\subsection{Main}
+\begin{codelisting}[H]
+\begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
+@SpringBootApplication
+public class EnrichmentMiddlewareApplication {
+    public static void main(String[] args) {
+        SpringApplication
+            .run(EnrichmentMiddlewareApplication.class, args);
+    }
+}
+\end{minted}
+\caption{EnrichmentMiddlewareApplication}
+\end{codelisting}
+\noindent
+\textcolor{purple}{@SpringBootApplication} è un'annotazione che ne racchiude tre:
+\begin{itemize}
+    \item \textcolor{purple}{@SpringBootConfiguration} (specializzazione di \textcolor{purple}{@Configuration}): indica che la classe può definire \gls{Bean} gestiti dal container \nameref{Spring};
+    \item \textcolor{purple}{@EnableAutoConfiguration}: attiva il meccanismo di \textit{auto-configuration} di \nameref{Spring Boot}, che analizza le dipendenze presenti nel classpath e configura automaticamente i \gls{Bean} necessari;
+    \item \textcolor{purple}{@ComponentScan}: scansiona il \textit{package} corrente alla ricerca di classi annotate con gli stereotipi (\textcolor{purple}{@Component}, \textcolor{purple}{@Service}, ...), registrandole automaticamente come \gls{Bean}.
+\end{itemize}
+Grazie a questa singola annotazione, l'intera applicazione viene rilevata e collegata automaticamente all'avvio, senza configurazione esplicita.
+
+\subsection{Modello dei dati}
+L'entità \textcolor{purple}{Customer}, mappata sulla tabella \textcolor{purple}{customers} di \nameref{PostgreSQL}:
+\begin{codelisting}[H]
+\begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
+@Entity
+@Table(name = "customers")
+@Getter 
+@Setter 
+@NoArgsConstructor 
+@AllArgsConstructor
+public class Customer {
+    @Id
+    private Long id;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "city")
+    private String city;
+}
+\end{minted}
+\caption{Customer}
+\end{codelisting}
+\noindent
+Le annotazioni Jakarta Persistence (\acrshort{JPA}), elaborate da \gls{Hibernate} a \textit{runtime}, definiscono il \textit{mapping} tra la classe \nameref{Java} e la tabella del \textit{database}:
+\begin{itemize}
+    \item \textcolor{purple}{@Entity}: dichiara che la classe è un'entità persistente, cioè un oggetto il cui stato può essere salvato e recuperato dal database tramite \acrshort{JPA};
+    \item \textcolor{purple}{@Table(name = "customers")}: specifica esplicitamente il nome della tabella a cui l'entità è mappata (in assenza di questa annotazione, \acrshort{JPA} userebbe per convenzione il nome della classe);
+    \item \textcolor{purple}{@Id}: indica il campo che costituisce la chiave primaria della tabella;
+    \item \textcolor{purple}{@Column(...)}: mappa un campo della classe su una colonna specifica, permettendo di personalizzarne il nome e i vincoli (ad esempio \textcolor{purple}{nullable = false}, che impone che il campo non possa essere nullo).
+\end{itemize}
+Le annotazioni \gls{Lombok}, agiscono in fase di compilazione: il compilatore, tramite un \textit{annotation processor}, genera automaticamente il codice sorgente corrispondente, che viene poi incluso nel \textit{bytecode} risultante, senza che sia visibile nel file:
+\begin{itemize}
+    \item \textcolor{purple}{@Getter} / \textcolor{purple}{@Setter}: generano rispettivamente i metodi \textit{getter} (\textcolor{purple}{getFullName()}, \textcolor{purple}{getEmail()}, ...) e i metodi \textit{setter} (\textcolor{purple}{setFullName(...)}, ...) per tutti i campi della classe;
+    \item \textcolor{purple}{@NoArgsConstructor}: genera un costruttore vuoto (senza argomenti), richiesto obbligatoriamente dalla specifica \acrshort{JPA}, poiché \gls{Hibernate} deve poter istanziare l'entità tramite \textit{reflection} prima di popolarne i campi;
+    \item \textcolor{purple}{@AllArgsConstructor}: genera un costruttore che accetta un parametro per ciascun campo della classe, utile per la creazione di istanze (ad esempio nei test).
+\end{itemize}
+I \acrshort{DTO} che rappresentano i contratti dei messaggi Kafka seguono un'impostazione analoga, con l'aggiunta di un'ulteriore annotazione \gls{Lombok}:
+\begin{codelisting}[H]
+\begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
+@Getter 
+@Setter 
+@NoArgsConstructor 
+@AllArgsConstructor 
+@ToString
+public class OrderEvent {
+    private String orderId;
+    private Long customerId;
+    private String product;
+    private BigDecimal amount;
+}
+\end{minted}
+\caption{OrderEvent}
+\end{codelisting}
+\begin{codelisting}[H]
+\begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
+@Getter 
+@Setter 
+@NoArgsConstructor 
+@AllArgsConstructor 
+@ToString
+public class EnrichedOrder {
+    private String orderId;
+    private Long customerId;
+    private String customerFullName;
+    private String customerEmail;
+    private String customerCity;
+    private String product;
+    private BigDecimal amount;
+    private Instant enrichedAt;
+}
+\end{minted}
+\caption{EnrichedOrder}
+\end{codelisting}
+\begin{itemize}
+    \item \textcolor{purple}{@ToString}: genera un'implementazione del metodo \textcolor{purple}{toString()} che elenca automaticamente il nome e il valore di ciascun campo, particolarmente utile in fase di \textit{logging} (come si vedrà in \textcolor{purple}{OrderConsumer}, dove l'oggetto \textcolor{purple}{OrderEvent} viene loggato direttamente).
+\end{itemize}
+\subsection{Accesso ai dati}
+L'accesso a \nameref{PostgreSQL} è realizzato tramite un \textit{repository} \nameref{Spring Data JPA}, che estende \textcolor{purple}{JpaRepository} senza necessità di implementazioni aggiuntive:
+\begin{codelisting}[H]
+\begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
+public interface CustomerRepository 
+    extends JpaRepository<Customer, Long> {
+    
+}
+\end{minted}
+\caption{CustomerRepository}
+\end{codelisting}
+\noindent
+Qui non compaiono annotazioni esplicite: è sufficiente che l'interfaccia estenda \textcolor{purple}{JpaRepository<Customer, Long>} (dove \textcolor{purple}{Customer} è il tipo dell'entità e \textcolor{purple}{Long} il tipo della sua chiave primaria) perché \nameref{Spring Data JPA} generi automaticamente, a \textit{runtime}, un'implementazione proxy dell'interfaccia, fornendo di \textit{default} i metodi \acrshort{CRUD} più comuni (\textcolor{purple}{findById}, \textcolor{purple}{save}, \textcolor{purple}{deleteById}, \textcolor{purple}{findAll}, ...). \\ \\
+Questo meccanismo, che non richiede annotazioni perché il comportamento è determinato dall'interfaccia ereditata, è ciò che permette al progetto di interrogare \nameref{PostgreSQL} senza scrivere alcuna query \acrshort{SQL} esplicita.
+
+\subsection{Logica di enrichment}
+Il cuore applicativo del pattern \nameref{Content Enricher} è la classe \textcolor{purple}{EnrichmentService}:
+\begin{codelisting}[H]
+\begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class EnrichmentService {
+
+    private final CustomerRepository customerRepository;
+
+    @Transactional(readOnly = true)
+    public EnrichedOrder enrich(OrderEvent orderEvent) {
+        Customer customer = customerRepository
+            .findById(orderEvent.getCustomerId())
+            .orElseThrow(() -> 
+            new CustomerNotFoundException(orderEvent.getCustomerId()));
+
+        return new EnrichedOrder(
+                orderEvent.getOrderId(),
+                orderEvent.getCustomerId(),
+                customer.getFullName(),
+                customer.getEmail(),
+                customer.getCity(),
+                orderEvent.getProduct(),
+                orderEvent.getAmount(),
+                Instant.now()
+        );
+    }
+}
+\end{minted}
+\caption{EnrichmentService}
+\end{codelisting}
+\noindent
+Questa classe è composta da quattro annotazioni:
+\begin{itemize}
+    \item \textcolor{purple}{@Slf4j}: inietta automaticamente un campo statico \textcolor{purple}{log} di tipo \textcolor{purple}{Logger}, consente di scrivere direttamente \textcolor{purple}{log.debug(...)}.
+    \item \textcolor{purple}{@Service}: è una specializzazione di \textcolor{purple}{@Component}, che identifica la classe come componente contenente logica di business. Dal punto di vista del container \nameref{Spring} il comportamento è identico a \textcolor{purple}{@Component} (la classe viene rilevata dal \textcolor{purple}{@ComponentScan} e registrata come \gls{Bean}), ma l'uso di \textcolor{purple}{@Service} comunica esplicitamente l'intento architetturale della classe, migliorando la leggibilità del codice.
+    \item \textcolor{purple}{@RequiredArgsConstructor}: genera un costruttore con un parametro per ciascun campo dichiarato \textcolor{purple}{final} (in questo caso \textcolor{purple}{customerRepository}). Combinata con l'assenza di un costruttore esplicito, questa annotazione realizza la \textit{dependency injection} tramite costruttore: \nameref{Spring}, individuando un unico costruttore, lo invoca automaticamente iniettando il \gls{Bean} \textcolor{purple}{CustomerRepository} disponibile nel \textit{container}. Questo approccio è preferibile rispetto all'iniezione tramite campo (\textcolor{purple}{@Autowired}), poiché rende le dipendenze esplicite, immutabili e facilmente testabili.
+    \item \textcolor{purple}{@Transactional(readOnly = true)}: delimita una transazione database attorno all'esecuzione del metodo \textcolor{purple}{enrich}. Il parametro \textcolor{purple}{readOnly = true} segnala esplicitamente che il metodo esegue solo operazioni di lettura, permettendo a \gls{Hibernate} di applicare alcune ottimizzazioni (ad esempio disabilitando il \textit{dirty checking}, ovvero il meccanismo che traccia le modifiche alle entità per determinare se sia necessario un aggiornamento sul database). Sebbene nel caso specifico l'operazione compiuta sia una singola \textit{query}, l'uso esplicito di \textcolor{purple}{@Transactional} rende il comportamento robusto anche a future estensioni del metodo che coinvolgano più interrogazioni.
+\end{itemize}
+
+\newpage
+\subsection{Consumer}
+Il \textit{listener} Kafka orchestra l'intero flusso:
+\begin{codelisting}[H]
+\begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class OrderConsumer {
+
+    private final EnrichmentService enrichmentService;
+    private final EnrichedProducer producer;
+
+    @KafkaListener(
+            topics = "${app.kafka.topic.input}",
+            groupId = "${spring.kafka.consumer.group-id}"
+    )
+    public void consume(ConsumerRecord<String, OrderEvent> record, 
+        Acknowledgment ack) {
+        String key = record.key();
+        OrderEvent orderEvent = record.value();
+
+        try {
+            EnrichedOrder enriched = enrichmentService
+                .enrich(orderEvent);
+            producer.sendEnriched(key, enriched);
+            ack.acknowledge();
+
+        } catch (CustomerNotFoundException e) {
+            producer.sendToDlq(key, orderEvent);
+            ack.acknowledge();
+
+        } catch (Exception e) {
+            
+        }
+    }
+}
+\end{minted}
+\caption{OrderConsumer}
+\end{codelisting}
+\begin{itemize}
+    \item \textcolor{purple}{@Component}: indica che la classe deve essere gestita come \gls{Bean} dal \textit{container}. Usato, invece di \textcolor{purple}{@Service}, perché la classe non contiene logica di business.
+    \item \textcolor{purple}{@KafkaListener}: è l'annotazione che realizza concretamente il modello \textit{listener} descritto in \ref{Spring Kafka}. Applicata a un metodo, ne fa un punto di ricezione automatica dei messaggi pubblicati sul topic specificato:
+    \begin{itemize}
+        \item \textcolor{purple}{topics = "\${app.kafka.topic.input}"}: il nome del topic da ascoltare non è scritto staticamente, ma iniettato da configurazione tramite la sintassi \textit{placeholder} \textcolor{purple}{\${...}}, che Spring risolve leggendo la proprietà corrispondente da \textcolor{purple}{application.yml} (in questo caso \textcolor{purple}{orders-input}). Questo disaccoppia il codice dal valore concreto del nome del topic, rendendolo configurabile per ambiente (sviluppo, test, produzione) senza modifiche al codice sorgente;
+        \item \textcolor{purple}{groupId = "\${spring.kafka.consumer.group-id}"}: allo stesso modo, il \textit{consumer group} (introdotto in \ref{Architettura e concetti fondamentali}) è delegato in configurazione.
+    \end{itemize}
+    Il metodo annotato accetta come parametri un \textcolor{purple}{ConsumerRecord<String, OrderEvent>}, l'involucro nativo del \textit{client} Kafka che espone, oltre al \textit{payload} deserializzato, anche metadati quali topic, partizione e \textit{offset}, e un oggetto \textcolor{purple}{Acknowledgment}, che rappresenta il meccanismo tramite cui il metodo conferma esplicitamente l'elaborazione del messaggio (\textcolor{purple}{ack.acknowledge()}), coerentemente con la modalità \textcolor{purple}{ack-mode: manual} configurata in \textcolor{purple}{application.yml}.
+\end{itemize}
+La \textcolor{purple}{CustomerNotFoundException} (errore atteso) viene gestita instradando il messaggio sulla \acrshort{DLQ} e confermando comunque l'\textit{offset}.
+Un'eccezione imprevista, invece, lascia l'\textit{offset} non confermato, così da consentire un nuovo tentativo di elaborazione al riavvio del \textit{consumer}.
+% Si noti come il blocco \textcolor{purple}{try/catch} traduca direttamente in codice la decisione progettuale illustrata al passo 4-6 dello schema in Y.2.3: la \textcolor{purple}{CustomerNotFoundException} (errore atteso) viene gestita instradando il messaggio sulla DLQ e confermando comunque l'offset (il messaggio è stato "gestito", seppur con esito negativo); un'eccezione imprevista, invece, lascia l'offset non confermato, così da consentire un nuovo tentativo di elaborazione al riavvio del consumer. \\ \\
+
+\subsection{Producer}
+La classe \textcolor{purple}{EnrichedProducer} si occupa della pubblicazione, sia sul topic di \textit{output} sia sulla \acrshort{DLQ}:
+\begin{codelisting}[H]
+\begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class EnrichedProducer {
+
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Value("${app.kafka.topic.output}")
+    private String outputTopic;
+
+    @Value("${app.kafka.topic.dlq}")
+    private String dlqTopic;
+
+    public void sendEnriched(String key, EnrichedOrder event) {
+        kafkaTemplate.send(outputTopic, key, event)
+                .whenComplete((result, ex) -> {  });
+    }
+
+    public void sendToDlq(String key, Object originalPayload) {
+        kafkaTemplate.send(dlqTopic, key, originalPayload)
+                .whenComplete((result, ex) -> {  });
+    }
+}
+\end{minted}
+\caption{EnrichedProducer}
+\end{codelisting}
+\noindent
+Rispetto alle classi precedenti, qui compare una nuova annotazione:
+\begin{itemize}
+    \item \textcolor{purple}{@Value("\${app.kafka.topic.output}")}: a differenza di \textcolor{purple}{@KafkaListener}, dove il \textit{placeholder} è risolto internamente all'annotazione stessa, \textcolor{purple}{@Value} è un'annotazione generica che può essere applicata a un campo per iniettarvi direttamente un valore letto dalla configurazione. Il campo \textcolor{purple}{outputTopic} viene così valorizzato automaticamente da \nameref{Spring} all'atto della creazione del \gls{Bean}, senza bisogno di leggerlo esplicitamente da un oggetto \textcolor{purple}{Environment}.
+\end{itemize}
+Il metodo \textcolor{purple}{sendEnriched} utilizza \textcolor{purple}{KafkaTemplate<String, Object>}, il componente ad alto livello fornito da \nameref{Spring Kafka} per la produzione di messaggi (analogo, sul lato \textit{producer}, a ciò che \textcolor{purple}{@KafkaListener} rappresenta sul lato \textit{consumer}). \\ \\
+Il metodo \textcolor{purple}{send(...)} restituisce un \textcolor{purple}{CompletableFuture}, sul quale viene registrata tramite \textcolor{purple}{whenComplete(...)} una \textit{callback} asincrona per il \textit{logging} dell'esito della pubblicazione, \textit{pattern} coerente con la natura non bloccante dell'invio dei messaggi Kafka.
+
+\subsection{Sintesi delle annotazioni utilizzate}
+La tabella seguente riassume, per libreria di provenienza, tutte le annotazioni impiegate nel progetto e la loro funzione:
+\begin{table}[H]
+    \setlength{\tabcolsep}{10pt} % Default value: 6pt
+    \def\arraystretch{1.5} % Default value: 1
+    \centering
+    \begin{tabular}{|p{0.37\linewidth}|p{0.13\linewidth}|p{0.36\linewidth}|}
+        \hline
+        \textbf{Annotazione} & \textbf{Libreria} & \textbf{Funzione} \\ \hline
+        \textcolor{purple}{@SpringBootApplication} & Spring Boot & \textit{auto-configuration} + \textit{component scan} \\ \hline
+        \textcolor{purple}{@Component} & Spring Core & registra un \gls{Bean} generico \\ \hline
+        \textcolor{purple}{@Service} & Spring Core & registra un \gls{Bean} di logica di business \\ \hline
+        \textcolor{purple}{@RequiredArgsConstructor} & Lombok & costruttore per i campi \textcolor{purple}{final} -> \textit{dependency injection} \\ \hline
+        \textcolor{purple}{@Transactional} & Spring & delimita una transazione database \\ \hline
+        \textcolor{purple}{@KafkaListener} & Spring Kafka & registra un \textit{listener} su un topic \\ \hline
+        \textcolor{purple}{@Value} & Spring Core & inietta un valore da configurazione \\ \hline
+        \textcolor{purple}{@Entity} / \textcolor{purple}{@Table} / \textcolor{purple}{@Id} / \textcolor{purple}{@Column} & Jakarta Persistence & \textit{mapping} oggetto-relazionale \\ \hline
+        \textcolor{purple}{@Getter} / \textcolor{purple}{@Setter} & Lombok & generano accessori \\ \hline
+        \textcolor{purple}{@NoArgsConstructor} / \textcolor{purple}{@AllArgsConstructor} & Lombok & generano costruttori \\ \hline
+        \textcolor{purple}{@ToString} & Lombok & genera il metodo \textcolor{purple}{toString()} \\ \hline
+        \textcolor{purple}{@Slf4j} & Lombok & inietta un \textit{logger} \acrshort{SLF4J} \\ \hline
+    \end{tabular}
+    \caption{Tabella delle annotazioni}
+    \label{Tabella delle annotazioni}
+\end{table}
+\noindent
+Questa distinzione per provenienza è utile dal punto di vista didattico: 
+\begin{itemize}
+    \item le annotazioni \gls{Lombok} agiscono a livello di compilazione, generando codice altrimenti scritto manualmente;
+    \item le annotazioni Jakarta Persistence sono elaborate da \gls{Hibernate} a \textit{runtime} per il \textit{mapping} oggetto-relazionale;
+    \item le annotazioni \nameref{Spring} (Core e Kafka) sono invece elaborate dal container \acrshort{IoC} all'avvio dell'applicazione, per la registrazione dei \gls{Bean}, l'iniezione delle dipendenze e la configurazione dei \textit{listener}.
+\end{itemize}
+
 \newpage
