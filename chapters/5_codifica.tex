@@ -161,7 +161,7 @@ Questo progetto viene usato principalmente per tutte le applicazioni di elaboraz
 Kafka costituisce l'infrastruttura di messaggistica su cui si fonda l'intero \textit{middleware}, fungendo sia da sorgente (\textcolor{purple}{orders-input}) sia da destinazione (\textcolor{purple}{orders-output}, \textcolor{purple}{orders-input-dlq}) del flusso di dati (descritto in \ref{Progettazione}). La sua caratteristica di persistenza dei messaggi su disco, unita al disaccoppiamento temporale tra produttori e consumatori, ha permesso di realizzare un sistema resiliente. Un'eventuale indisponibilità temporanea di \nameref{PostgreSQL} non comporta la perdita di alcun evento, poiché i messaggi restano disponibili sul \textit{topic} finché non vengono correttamente elaborati.
 
 \paragraph{Punti deboli}
-Kafka introduce una complessità di configurazione e gestione superiore rispetto a un semplice \textit{message broker}, complessità che, per un volume di messaggi contenuto come quello gestito nell'ambito del progetto, non viene pienamente ripagata dai suoi vantaggi distintivi (throughput elevato, scalabilità orizzontale su più nodi).
+Kafka introduce una complessità di configurazione e gestione superiore rispetto a un semplice \textit{message broker}, complessità che, per un volume di messaggi contenuto come quello gestito nell'ambito del progetto, non viene pienamente ripagata dai suoi vantaggi distintivi (\textit{\gls{Throughput}} elevato, scalabilità orizzontale su più nodi).
 
 \paragraph{Competitor principali}
 \begin{itemize}
