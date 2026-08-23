@@ -1,0 +1,70 @@
+\chapter{Apache Flink}
+\label{Apache Flink}
+
+\section{Motivazione}
+Tra gli obiettivi definiti in apertura del presente lavoro (si veda \ref{Middleware}) figurava, oltre allo sviluppo del \textit{middleware} tramite \nameref{Spring}, anche il confronto con \textit{Apache Flink}, indicato come requisito desiderabile ma non vincolante rispetto all'implementazione principale. \\ \\
+Per ragioni di tempo a disposizione durante il periodo di tirocinio, e data la priorità assegnata allo studio, alla progettazione e all'implementazione del \textit{middleware} basato su \nameref{Spring}, non è stato possibile realizzare concretamente una \textit{pipeline} equivalente basata su Flink. \\ \\
+Questo capitolo si propone comunque di dare seguito, a livello teorico e progettuale, a quell'obiettivo iniziale: vengono qui presentati i concetti fondamentali di Apache Flink, una progettazione teorica di come la medesima \textit{pipeline} di \textit{enrichment} sarebbe stata realizzata con questo strumento, e un confronto concettuale con l'approccio \nameref{Spring} effettivamente adottato. Il capitolo va quindi inteso, coerentemente con quanto discusso anche a proposito dei test di \textit{performance}, come una proposta architetturale non implementata, utile a completare il quadro di analisi delle tecnologie disponibili per questo tipo di problema.
+
+\section{Apache Flink: panoramica concettuale}
+\label{Apache Flink: panoramica concettuale}
+Apache Flink è un motore \gls{Open Source} di \textit{stream processing} distribuito, progettato nativamente per l'elaborazione continua di flussi di eventi, a differenza dell'approccio a \textit{listener} discreti adottato da \nameref{Spring Kafka} (si veda \ref{Spring Kafka}).
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{assets/apacheflink.png}
+    \caption{Apache Flink}
+\end{figure}
+
+\subsection{DataStream API}
+Il modello di programmazione principale di Flink è la \textbf{DataStream API}, un'interfaccia dichiarativa che permette di definire una \textit{pipeline} di trasformazione come una sequenza di operatori applicati a un flusso continuo di eventi (\textit{stream}), piuttosto che come un metodo invocato singolarmente per ciascun messaggio ricevuto (come avviene con \textcolor{purple}{@KafkaListener} in Spring Kafka). Internamente, Flink traduce questa sequenza di operatori in un grafo di esecuzione distribuito su più nodi (\textit{task manager}), che elabora gli eventi in \textit{parallelo} lungo l'intero \textit{stream}.
+
+\subsection{Gestione nativa dello stato}
+A differenza dell'approccio adottato nel \textit{middleware} sviluppato, in cui ogni evento viene arricchito tramite un'interrogazione sincrona e senza stato verso \nameref{PostgreSQL} (si veda \ref{Content Enricher}), Flink offre un meccanismo di \textbf{stato nativo distribuito}, mantenuto in memoria (o su disco, per stati di grandi dimensioni) e reso tollerante ai guasti tramite un meccanismo di \textit{checkpointing} periodico. Questo permetterebbe, ad esempio, di mantenere in memoria una \textit{cache} locale dei dati cliente più consultati, riducendo la necessità di interrogare il \textit{database} per ogni singolo evento.
+
+\subsection{Async I/O}
+Un aspetto particolarmente rilevante ai fini del confronto con il progetto sviluppato è il meccanismo di \textbf{Async I/O}, che Flink mette a disposizione per l'interazione con sistemi esterni (come una base dati relazionale) senza bloccare il flusso di elaborazione in attesa di una risposta. A differenza di una \textit{query} \acrshort{JPA} sincrona come quella impiegata da \textcolor{purple}{EnrichmentService} (si veda \ref{Implementazione}), l'Async I/O consente di inviare più richieste concorrenti verso \nameref{PostgreSQL} e di riprendere l'elaborazione di ciascun evento non appena la relativa risposta è disponibile, potenzialmente migliorando il \textit{\gls{Throughput}} complessivo della \textit{pipeline} in scenari con latenza di rete o di \textit{database} non trascurabile.
+
+\section{Progettazione di una pipeline equivalente}
+\label{Progettazione di una pipeline equivalente}
+Sulla base dei concetti presentati in \ref{Apache Flink: panoramica concettuale}, è possibile delineare come la medesima pipeline realizzata con \nameref{Spring} — lettura da \textcolor{purple}{orders-input}, arricchimento tramite \nameref{PostgreSQL}, scrittura su \textcolor{purple}{orders-output} o instradamento verso \textcolor{purple}{orders-input-dlq} (si veda \ref{Dead Letter Channel}) — sarebbe stata strutturata utilizzando Flink.
+
+\subsection{Sorgente e formato dei dati}
+Il punto di ingresso della pipeline sarebbe rappresentato da un \textbf{Kafka Source}, il connettore nativo che Flink mette a disposizione per consumare un topic Kafka come \textit{stream} di eventi, deserializzando ciascun record nel medesimo formato \textcolor{purple}{OrderEvent} già impiegato nell'implementazione Spring (si veda \ref{Progettazione}), così da poter riutilizzare, senza modifiche, i \acrshort{DTO} di dominio già definiti.
+
+\subsection{Fase di enrichment}
+La logica di arricchimento, equivalente a quella incapsulata da \textcolor{purple}{EnrichmentService} nell'implementazione Spring, sarebbe stata realizzata tramite un operatore di tipo \textbf{Async I/O} (si veda \ref{Apache Flink: panoramica concettuale}), incaricato di interrogare in modo non bloccante la tabella \textcolor{purple}{customers} su \nameref{PostgreSQL} a partire dal \textcolor{purple}{customerId} presente in ciascun \textcolor{purple}{OrderEvent}, e di produrre in output il medesimo \textcolor{purple}{EnrichedOrder} già definito nel progetto.
+
+\subsection{Gestione degli errori}
+La gestione dei clienti non trovati, realizzata in Spring tramite la \textcolor{purple}{CustomerNotFoundException} e il pattern \textit{Dead Letter Channel} (si veda \ref{Dead Letter Channel}), sarebbe stata realizzata in Flink tramite un meccanismo di \textbf{side output}: un canale di uscita secondario, associato all'operatore di \textit{enrichment}, verso cui instradare esplicitamente gli eventi per cui il \textit{lookup} su \nameref{PostgreSQL} non produce alcun risultato, preservando così lo stesso principio architetturale — isolare gli eventi non elaborabili senza bloccare il flusso principale — con un meccanismo nativo della piattaforma anziché con un \textit{try/catch} applicativo.
+
+\subsection{Destinazione e garanzie di consegna}
+Il messaggio arricchito, così come l'eventuale messaggio instradato sul canale di errore, sarebbero infine pubblicati rispettivamente su \textcolor{purple}{orders-output} e \textcolor{purple}{orders-input-dlq} tramite un \textbf{Kafka Sink}. Per quanto riguarda la semantica di consegna (si veda \ref{Semantica di consegna}), Flink offre un meccanismo di \textit{checkpointing} periodico dell'intero stato della pipeline (inclusi gli \textit{offset} Kafka in lettura), che consente di ottenere una semantica \textit{exactly-once} end-to-end quando usato in combinazione con un Kafka Sink transazionale — una garanzia più forte rispetto alla semantica \textit{at-least-once} realizzata nell'implementazione Spring tramite conferma manuale dell'\textit{offset} (\textcolor{purple}{ack-mode: manual}).
+
+\section{Confronto con l'approccio Spring adottato}
+\label{Confronto con l'approccio Spring adottato}
+La tabella seguente riassume, sulla base di quanto discusso nelle sezioni precedenti, le principali differenze tra l'approccio effettivamente implementato con \nameref{Spring} e quello teoricamente delineato per Apache Flink.
+
+\begin{table}[H]
+    \setlength{\tabcolsep}{10pt}
+    \def\arraystretch{1.5}
+    \centering
+    \begin{tabular}{|p{0.18\linewidth}|p{0.34\linewidth}|p{0.34\linewidth}|}
+        \hline
+        \textbf{Criterio} & \textbf{Spring (implementato)} & \textbf{Apache Flink (teorico)} \\
+        \hline
+        Modello di elaborazione & \textit{Listener} event-driven per singolo messaggio (\textcolor{purple}{@KafkaListener}) & \textit{Stream processing} continuo su un grafo di operatori \\ \hline
+        Accesso al database & Query \acrshort{JPA} sincrona per evento & Async I/O non bloccante, con possibile \textit{caching} tramite stato nativo \\ \hline
+        Gestione degli errori & \textit{Try/catch} applicativo verso una \acrshort{DLQ} & \textit{Side output} nativo dell'operatore \\ \hline
+        Semantica di consegna & \textit{At-least-once} (\textit{ack} manuale) & \textit{Exactly-once} end-to-end (\textit{checkpointing} + \textit{sink} transazionale) \\ \hline
+        Complessità operativa & Contenuta, framework maturo e diffuso & Superiore, richiede la gestione di un \textit{cluster} Flink dedicato \\ \hline
+        Adeguatezza al caso d'uso & Adatta a un volume di eventi moderato, come quello del progetto & Più indicata per volumi elevati o requisiti di consegna più stringenti \\ \hline
+    \end{tabular}
+\caption{Confronto tra Spring e Apache Flink}
+\label{Tabella confronto Spring Flink}
+\end{table}
+
+\section{Limiti e sviluppi futuri}
+Come anticipato in \ref{Apache Flink}, il presente capitolo non riporta un'implementazione né una valutazione sperimentale, ma una proposta architetturale motivata dai concetti teorici di Apache Flink e dalle scelte già effettuate nell'implementazione Spring. \\ \\
+Una naturale prosecuzione del lavoro svolto potrebbe prevedere la realizzazione concreta della pipeline qui delineata, così da consentire un confronto empirico — anziché puramente concettuale — tra le due implementazioni, ad esempio applicando ad entrambe la medesima metodologia di test di performance proposta nel Capitolo~\ref{Test di Performance}. Un simile confronto permetterebbe di verificare concretamente se i vantaggi teorici di Flink in termini di \textit{throughput} e garanzie di consegna (si veda \ref{Confronto Spring Flink}) siano effettivamente rilevanti per un volume di dati e una complessità di \textit{enrichment} paragonabili a quelli del caso d'uso trattato in questo lavoro, o se la maggiore complessità operativa introdotta da Flink non sia, in questo scenario specifico, adeguatamente ripagata.
+
+\newpage

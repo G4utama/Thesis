@@ -1,0 +1,11 @@
+\chapter{Conclusioni}
+\label{Conclusioni}
+
+% \section{Sintesi del lavoro svolto}
+% Il presente lavoro ha affrontato lo studio, la progettazione e l'implementazione di un \textit{middleware} basato sul pattern \nameref{Content Enricher}, realizzato tramite \nameref{Spring} (Spring Boot, Spring Data JPA, Spring Kafka) secondo quanto descritto nei capitoli~\ref{Middleware} e~\ref{Codifica}. Il sistema legge eventi da un \textit{topic} \nameref{Apache Kafka} sorgente, li arricchisce con dati letti da \nameref{PostgreSQL} e pubblica il risultato su un \textit{topic} di destinazione, gestendo esplicitamente i casi di dato mancante tramite il pattern \nameref{Dead Letter Channel}. Gli obiettivi obbligatori O01-O03 definiti in \ref{Obiettivi fissati} risultano pertanto soddisfatti, come riportato nelle tabelle di tracciamento dei requisiti.
+
+% \section{Limiti e sviluppi futuri}
+% Due obiettivi definiti in fase di analisi dei requisiti non sono stati portati a esecuzione, per priorità assegnata allo sviluppo dell'implementazione principale nel tempo a disposizione del tirocinio: l'implementazione equivalente in \textbf{Apache Flink} (D02, RFD-07, \ref{Ambito del confronto con Apache Flink}) e l'esecuzione dei \textbf{test di performance} (F01, RFF-08, \ref{Ambito dei test di performance}). \\ \\
+% Per entrambi, il presente lavoro definisce comunque una base pronta all'esecuzione: il Capitolo~\ref{Middleware Chapter} presenta i concetti teorici di Flink e un confronto concettuale con l'approccio Spring adottato (\ref{Confronto Spring Flink}), mentre il Capitolo~\ref{Codifica Chapter} ne definisce la progettazione concreta (\ref{Progettazione teorica Flink}) e gli strumenti con cui si eseguono i test di performance (\ref{Strumenti per i test di performance}). Una naturale prosecuzione del lavoro realizza questa pipeline e applica ad entrambe le implementazioni la medesima metodologia di valutazione definita nel Capitolo~\ref{Middleware Chapter}, permettendo un confronto fondato su dati anziché su sole considerazioni architetturali.
+
+\newpage

@@ -1,4 +1,5 @@
 \chapter{Codifica}
+\label{Codifica}
 
 \section{Tecnologie e strumenti}
 \label{Tecnologie e strumenti}
@@ -508,5 +509,44 @@ Questa distinzione per provenienza è utile dal punto di vista didattico:
     \item le annotazioni Jakarta Persistence sono elaborate da \gls{Hibernate} a \textit{runtime} per il \textit{mapping} oggetto-relazionale;
     \item le annotazioni \nameref{Spring} (Core e Kafka) sono invece elaborate dal container \acrshort{IoC} all'avvio dell'applicazione, per la registrazione dei \gls{Bean}, l'iniezione delle dipendenze e la configurazione dei \textit{listener}.
 \end{itemize}
+
+% \section{Progettazione di una pipeline equivalente in Apache Flink}
+% \label{Progettazione teorica Flink}
+% Sulla base dei concetti presentati in \ref{Apache Flink section}, la pipeline realizzata con \nameref{Spring} — lettura da \textcolor{purple}{orders-input}, arricchimento tramite \nameref{PostgreSQL}, scrittura su \textcolor{purple}{orders-output} o instradamento verso \textcolor{purple}{orders-input-dlq} — si progetta, in Flink, riutilizzando gli stessi contratti dei messaggi definiti in \ref{Progettazione}.
+
+% \subsection{Sorgente e formato dei dati}
+% Il punto di ingresso della pipeline è un \textbf{Kafka Source}, il connettore nativo che Flink mette a disposizione per consumare un \textit{topic} Kafka come \textit{stream} di eventi, deserializzando ciascun \textit{record} nel medesimo formato \textcolor{purple}{OrderEvent} già impiegato nell'implementazione Spring (\ref{Modello dei dati}).
+
+% \subsection{Fase di enrichment}
+% La logica di arricchimento, equivalente a quella incapsulata da \textcolor{purple}{EnrichmentService} (\ref{Logica di enrichment}), si realizza tramite un operatore di tipo \textbf{Async I/O} (\ref{Apache Flink section}), che interroga in modo non bloccante la tabella \textcolor{purple}{customers} su \nameref{PostgreSQL} a partire dal \textcolor{purple}{customerId} presente in ciascun \textcolor{purple}{OrderEvent}, e produce in output il medesimo \textcolor{purple}{EnrichedOrder} già definito nel progetto.
+
+% \subsection{Gestione degli errori}
+% La gestione dei clienti non trovati, realizzata in Spring tramite \textcolor{purple}{CustomerNotFoundException} e il pattern \nameref{Dead Letter Channel} (\ref{Dead Letter Channel}), si realizza in Flink tramite un \textbf{side output}: un canale di uscita secondario, associato all'operatore di \textit{enrichment}, verso cui si instradano gli eventi per cui il \textit{lookup} su \nameref{PostgreSQL} non produce alcun risultato — stesso principio architetturale, meccanismo nativo della piattaforma anziché \textit{try/catch} applicativo.
+
+% \subsection{Destinazione e garanzie di consegna}
+% Il messaggio arricchito e l'eventuale messaggio instradato sul canale di errore vengono pubblicati rispettivamente su \textcolor{purple}{orders-output} e \textcolor{purple}{orders-input-dlq} tramite un \textbf{Kafka Sink}. Sul piano della semantica di consegna (\ref{Semantica di consegna}), il \textit{checkpointing} periodico dell'intero stato della pipeline, incluso l'\textit{offset} Kafka in lettura, garantisce una semantica \textit{exactly-once} end-to-end se combinato con un Kafka Sink transazionale — una garanzia più forte rispetto alla semantica \textit{at-least-once} realizzata nell'implementazione Spring tramite conferma manuale dell'\textit{offset}.
+
+\section{Strumenti per i test di performance}
+\label{Strumenti per i test di performance}
+Dato lo \textit{stack} tecnologico descritto in \ref{Tecnologie e strumenti}, la metodologia di valutazione definita in \ref{Valutazione delle prestazioni} si realizza con i seguenti strumenti, in gran parte già presenti nell'ambiente di sviluppo predisposto per il progetto.
+
+\subsection{Generazione del carico}
+Il carico si genera con \textcolor{purple}{kafka-producer-perf-test.sh}, lo script incluso nella distribuzione Kafka già containerizzata in \nameref{Docker}, che pubblica un volume controllato di eventi \textcolor{purple}{OrderEvent} su \textcolor{purple}{orders-input}, con parametri configurabili quali: numero totale di messaggi, dimensione del \textit{payload} e \textit{\gls{Throughput}} massimo. 
+Per lo scenario con percentuale variabile di messaggi non arricchibili (si veda \ref{Metodologia di test}), il carico si genera invece con uno \textit{script} dedicato, che pubblica \textcolor{purple}{customerId} validi e non validi secondo una distribuzione controllata.
+
+\subsection{Osservazione del comportamento del sistema}
+Il \textit{consumer lag} si osserva in due modi complementari: 
+\begin{itemize}
+    \item tramite il comando nativo \textcolor{purple}{kafka-consumer-groups.sh --describe}; 
+    \item tramite \textbf{Kafka UI}, già incluso nell'ambiente \nameref{Docker} Compose del progetto, che espone questa informazione in tempo reale.
+\end{itemize}
+
+\subsection{Osservabilità applicativa}
+Il progetto include tra le dipendenze Maven \textcolor{purple}{spring-boot-starter-actuator}, che espone \textit{endpoint} \acrshort{HTTP} standard per il monitoraggio dello stato dell'applicazione. 
+Tale dipendenza si integra nativamente con \textbf{Micrometer}\footnote{Micrometer - URL: \url{https://micrometer.io/}}, libreria di strumentazione collegabile a \textbf{Prometheus}\footnote{Prometheus - URL: \url{https://prometheus.io/}} per la raccolta storica delle metriche e a \textbf{Grafana}\footnote{Grafana - URL: \url{https://grafana.com/}} per la loro visualizzazione tramite \textit{dashboard}, permettendo di correlare temporalmente il carico generato con le metriche applicative e di sistema.
+
+\subsection{Ambiente di test}
+L'ambiente \nameref{Docker} Compose predisposto per il progetto prevede un singolo nodo Kafka in modalità KRaft e una singola istanza \nameref{PostgreSQL}. 
+Qualunque risultato ottenuto in questo ambiente si legge come indicativo della bontà architetturale del \textit{middleware}, più che come misura assoluta delle prestazioni ottenibili in un \textit{deployment} distribuito su più nodi.
 
 \newpage

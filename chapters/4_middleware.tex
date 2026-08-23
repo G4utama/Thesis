@@ -110,18 +110,6 @@ Dal punto di vista tecnico, lo streaming di eventi consiste in:
 \end{itemize}
 L'\textit{event streaming} garantisce quindi un flusso continuo e l'interpretazione dei dati, in modo che le informazioni giuste si trovino nel posto giusto, al momento giusto.
 
-% \subsection{Use cases}
-% Lo streaming di eventi trova applicazione in un’ampia varietà di casi d’uso in una miriade di settori e organizzazioni. Tra i numerosi esempi figurano:
-% \begin{itemize}
-%     \item L’elaborazione in tempo reale di pagamenti e transazioni finanziarie, ad esempio nelle borse valori, nelle banche e nelle compagnie assicurative.
-%     \item Il tracciamento e il monitoraggio in tempo reale di auto, camion, flotte e spedizioni, ad esempio nel settore della logistica e in quello automobilistico.
-%     \item Per acquisire e analizzare continuamente i dati dei sensori provenienti da dispositivi IoT o altre apparecchiature, ad esempio nelle fabbriche e nei parchi eolici.
-%     \item Per raccogliere le interazioni e gli ordini dei clienti e reagire immediatamente, ad esempio nel settore della vendita al dettaglio, in quello alberghiero e dei viaggi e nelle applicazioni mobili.
-%     \item Per monitorare i pazienti in ambito ospedaliero e prevedere i cambiamenti delle loro condizioni, al fine di garantire un trattamento tempestivo in caso di emergenza.
-%     \item Per collegare, archiviare e rendere disponibili i dati prodotti dalle diverse divisioni di un’azienda.
-%     \item Fungere da base per piattaforme dati, architetture basate sugli eventi e microservizi.
-% \end{itemize}
-
 \subsection{Architettura e concetti fondamentali}
 \label{Architettura e concetti fondamentali}
 \paragraph{Producer e Consumer} I produttori sono quelle applicazioni client che pubblicano (scrivono) eventi su Kafka, mentre i consumatori sono quelle che si abbonano (leggono ed elaborano) a tali eventi. 
@@ -144,38 +132,6 @@ Un'impostazione comune in produzione è un fattore di replica pari a 3, ovvero c
 
 \paragraph{Broker e Cluster} Un cluster Kafka è composto da uno o più broker, ciascuno responsabile della gestione di un sottoinsieme di partizioni. La distribuzione dei dati su più broker, unita alla replica delle partizioni (controllata dal parametro replication factor), garantisce tolleranza ai guasti: in caso di indisponibilità di un broker, un'altra replica può assumere il ruolo di leader per la partizione interessata, senza perdita di dati.
 
-% Esempio di configurazione Kafka:
-% \begin{minted}{yaml}
-% spring:
-%   kafka:
-%     bootstrap-servers: localhost:9092
-
-%     consumer:
-%       group-id: \textit{middleware}-enrichment-group
-%       auto-offset-reset: earliest
-%       enable-auto-commit: false # commit manuale dell'offset -> semantica at-least-once
-%       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-%       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-%       properties:
-%         spring.json.trusted.packages: "*"
-
-%     producer:
-%       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-%       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-%       acks: all # garantisce che il messaggio sia replicato prima dell'ack
-
-%     template:
-%       default-topic: topic-dati-arricchiti
-
-%   datasource:
-%     url: jdbc:postgresql://localhost:5432/enrichment_db
-%     username: \textit{middleware}_user
-%     password: ${DB_PASSWORD}
-%   jpa:
-%     hibernate:
-%       ddl-auto: validate
-% \end{minted}
-
 \subsection{Persistenza dei messaggi}
 Una delle caratteristiche distintive di Kafka rispetto ai tradizionali MOM è la persistenza dei messaggi su disco, per un periodo di retention configurabile, indipendentemente dal fatto che siano già stati letti da un consumer. \\ \\
 Questo consente di:
@@ -194,28 +150,8 @@ Dal punto di vista della semantica di consegna, Kafka supporta tre modalità:
 \end{itemize}
 Nel contesto del \textit{middleware} sviluppato, la scelta della semantica di consegna è un aspetto progettuale rilevante: poiché la fase di arricchimento comporta un'interrogazione al \textit{database} PostgreSQL, occorre valutare attentamente le implicazioni di un'eventuale elaborazione duplicata del medesimo messaggio.
 
-% \subsection{Ruolo di Kafka nell'architettura del \textit{middleware}}
-% Nel sistema oggetto del tirocinio, Kafka assume un triplice ruolo architetturale, come illustrato nello schema architetturale (\ref{fig:Middleware}):
-% \begin{itemize}
-%     \item \textbf{Sorgente dei dati grezzi:} il \textcolor{purple}{topic orders-input} riceve eventi ordine in formato \textcolor{purple}{OrderEvent}, contenenti tra gli altri campi un identificativo (\textcolor{purple}{customerId}) che fa riferimento a un'entità anagrafica non ancora risolta. Il \textit{middleware} si comporta da consumer rispetto a questo topic tramite la classe \textcolor{purple}{OrderConsumer}, annotata con \textcolor{purple}{@KafkaListener}.
-%     \item \textbf{Destinazione del dato arricchito:} una volta recuperate le informazioni del cliente da \nameref{PostgreSQL} tramite \textcolor{purple}{EnrichmentService} e composto il messaggio finale (\textcolor{purple}{EnrichedOrder}), il \textit{middleware} agisce da producer, tramite la classe \textcolor{purple}{EnrichedProducer}, verso il topic \textcolor{purple}{orders-output}, reso disponibile ai sistemi a valle.
-%     \item \textbf{Canale per la gestione degli errori:} qualora il processo di arricchimento fallisca (ad esempio per un \textcolor{purple}{customerId} non presente su \nameref{PostgreSQL}, con conseguente sollevamento di una \textcolor{purple}{CustomerNotFoundException}), il messaggio originale viene instradato su un terzo topic, \textcolor{purple}{orders-input-dlq}, anziché su \textcolor{purple}{orders-output}. Questo terzo ruolo realizza concretamente il \textit{pattern} Dead Letter Channel (\ref{Dead Letter Channel}), e rappresenta un elemento di robustezza rilevante ai fini della continuità del flusso di elaborazione.
-% \end{itemize}
-% Ciascuno di questi tre topic è configurato con un numero di partizioni e un fattore di replica specifici: \textcolor{purple}{orders-input} e \textcolor{purple}{orders-output} sono creati con 3 partizioni (per consentire il parallelismo in lettura/scrittura), mentre \textcolor{purple}{orders-input-dlq} è configurato con una singola partizione, essendo un canale a più basso volume atteso e per il quale non è prioritario il parallelismo, quanto piuttosto la semplicità di ispezione dei messaggi falliti (ad esempio tramite la Kafka UI predisposta nell'ambiente di sviluppo, accessibile all'indirizzo \textcolor{purple}{http://localhost:8081}). \\ \\
-% Questa impostazione architetturale, oltre a realizzare concretamente il \textit{pattern} Content Enricher (\ref{Content Enricher}), consente di ottenere un sistema fortemente disaccoppiato e resiliente: né la sorgente originaria degli ordini, né i sistemi consumatori del dato finale devono avere conoscenza diretta dell'esistenza del \textit{middleware}, della logica di arricchimento o della sua eventuale gestione degli errori, essendo l'unico punto di contatto rappresentato dai topic Kafka stessi. In particolare, il fatto che gli errori vengano isolati su un canale dedicato, anziché propagarsi al topic di output o bloccare la pipeline, costituisce un requisito di robustezza spesso implicito ma non scontato in un \textit{middleware} di enrichment in produzione.
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.75\textwidth]{assets/middleware.drawio.png}
-%     \caption{Middleware}
-%     \label{fig:Middleware}
-% \end{figure}
-
 \section{Spring come piattaforma \textit{middleware}}
 \label{Spring Framework}
-% La prima implementazione del \textit{middleware}, oggetto principale del tirocinio, è stata realizzata utilizzando l'ecosistema Spring, largamente adottato in ambito enterprise per la costruzione di applicazioni Java robuste e modulari. \\ \\
-% \textbf{Spring Boot} costituisce il framework di base, offrendo auto-configurazione, gestione semplificata delle dipendenze e un modello a container leggero (embedded server), che riduce drasticamente il tempo necessario per portare in produzione un servizio. \\ \\
-% \textbf{Spring Data JPA} viene impiegato per la gestione dell'accesso al \textit{database} PostgreSQL, secondo cui i dati necessari all'arricchimento del messaggio Kafka sono modellati tramite entità JPA e recuperati tramite repository, astraendo la scrittura di query SQL esplicite. \\ \\
-% \textbf{Spring Kafka} viene utilizzato per orchestrare il flusso di elaborazione: lettura del messaggio dal topic sorgente, invocazione della logica di arricchimento tramite interrogazione al \textit{database}, e scrittura del messaggio arricchito sul topic di destinazione.
 Spring è tra i framework più diffusi in ambito enterprise per la costruzione di applicazioni Java robuste, modulari e facilmente integrabili con infrastrutture di messaggistica e basi di dati.
 
 \subsection{Spring Boot}
@@ -252,26 +188,61 @@ Il concetto centrale su cui si fonda Spring Kafka è quello di \textit{listener}
 Questo paradigma si adatta molto bene a scenari come quello affrontato nel presente lavoro, in cui il flusso di dati non ha una fine definita a priori (uno stream potenzialmente illimitato di eventi) e in cui è desiderabile minimizzare la latenza tra la produzione di un evento e la sua elaborazione. Spring Kafka realizza , a livello applicativo, le astrazioni Kafka già introdotte nella sezione \ref{Architettura e concetti fondamentali} (topic, consumer group, offset). \\ \\
 Questi elementi rendono Spring Kafka una scelta architetturale coerente con il \textit{pattern} Content Enricher (descritto in \ref{Content Enricher}): il \textit{listener} funge da punto di ingresso del messaggio grezzo, delega la logica di arricchimento a un componente dedicato (tipicamente interfacciato con la base dati tramite Spring Data JPA), e infine si occupa della pubblicazione del messaggio arricchito sul topic di destinazione, chiudendo così il ciclo di elaborazione descritto nello schema architetturale generale del \textit{middleware}.
 
-% \begin{figure}[H]
+% \section{Apache Flink come paradigma alternativo}
+% \label{Apache Flink section}
+% Apache Flink è un motore \gls{Open Source} di \textit{stream processing} distribuito, progettato nativamente per l'elaborazione continua di flussi di eventi, a differenza dell'approccio a \textit{listener} discreti adottato da \nameref{Spring Kafka}.
+
+% \subsection{DataStream API}
+% Il modello di programmazione principale di Flink è la \textbf{DataStream API}, un'interfaccia dichiarativa che definisce una \textit{pipeline} come una sequenza di operatori applicati a un flusso continuo di eventi, anziché come un metodo invocato singolarmente per ciascun messaggio ricevuto (come avviene con \textcolor{purple}{@KafkaListener}). Flink traduce questa sequenza in un grafo di esecuzione distribuito su più nodi (\textit{task manager}), che elabora gli eventi in parallelo lungo l'intero \textit{stream}.
+
+% \subsection{Gestione nativa dello stato}
+% A differenza dell'approccio adottato dal \textit{middleware} sviluppato, in cui ogni evento è arricchito tramite un'interrogazione sincrona e senza stato (\ref{Content Enricher}), Flink offre un meccanismo di \textbf{stato nativo distribuito}, reso tollerante ai guasti tramite \textit{checkpointing} periodico. Questo permette, ad esempio, di mantenere in memoria una cache dei dati cliente più consultati, riducendo il numero di interrogazioni verso la fonte dati esterna.
+
+% \subsection{Async I/O}
+% Flink mette a disposizione un meccanismo di \textbf{Async I/O} per l'interazione con sistemi esterni senza bloccare il flusso di elaborazione in attesa di una risposta. A differenza di una query \acrshort{JPA} sincrona, l'Async I/O invia più richieste concorrenti verso la base dati e riprende l'elaborazione di ciascun evento non appena la relativa risposta è disponibile, con un beneficio potenziale sul \textit{throughput} in scenari con latenza di rete o di \textit{database} non trascurabile.
+
+% \subsection{Confronto concettuale con l'approccio Spring adottato}
+% \label{Confronto Spring Flink}
+% La tabella seguente riassume le differenze tra l'approccio effettivamente implementato con \nameref{Spring} e il paradigma Flink appena descritto.
+
+% \begin{table}[H]
 %     \centering
-%     \includegraphics[width=0.4\textwidth]{assets/app.drawio.png}
-%     \caption{Topic Kafka}
-% \end{figure}
+%         \begin{tabular}{|p{3.2cm}|p{5.4cm}|p{5.4cm}|}
+%         \hline
+%         \textbf{Criterio} & \textbf{Spring (implementato)} & \textbf{Apache Flink (teorico)} \\ \hline
+%         Modello di elaborazione & \textit{Listener} event-driven per singolo messaggio & \textit{Stream processing} continuo su un grafo di operatori \\ \hline
+%         Accesso al database & Query \acrshort{JPA} sincrona per evento & Async I/O non bloccante, con \textit{caching} tramite stato nativo \\ \hline
+%         Gestione degli errori & \textit{Try/catch} applicativo verso una \acrshort{DLQ} & \textit{Side output} nativo dell'operatore \\ \hline
+%         Semantica di consegna & \textit{At-least-once} (\ref{Semantica di consegna}) & \textit{Exactly-once} end-to-end (\textit{checkpointing} + \textit{sink} transazionale) \\ \hline
+%         Complessità operativa & Contenuta, framework maturo e diffuso & Superiore, richiede un \textit{cluster} Flink dedicato \\ \hline
+%         \end{tabular}
+%     \caption{Confronto concettuale tra l'approccio Spring implementato e il paradigma Flink}
+%     \label{Tabella confronto Spring Flink}
+% \end{table}
 
-% \section{Apache Flink come alternativo paradigma}
-% Differenza concettuale chiave: Flink è un motore di stream processing nativo (elaborazione continua, stateful), mentre Spring Boot/Batch è più orientato a job schedulati o microservizi request/event-driven
-% Concetti Flink rilevanti: DataStream API, operatori di enrichment (es. join con stato esterno, async I/O verso PostgreSQL)
-% Nota: se il confronto è "se possibile", puoi strutturarlo come sezione facoltativa/di prospettiva, da sviluppare solo se arrivi a implementare un prototipo Flink
+\section{Valutazione delle prestazioni}
+\label{Valutazione delle prestazioni}
+La valutazione delle prestazioni di un \textit{middleware} basato sul \textit{pattern} \nameref{Content Enricher} segue una metodologia specifica, che tiene conto della caratteristica strutturale di questo \textit{pattern}.
+Ogni evento elaborato comporta un'interrogazione verso una fonte dati esterna, che costituisce il candidato più probabile a collo di bottiglia dell'intera \textit{pipeline}, a differenza di un semplice inoltro di messaggi tra due \textit{topic}.
 
-% \section{Confronto Spring vs Flink (tabella riassuntiva)}
-% Un buon modo per chiudere il capitolo è una tabella con criteri come:
-% Modello di elaborazione (batch/microservizio vs stream nativo)
-% Gestione dello stato
-% Curva di apprendimento / ecosistema
-% Scalabilità e fault tolerance
-% Adeguatezza al caso d'uso specifico (enrichment Kafka→PostgreSQL→Kafka)
+\subsection{Metriche di valutazione}
+Si individuano quattro metriche, ciascuna informativa di un aspetto diverso del comportamento del sistema:
+\begin{itemize}
+    \item \textbf{Throughput}: il numero di messaggi arricchiti con successo per unità di tempo, ovvero la capacità complessiva del \textit{middleware} di sostenere un determinato flusso di eventi in ingresso;
+    \item \textbf{Latenza \textit{end-to-end}}: il tempo intercorso tra la pubblicazione di un evento grezzo sul \textit{topic} sorgente (\textcolor{purple}{orders-input}) e la comparsa del corrispondente evento arricchito sul \textit{topic} di destinazione (\textcolor{purple}{orders-output}). Si rileva non solo il valore medio, ma anche i percentili, poiché in sistemi di messaggistica la coda della distribuzione è spesso più significativa della media;
+    \item \textbf{\textit{Consumer lag}:} la differenza tra l'\textit{offset} più recente scritto su un \textit{topic} e l'offset più recente letto dal \textit{consumer}. È una metrica particolarmente indicativa in questo contesto, poiché segnala se il \textit{middleware} riesce a "stare al passo" con il flusso di eventi in ingresso o se accumula un ritardo progressivo;
+    \item \textbf{Tempo di risposta della fonte dati esterna}: isolato dal resto della \textit{pipeline}, misura specificamente il costo dell'interrogazione compiuta nella fase di \textit{enrichment} (\ref{Content Enricher}).
+\end{itemize}
 
-% \section{Conclusioni del capitolo}
-% Riepiloga perché per l'implementazione pratica hai scelto (o proverai) queste tecnologie, aprendo il collegamento al capitolo successivo (progettazione/architettura del sistema)
+\subsection{Metodologia di test}
+\label{Metodologia di test}
+La valutazione si articola in quattro scenari, di complessità crescente:
+\begin{enumerate}
+    \item \textbf{Test di baseline}: un carico contenuto e costante, che stabilisce i valori di riferimento del sistema in condizioni ideali, lontane da qualunque saturazione.
+    \item \textbf{Test di carico crescente (\textit{load test})}: un aumento progressivo e controllato del numero di messaggi pubblicati per secondo, fino a individuare il punto in cui il \textit{consumer lag} smette di rimanere stabile e inizia a crescere in modo continuo, il limite della capacità di elaborazione in tempo reale del sistema.
+    \item \textbf{Test di stress}: un carico volutamente superiore alla capacità nominale individuata nello scenario precedente, per osservare se il sistema degrada in modo controllato (ad esempio accumulando \textit{lag} ma continuando a elaborare correttamente ogni messaggio) oppure manifesta comportamenti patologici (errori, \textit{timeout} delle connessioni al \textit{database}, blocco del \textit{consumer});
+    \item \textbf{Test con percentuale variabile di messaggi non arricchibili:} la quantità di \textcolor{purple}{customerId} inesistenti nel flusso di ingresso viene fatta variare, per valutare l'impatto della gestione della \nameref{Dead Letter Channel} (descritta in \ref{Dead Letter Channel}) sulle prestazioni complessive, in particolare se l'instradamento verso \textcolor{purple}{orders-input-dlq} introduca un \textit{overhead} significativo rispetto al percorso verso \textcolor{purple}{orders-output}.
+\end{enumerate}
+Ciascuno scenario si ripete più volte, per distinguere un degrado sistematico delle prestazioni da normali variazioni dovute a fattori ambientali.
 
 \newpage

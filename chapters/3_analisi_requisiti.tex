@@ -17,6 +17,7 @@ Le sigle precedentemente indicate saranno seguite da una coppia sequenziale di n
 
 \newpage
 \subsection*{Obiettivi fissati}
+\label{Obiettivi fissati}
 Si prevede lo svolgimento dei seguenti obiettivi:
 \begin{itemize}
     \item Obbligatori
@@ -75,6 +76,7 @@ RFO-04 & Il sistema deve pubblicare (produrre) il dato arricchito su un \gls{Top
 RFO-05 & Il sistema deve gestire la connessione e configurazione verso \nameref{Apache Kafka} (consumer e producer) tramite \nameref{Spring} & Soddisfatto \\ \hline
 RFD-06 & Il sistema deve gestire gli errori di elaborazione, come dato non trovato sul \textit{database}, prevedendo una strategia & Soddisfatto \\ \hline
 RFD-07 & Deve essere realizzata un'implementazione equivalente delle stesse funzionalità utilizzando Apache Flink, per permettere il confronto & Insoddisfatto \\ \hline
+RFF-08 & Il sistema deve essere valutabile tramite un insieme definito di metriche di performance (\textit{throughput}, latenza, \textit{consumer lag}) & Insoddisfatto \\ \hline
 \end{tabular}
 \caption{Tabella del tracciamento dei requisiti funzionali}
 \label{Tabella del tracciamento dei requisiti funzionali}
@@ -109,5 +111,16 @@ RVO-03 & L'output deve essere vincolato a un \gls{Topic Kafka} di destinazione (
 \caption{Tabella del tracciamento dei requisiti di vincolo}
 \label{Tabella del tracciamento dei requisiti di vincolo}
 \end{table}
+
+\section{Ambito dei test di performance}
+\label{Ambito dei test di performance}
+Tra gli obiettivi facoltativi definiti in questo capitolo figura \textbf{F01} (Effettuare dei test di performance mediante strumenti di misurazione dedicati), tracciato dal requisito \textbf{RFF-08}. 
+Trattandosi di un requisito facoltativo, la sua esecuzione non rientra nell'ambito vincolante del presente lavoro, la priorità è assegnata agli obiettivi obbligatori \textbf{O01-O03}, relativi allo studio e all'implementazione del \textit{middleware} tramite \nameref{Spring}. \\ \\
+Il requisito non viene per questo trattato come assente: la metodologia di valutazione e gli strumenti concreti con cui si eseguirebbe la misurazione, sono definiti rispettivamente nelle sezioni \ref{Valutazione delle prestazioni} e \ref{Strumenti per i test di performance}. 
+Ciò che resta fuori dall'ambito del presente lavoro è unicamente l'esecuzione materiale di tali test, riportata come sviluppo futuro nelle conclusioni.
+
+% \section{Ambito del confronto con Apache Flink}
+% Tra gli obiettivi desiderabili (\ref{Obiettivi fissati}) figurano \textbf{D01} (studio di Apache Flink), \textbf{D02} (implementazione equivalente) e \textbf{D03} (analisi comparativa), tracciati dai requisiti \textbf{RFD-07} e \textbf{RQD-02}. Come per i test di performance (\ref{Ambito dei test di performance}), la priorità nel tempo a disposizione del tirocinio è assegnata agli obiettivi obbligatori O01-O03: l'\textbf{implementazione} equivalente in Flink (D02) non viene per questo eseguita. \\ \\
+% Lo \textbf{studio} di Flink (D01) e l'\textbf{analisi comparativa} (D03) vengono invece condotti a livello teorico: i concetti fondamentali della piattaforma e il confronto concettuale con l'approccio \nameref{Spring} adottato sono trattati nel Capitolo~\ref{Middleware}, mentre la progettazione di come la medesima pipeline sarebbe strutturata con Flink, sui contratti dei messaggi e sui \textit{topic} effettivamente implementati, è definita nel Capitolo~\ref{Codifica}. L'esecuzione di tale implementazione resta uno sviluppo futuro, riportato nelle conclusioni (Capitolo~\ref{Conclusioni}).
 
 \newpage
