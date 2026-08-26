@@ -66,7 +66,7 @@ In particolare le importanze sono:
 \setlength{\tabcolsep}{10pt} % Default value: 6pt
 \def\arraystretch{1.5} % Default value: 1
 \centering
-\begin{tabular}{|l|p{0.5\linewidth}|l|}
+\begin{tabular}{|p{0.16\linewidth}|p{0.50\linewidth}|p{0.2\linewidth}|}
 \hline
 \textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
 RFO-01 & Il sistema deve leggere (consumare) messaggi da un \gls{Topic Kafka} sorgente & Soddisfatto \\ \hline
@@ -75,7 +75,7 @@ RFO-03 & Il sistema deve combinare (arricchire) il dato originale ricevuto da \n
 RFO-04 & Il sistema deve pubblicare (produrre) il dato arricchito su un \gls{Topic Kafka} di destinazione, diverso da quello sorgente & Soddisfatto \\ \hline
 RFO-05 & Il sistema deve gestire la connessione e configurazione verso \nameref{Apache Kafka} (consumer e producer) tramite \nameref{Spring} & Soddisfatto \\ \hline
 RFD-06 & Il sistema deve gestire gli errori di elaborazione, come dato non trovato sul \textit{database}, prevedendo una strategia & Soddisfatto \\ \hline
-RFD-07 & Deve essere realizzata un'implementazione equivalente delle stesse funzionalità utilizzando Apache Flink, per permettere il confronto & Insoddisfatto \\ \hline
+RFD-07 & Deve essere realizzata un'implementazione equivalente delle stesse funzionalità utilizzando Apache Flink, per permettere il confronto & Parzialmente soddisfatto \\ \hline
 RFF-08 & Il sistema deve essere valutabile tramite un insieme definito di metriche di performance (\textit{throughput}, latenza, \textit{consumer lag}) & Insoddisfatto \\ \hline
 \end{tabular}
 \caption{Tabella del tracciamento dei requisiti funzionali}
@@ -86,7 +86,7 @@ RFF-08 & Il sistema deve essere valutabile tramite un insieme definito di metric
 \setlength{\tabcolsep}{10pt} % Default value: 6pt
 \def\arraystretch{1.5} % Default value: 1
 \centering
-\begin{tabular}{|l|p{0.5\linewidth}|l|}
+\begin{tabular}{|p{0.16\linewidth}|p{0.50\linewidth}|p{0.2\linewidth}|}
 \hline
 \textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
 RQD-01 & Il codice deve essere organizzato in modo modulare, con separazione tra strato di ingestion, arricchimento e produzione, per favorire manutenzione e test & Soddisfatto \\ \hline
@@ -101,7 +101,7 @@ RQD-02 & Le due implementazioni (\nameref{Spring} vs Flink) devono essere proget
 \setlength{\tabcolsep}{10pt} % Default value: 6pt
 \def\arraystretch{1.5} % Default value: 1
 \centering
-\begin{tabular}{|l|p{0.5\linewidth}|l|}
+\begin{tabular}{|p{0.16\linewidth}|p{0.50\linewidth}|p{0.2\linewidth}|}
 \hline
 \textbf{Requisito} & \textbf{Descrizione} & \textbf{Stato} \\ \hline
 RVO-01 & Deve essere utilizzato il framework \nameref{Spring} & Soddisfatto \\ \hline
@@ -112,15 +112,17 @@ RVO-03 & L'output deve essere vincolato a un \gls{Topic Kafka} di destinazione (
 \label{Tabella del tracciamento dei requisiti di vincolo}
 \end{table}
 
+\section{Ambito del confronto con Apache Flink}
+\label{Ambito del confronto con Apache Flink}
+Tra gli obiettivi desiderabili (\ref{Obiettivi fissati}) figurano \textbf{D01} (studio di Apache Flink), \textbf{D02} (implementazione equivalente) e \textbf{D03} (analisi comparativa), tracciati dai requisiti \textbf{RFD-07} e \textbf{RQD-02}. La priorità nel tempo a disposizione del tirocinio è assegnata agli obiettivi obbligatori \textbf{O01-O03}: l'implementazione equivalente in Flink (\textbf{D02}) non viene per questo eseguita. \\ \\
+Lo studio di Flink (\textbf{D01}) e l'analisi comparativa (\textbf{D03}) vengono invece condotti a livello teorico: i concetti fondamentali della piattaforma e il confronto concettuale con l'approccio \nameref{Spring} adottato sono trattati nella sezione \ref{Apache Flink come paradigma alternativo}, mentre la progettazione di come la medesima \textit{pipeline} sarebbe strutturata con Flink, sui contratti dei messaggi e sui \textit{topic} effettivamente implementati, è definita nella sezione \ref{Progettazione di una pipeline in Apache Flink}. 
+L'esecuzione di tale implementazione resta uno sviluppo futuro, riportato nelle conclusioni.
+
 \section{Ambito dei test di performance}
 \label{Ambito dei test di performance}
 Tra gli obiettivi facoltativi definiti in questo capitolo figura \textbf{F01} (Effettuare dei test di performance mediante strumenti di misurazione dedicati), tracciato dal requisito \textbf{RFF-08}. 
-Trattandosi di un requisito facoltativo, la sua esecuzione non rientra nell'ambito vincolante del presente lavoro, la priorità è assegnata agli obiettivi obbligatori \textbf{O01-O03}, relativi allo studio e all'implementazione del \textit{middleware} tramite \nameref{Spring}. \\ \\
+Trattandosi di un requisito facoltativo, la sua esecuzione non rientra nell'ambito vincolante del presente lavoro, come per Apahce Flink (\ref(Ambito del confronto con Apache Flink)) la priorità è assegnata agli obiettivi obbligatori \textbf{O01-O03}, relativi allo studio e all'implementazione del \textit{middleware} tramite \nameref{Spring}. \\ \\
 Il requisito non viene per questo trattato come assente: la metodologia di valutazione e gli strumenti concreti con cui si eseguirebbe la misurazione, sono definiti rispettivamente nelle sezioni \ref{Valutazione delle prestazioni} e \ref{Strumenti per i test di performance}. 
 Ciò che resta fuori dall'ambito del presente lavoro è unicamente l'esecuzione materiale di tali test, riportata come sviluppo futuro nelle conclusioni.
-
-% \section{Ambito del confronto con Apache Flink}
-% Tra gli obiettivi desiderabili (\ref{Obiettivi fissati}) figurano \textbf{D01} (studio di Apache Flink), \textbf{D02} (implementazione equivalente) e \textbf{D03} (analisi comparativa), tracciati dai requisiti \textbf{RFD-07} e \textbf{RQD-02}. Come per i test di performance (\ref{Ambito dei test di performance}), la priorità nel tempo a disposizione del tirocinio è assegnata agli obiettivi obbligatori O01-O03: l'\textbf{implementazione} equivalente in Flink (D02) non viene per questo eseguita. \\ \\
-% Lo \textbf{studio} di Flink (D01) e l'\textbf{analisi comparativa} (D03) vengono invece condotti a livello teorico: i concetti fondamentali della piattaforma e il confronto concettuale con l'approccio \nameref{Spring} adottato sono trattati nel Capitolo~\ref{Middleware}, mentre la progettazione di come la medesima pipeline sarebbe strutturata con Flink, sui contratti dei messaggi e sui \textit{topic} effettivamente implementati, è definita nel Capitolo~\ref{Codifica}. L'esecuzione di tale implementazione resta uno sviluppo futuro, riportato nelle conclusioni (Capitolo~\ref{Conclusioni}).
 
 \newpage

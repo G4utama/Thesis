@@ -188,37 +188,43 @@ Il concetto centrale su cui si fonda Spring Kafka è quello di \textit{listener}
 Questo paradigma si adatta molto bene a scenari come quello affrontato nel presente lavoro, in cui il flusso di dati non ha una fine definita a priori (uno stream potenzialmente illimitato di eventi) e in cui è desiderabile minimizzare la latenza tra la produzione di un evento e la sua elaborazione. Spring Kafka realizza , a livello applicativo, le astrazioni Kafka già introdotte nella sezione \ref{Architettura e concetti fondamentali} (topic, consumer group, offset). \\ \\
 Questi elementi rendono Spring Kafka una scelta architetturale coerente con il \textit{pattern} Content Enricher (descritto in \ref{Content Enricher}): il \textit{listener} funge da punto di ingresso del messaggio grezzo, delega la logica di arricchimento a un componente dedicato (tipicamente interfacciato con la base dati tramite Spring Data JPA), e infine si occupa della pubblicazione del messaggio arricchito sul topic di destinazione, chiudendo così il ciclo di elaborazione descritto nello schema architetturale generale del \textit{middleware}.
 
-% \section{Apache Flink come paradigma alternativo}
-% \label{Apache Flink section}
-% Apache Flink è un motore \gls{Open Source} di \textit{stream processing} distribuito, progettato nativamente per l'elaborazione continua di flussi di eventi, a differenza dell'approccio a \textit{listener} discreti adottato da \nameref{Spring Kafka}.
+\section{Apache Flink come paradigma alternativo}
+\label{Apache Flink come paradigma alternativo}
+Apache Flink è un motore \gls{Open Source} di \textit{stream processing} distribuito, progettato nativamente per l'elaborazione continua di flussi di eventi, a differenza dell'approccio a \textit{listener} discreti adottato da \nameref{Spring Kafka}.
 
-% \subsection{DataStream API}
-% Il modello di programmazione principale di Flink è la \textbf{DataStream API}, un'interfaccia dichiarativa che definisce una \textit{pipeline} come una sequenza di operatori applicati a un flusso continuo di eventi, anziché come un metodo invocato singolarmente per ciascun messaggio ricevuto (come avviene con \textcolor{purple}{@KafkaListener}). Flink traduce questa sequenza in un grafo di esecuzione distribuito su più nodi (\textit{task manager}), che elabora gli eventi in parallelo lungo l'intero \textit{stream}.
+\subsection{DataStream API}
+Il modello di programmazione principale di Flink è la \textbf{DataStream \acrshort{API}}, un'interfaccia dichiarativa che definisce una \textit{pipeline} come una sequenza di operatori applicati a un flusso continuo di eventi, anziché come un metodo invocato singolarmente per ciascun messaggio ricevuto (come avviene con \textcolor{purple}{@KafkaListener}). 
+Flink traduce questa sequenza in un grafo di esecuzione distribuito su più nodi (\textit{task manager}), che elabora gli eventi in parallelo lungo l'intero \textit{stream}.
 
-% \subsection{Gestione nativa dello stato}
-% A differenza dell'approccio adottato dal \textit{middleware} sviluppato, in cui ogni evento è arricchito tramite un'interrogazione sincrona e senza stato (\ref{Content Enricher}), Flink offre un meccanismo di \textbf{stato nativo distribuito}, reso tollerante ai guasti tramite \textit{checkpointing} periodico. Questo permette, ad esempio, di mantenere in memoria una cache dei dati cliente più consultati, riducendo il numero di interrogazioni verso la fonte dati esterna.
+\subsection{Gestione nativa dello stato}
+A differenza dell'approccio adottato dal \textit{middleware} sviluppato, in cui ogni evento è arricchito tramite un'interrogazione sincrona e senza stato (\ref{Content Enricher}), Flink offre un meccanismo di \textbf{stato nativo distribuito}, reso tollerante ai guasti tramite \textit{\gls{Checkpointing}} periodico. 
+Questo permette, ad esempio, di mantenere in memoria una cache dei dati cliente più consultati, riducendo il numero di interrogazioni verso la fonte dati esterna.
 
-% \subsection{Async I/O}
-% Flink mette a disposizione un meccanismo di \textbf{Async I/O} per l'interazione con sistemi esterni senza bloccare il flusso di elaborazione in attesa di una risposta. A differenza di una query \acrshort{JPA} sincrona, l'Async I/O invia più richieste concorrenti verso la base dati e riprende l'elaborazione di ciascun evento non appena la relativa risposta è disponibile, con un beneficio potenziale sul \textit{throughput} in scenari con latenza di rete o di \textit{database} non trascurabile.
+\subsection{Async I/O}
+\label{Async I/O}
+Flink mette a disposizione un meccanismo di \textbf{Async I/O} per l'interazione con sistemi esterni senza bloccare il flusso di elaborazione in attesa di una risposta. 
+A differenza di una query \acrshort{JPA} sincrona, l'Async I/O invia più richieste concorrenti verso la base dati e riprende l'elaborazione di ciascun evento non appena la relativa risposta è disponibile, con un beneficio potenziale sul \textit{\gls{Throughput}} in scenari con latenza di rete o di \textit{database} non trascurabile.
 
-% \subsection{Confronto concettuale con l'approccio Spring adottato}
-% \label{Confronto Spring Flink}
-% La tabella seguente riassume le differenze tra l'approccio effettivamente implementato con \nameref{Spring} e il paradigma Flink appena descritto.
+\subsection{Confronto concettuale con l'approccio Spring adottato}
+\label{Confronto concettuale con l'approccio Spring adottato}
+La tabella seguente riassume le differenze tra l'approccio implementato con \nameref{Spring} e il paradigma Flink appena descritto.
 
-% \begin{table}[H]
-%     \centering
-%         \begin{tabular}{|p{3.2cm}|p{5.4cm}|p{5.4cm}|}
-%         \hline
-%         \textbf{Criterio} & \textbf{Spring (implementato)} & \textbf{Apache Flink (teorico)} \\ \hline
-%         Modello di elaborazione & \textit{Listener} event-driven per singolo messaggio & \textit{Stream processing} continuo su un grafo di operatori \\ \hline
-%         Accesso al database & Query \acrshort{JPA} sincrona per evento & Async I/O non bloccante, con \textit{caching} tramite stato nativo \\ \hline
-%         Gestione degli errori & \textit{Try/catch} applicativo verso una \acrshort{DLQ} & \textit{Side output} nativo dell'operatore \\ \hline
-%         Semantica di consegna & \textit{At-least-once} (\ref{Semantica di consegna}) & \textit{Exactly-once} end-to-end (\textit{checkpointing} + \textit{sink} transazionale) \\ \hline
-%         Complessità operativa & Contenuta, framework maturo e diffuso & Superiore, richiede un \textit{cluster} Flink dedicato \\ \hline
-%         \end{tabular}
-%     \caption{Confronto concettuale tra l'approccio Spring implementato e il paradigma Flink}
-%     \label{Tabella confronto Spring Flink}
-% \end{table}
+\begin{table}[H]
+    \setlength{\tabcolsep}{10pt}
+    \def\arraystretch{1.5}
+    \centering
+        \begin{tabular}{|p{0.20\linewidth}|p{0.33\linewidth}|p{0.33\linewidth}|}
+        \hline
+        \textbf{Criterio} & \textbf{Spring (implementato)} & \textbf{Apache Flink (teorico)} \\ \hline
+        Modello di elaborazione & \textit{Listener event-driven} per singolo messaggio & \textit{Stream processing} continuo su un grafo di operatori \\ \hline
+        Accesso al database & \textit{Query} \acrshort{JPA} sincrona per evento & Async I/O con \textit{caching} tramite stato nativo \\ \hline
+        Gestione degli errori & \textit{Try/catch} applicativo verso una \acrshort{DLQ} & \textit{Side output} nativo dell'operatore \\ \hline
+        Semantica di consegna & \textit{At-least-once} & \textit{Exactly-once} end-to-end \\ \hline
+        Complessità operativa & Contenuta, framework maturo e diffuso & Superiore, richiede un \textit{cluster} Flink dedicato \\ \hline
+        \end{tabular}
+    \caption{Confronto tra l'approccio Spring e il paradigma Flink}
+    \label{Tabella confronto Spring Flink}
+\end{table}
 
 \section{Valutazione delle prestazioni}
 \label{Valutazione delle prestazioni}

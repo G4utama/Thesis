@@ -1,11 +1,3 @@
-% \chapter*{Glossario}
-
-% \paragraph{Open source} In informatica, con l'espressione open source si indica un software distribuito, generalmente in via gratuita, sotto i termini di una licenza open source, che ne concede lo studio, l'utilizzo, la modifica e la redistribuzione. Questo modello si pone in contrapposizione con l'idea di software proprietario che permette le sopracitate concessioni solo secondo i termini dettati dal detentore del copyright.
-
-% \paragraph{JVM} La macchina virtuale Java (detta anche Java Virtual Machine o JVM) è il componente della piattaforma Java responsabile per l'esecuzione dei programmi in formato bytecode. La JVM viene utilizzata per eseguire codice Java.
-
-% \newpage
-
 \newglossaryentry{Annotazioni}{
     name={Annotazioni},
     description={nel linguaggio di programmazione \nameref{Java}, un'annotazione è una forma di metadati sintattici che può essere aggiunta al codice sorgente \nameref{Java}, proprio come un attributo. È possibile annotare classi, metodi, variabili, parametri e pacchetti \nameref{Java}}    
@@ -16,9 +8,24 @@
     description={classi che incapsulano uno o più oggetti in un unico oggetto standardizzato (il \textit{bean}). Questa standardizzazione consente di gestire i \textit{bean} in modo più generico, facilitando il riutilizzo del codice e l'introspezione. Ciò permette, a sua volta, di trattare i \textit{bean} come componenti software e di manipolarli visivamente tramite editor e \acrshort{IDE} senza bisogno di alcuna configurazione iniziale né di conoscere alcun dettaglio di implementazione interna.}  
 }
 
+\newglossaryentry{Checkpointing}{
+    name={Checkpointing},
+    description={tecnica che garantisce la tolleranza ai guasti nei sistemi informatici. Consiste nel salvare un’istantanea dello stato di un’applicazione, in modo che questa possa riavviarsi da quel punto in caso di guasto. Ciò è particolarmente importante per le applicazioni a esecuzione prolungata che vengono eseguite in sistemi informatici soggetti a guasti}  
+}
+
 \newglossaryentry{Hibernate}{
     name={Hibernate},
     description={strumento di mappatura oggetto-relazionale per il linguaggio di programmazione Java. Fornisce un framework per la mappatura di un modello di dominio orientato agli oggetti su un database relazionale. Hibernate risolve i problemi di disallineamento oggetto-relazionale sostituendo gli accessi diretti e persistenti al database con funzioni di gestione degli oggetti di alto livello.}  
+}
+
+\newglossaryentry{Kafka Sink}{
+    name={Kafka Sink},
+    description={connettore nativo offerto da Apache Flink per la scrittura di un flusso di eventi (\textit{stream}) su un \gls{Topic Kafka} di destinazione. Rappresenta il punto di uscita di una \textit{pipeline} Flink verso Kafka, complementare al \gls{Kafka Source}, e può essere configurato con garanzie di consegna diverse (\textit{at-least-once} o \textit{exactly-once}), quest'ultima ottenibile in combinazione con il meccanismo di \textit{\gls{Checkpointing}} della piattaforma}
+}
+
+\newglossaryentry{Kafka Source}{
+    name={Kafka Source},
+    description={connettore nativo offerto da Apache Flink per la lettura di un \gls{Topic Kafka} come flusso continuo di eventi (\textit{stream}). Si occupa della deserializzazione dei singoli messaggi nel formato atteso dall'applicazione e della gestione dell'\textit{offset} di lettura, rappresentando il punto di ingresso di una \textit{pipeline} Flink alimentata da Kafka}
 }
 
 \newglossaryentry{Lombok}{
@@ -34,6 +41,11 @@
 \newglossaryentry{Open Source}{
     name={Open Source},
     description={software distribuito, generalmente in via gratuita, sotto i termini di una licenza open source}
+}
+
+\newglossaryentry{Side Output}{
+    name={Side Output},
+    description={meccanismo offerto da Apache Flink che consente a un operatore di una \textit{pipeline} di emettere, oltre al flusso di uscita principale, uno o più flussi di uscita secondari (\textit{side output}), tipicamente utilizzati per instradare eventi che non possono essere elaborati correttamente verso un canale separato, senza interrompere l'elaborazione del flusso principale}
 }
 
 \newglossaryentry{Throughput}{

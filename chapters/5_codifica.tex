@@ -178,6 +178,7 @@ La scelta di Apache Kafka è stata indicata esplicitamente come requisito del pr
 Prima di procedere all'implementazione, sono state definite alcune scelte progettuali riguardanti il modello dei dati, la struttura dei \gls{Topic Kafka} e la gestione degli errori.
 
 \subsection{Modello dei dati}
+\label{Modello dei dati}
 Sono stati definiti tre tipi di oggetti, ciascuno con una responsabilità precisa:
 \begin{itemize}
     \item \textcolor{purple}{OrderEvent}: rappresenta il messaggio grezzo in ingresso, contenente un identificativo dell'ordine (\textcolor{purple}{orderId}), un riferimento al cliente (\textcolor{purple}{customerId}) e i dati dell'ordine stesso (\textcolor{purple}{product}, \textcolor{purple}{amount});
@@ -345,6 +346,7 @@ Qui non compaiono annotazioni esplicite: è sufficiente che l'interfaccia estend
 Questo meccanismo, che non richiede annotazioni perché il comportamento è determinato dall'interfaccia ereditata, è ciò che permette al progetto di interrogare \nameref{PostgreSQL} senza scrivere alcuna query \acrshort{SQL} esplicita.
 
 \subsection{Logica di enrichment}
+\label{Logica di enrichment}
 Il cuore applicativo del pattern \nameref{Content Enricher} è la classe \textcolor{purple}{EnrichmentService}:
 \begin{codelisting}[H]
 \begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
@@ -510,21 +512,25 @@ Questa distinzione per provenienza è utile dal punto di vista didattico:
     \item le annotazioni \nameref{Spring} (Core e Kafka) sono invece elaborate dal container \acrshort{IoC} all'avvio dell'applicazione, per la registrazione dei \gls{Bean}, l'iniezione delle dipendenze e la configurazione dei \textit{listener}.
 \end{itemize}
 
-% \section{Progettazione di una pipeline equivalente in Apache Flink}
-% \label{Progettazione teorica Flink}
-% Sulla base dei concetti presentati in \ref{Apache Flink section}, la pipeline realizzata con \nameref{Spring} — lettura da \textcolor{purple}{orders-input}, arricchimento tramite \nameref{PostgreSQL}, scrittura su \textcolor{purple}{orders-output} o instradamento verso \textcolor{purple}{orders-input-dlq} — si progetta, in Flink, riutilizzando gli stessi contratti dei messaggi definiti in \ref{Progettazione}.
+\section{Progettazione di una pipeline in Apache Flink}
+\label{Progettazione di una pipeline in Apache Flink}
+Sulla base dei concetti presentati in \ref{Confronto concettuale con l'approccio Spring adottato}, la \textit{pipeline} realizzata con \nameref{Spring}: lettura da \textcolor{purple}{orders-input}, arricchimento tramite \nameref{PostgreSQL}, scrittura su \textcolor{purple}{orders-output} o instradamento verso \textcolor{purple}{orders-input-dlq}, si progetta, in Flink, riutilizzando gli stessi contratti dei messaggi definiti in \ref{Progettazione}.
 
-% \subsection{Sorgente e formato dei dati}
-% Il punto di ingresso della pipeline è un \textbf{Kafka Source}, il connettore nativo che Flink mette a disposizione per consumare un \textit{topic} Kafka come \textit{stream} di eventi, deserializzando ciascun \textit{record} nel medesimo formato \textcolor{purple}{OrderEvent} già impiegato nell'implementazione Spring (\ref{Modello dei dati}).
+\subsection{Sorgente e formato dei dati}
+\label{Sorgente e formato dei dati}
+Il punto di ingresso della pipeline è un \textbf{\gls{Kafka Source}}, il connettore nativo che Flink mette a disposizione per consumare un \textit{topic} Kafka come \textit{stream} di eventi, deserializzando ciascun \textit{record} nel medesimo formato \textcolor{purple}{OrderEvent} già impiegato nell'implementazione Spring (\ref{Modello dei dati}).
 
-% \subsection{Fase di enrichment}
-% La logica di arricchimento, equivalente a quella incapsulata da \textcolor{purple}{EnrichmentService} (\ref{Logica di enrichment}), si realizza tramite un operatore di tipo \textbf{Async I/O} (\ref{Apache Flink section}), che interroga in modo non bloccante la tabella \textcolor{purple}{customers} su \nameref{PostgreSQL} a partire dal \textcolor{purple}{customerId} presente in ciascun \textcolor{purple}{OrderEvent}, e produce in output il medesimo \textcolor{purple}{EnrichedOrder} già definito nel progetto.
+\subsection{Fase di enrichment}
+La logica di arricchimento, equivalente a quella incapsulata da \textcolor{purple}{EnrichmentService} (\ref{Logica di enrichment}), si realizza tramite un operatore di tipo \textbf{Async I/O} (\ref{Async I/O}), che interroga in modo non bloccante la tabella \textcolor{purple}{customers} su \nameref{PostgreSQL} a partire dal \textcolor{purple}{customerId} presente in ciascun \textcolor{purple}{OrderEvent}, e produce in \textit{output} il medesimo \textcolor{purple}{EnrichedOrder} già definito nel progetto.
 
-% \subsection{Gestione degli errori}
-% La gestione dei clienti non trovati, realizzata in Spring tramite \textcolor{purple}{CustomerNotFoundException} e il pattern \nameref{Dead Letter Channel} (\ref{Dead Letter Channel}), si realizza in Flink tramite un \textbf{side output}: un canale di uscita secondario, associato all'operatore di \textit{enrichment}, verso cui si instradano gli eventi per cui il \textit{lookup} su \nameref{PostgreSQL} non produce alcun risultato — stesso principio architetturale, meccanismo nativo della piattaforma anziché \textit{try/catch} applicativo.
+\subsection{Gestione degli errori}
+\label{Gestione degli errori}
+La gestione dei clienti non trovati, realizzata in Spring tramite \textcolor{purple}{CustomerNotFoundException} e il pattern \nameref{Dead Letter Channel} (\ref{Dead Letter Channel}), si realizza in Flink tramite un \textbf{\gls{Side Output}}: un canale di uscita secondario, associato all'operatore di \textit{enrichment}, verso cui si instradano gli eventi per cui il \textit{lookup} su \nameref{PostgreSQL} non produce alcun risultato, stesso principio architetturale, meccanismo nativo della piattaforma anziché \textit{try/catch} applicativo.
 
-% \subsection{Destinazione e garanzie di consegna}
-% Il messaggio arricchito e l'eventuale messaggio instradato sul canale di errore vengono pubblicati rispettivamente su \textcolor{purple}{orders-output} e \textcolor{purple}{orders-input-dlq} tramite un \textbf{Kafka Sink}. Sul piano della semantica di consegna (\ref{Semantica di consegna}), il \textit{checkpointing} periodico dell'intero stato della pipeline, incluso l'\textit{offset} Kafka in lettura, garantisce una semantica \textit{exactly-once} end-to-end se combinato con un Kafka Sink transazionale — una garanzia più forte rispetto alla semantica \textit{at-least-once} realizzata nell'implementazione Spring tramite conferma manuale dell'\textit{offset}.
+\subsection{Destinazione e garanzie di consegna}
+\label{Destinazione e garanzie di consegna}
+Il messaggio arricchito e l'eventuale messaggio instradato sul canale di errore vengono pubblicati rispettivamente su \textcolor{purple}{orders-output} e \textcolor{purple}{orders-input-dlq} tramite un \textbf{\gls{Kafka Sink}}. 
+Sul piano della semantica di consegna (\ref{Semantica di consegna}), il \textit{checkpointing} periodico dell'intero stato della \textit{pipeline}, incluso l'\textit{offset} Kafka in lettura, garantisce una semantica \textit{exactly-once end-to-end} se combinato con un Kafka Sink transazionale, una garanzia più forte rispetto alla semantica \textit{at-least-once} realizzata nell'implementazione Spring.
 
 \section{Strumenti per i test di performance}
 \label{Strumenti per i test di performance}
@@ -537,7 +543,7 @@ Per lo scenario con percentuale variabile di messaggi non arricchibili (si veda 
 \subsection{Osservazione del comportamento del sistema}
 Il \textit{consumer lag} si osserva in due modi complementari: 
 \begin{itemize}
-    \item tramite il comando nativo \textcolor{purple}{kafka-consumer-groups.sh --describe}; 
+    \item tramite il comando nativo \textcolor{purple}{kafka-consumer-groups.sh —describe}; 
     \item tramite \textbf{Kafka UI}, già incluso nell'ambiente \nameref{Docker} Compose del progetto, che espone questa informazione in tempo reale.
 \end{itemize}
 
