@@ -13,9 +13,19 @@
     description={tecnica che garantisce la tolleranza ai guasti nei sistemi informatici. Consiste nel salvare un’istantanea dello stato di un’applicazione, in modo che questa possa riavviarsi da quel punto in caso di guasto. Ciò è particolarmente importante per le applicazioni a esecuzione prolungata che vengono eseguite in sistemi informatici soggetti a guasti}  
 }
 
+\newglossaryentry{Dependency Injection}{
+    name={Dependency Injection},
+    description={tecnica di programmazione in cui un oggetto o una funzione riceve altri oggetti o funzioni di cui ha bisogno, anziché crearli internamente. La \textit{Dependency Injection} mira a separare gli aspetti relativi alla creazione degli oggetti da quelli relativi al loro utilizzo, portando a programmi con un accoppiamento debole. Questo modello garantisce che un oggetto o una funzione che desideri utilizzare un determinato servizio non debba sapere come creare tali servizi. Al contrario, al "cliente" ricevente (oggetto o funzione) vengono fornite le sue dipendenze da un codice esterno (un "iniettore"), di cui esso non è a conoscenza}
+}
+
 \newglossaryentry{Hibernate}{
     name={Hibernate},
-    description={strumento di mappatura oggetto-relazionale per il linguaggio di programmazione Java. Fornisce un framework per la mappatura di un modello di dominio orientato agli oggetti su un database relazionale. Hibernate risolve i problemi di disallineamento oggetto-relazionale sostituendo gli accessi diretti e persistenti al database con funzioni di gestione degli oggetti di alto livello.}  
+    description={strumento di mappatura oggetto-relazionale per il linguaggio di programmazione Java. Fornisce un framework per la mappatura di un modello di dominio orientato agli oggetti su un database relazionale. Hibernate risolve i problemi di disallineamento oggetto-relazionale sostituendo gli accessi diretti e persistenti al database con funzioni di gestione degli oggetti di alto livello}  
+}
+
+\newglossaryentry{Inversion of Control}{
+    name={Inversion of Control},
+    description={espressione adottata separatamente dalla comunità dei programmatori Java per riferirsi specificatamente ai modelli di \textit{\gls{Dependency Injection}} (il passaggio di servizi agli oggetti che ne hanno bisogno) che si verificano con i "container \acrshort{IoC}" nei \textit{framework} Java come Spring. In questo senso, si riferisce al fatto di concedere al \textit{framework} il controllo sulle implementazioni delle dipendenze utilizzate dagli oggetti dell'applicazione, piuttosto che al significato originario di concedere al \textit{framework} il flusso di controllo}  
 }
 
 \newglossaryentry{Kafka Sink}{

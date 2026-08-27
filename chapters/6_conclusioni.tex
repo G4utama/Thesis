@@ -1,11 +1,31 @@
 \chapter{Conclusioni}
 \label{Conclusioni}
 
-% \section{Sintesi del lavoro svolto}
-% Il presente lavoro ha affrontato lo studio, la progettazione e l'implementazione di un \textit{middleware} basato sul pattern \nameref{Content Enricher}, realizzato tramite \nameref{Spring} (Spring Boot, Spring Data JPA, Spring Kafka) secondo quanto descritto nei capitoli~\ref{Middleware} e~\ref{Codifica}. Il sistema legge eventi da un \textit{topic} \nameref{Apache Kafka} sorgente, li arricchisce con dati letti da \nameref{PostgreSQL} e pubblica il risultato su un \textit{topic} di destinazione, gestendo esplicitamente i casi di dato mancante tramite il pattern \nameref{Dead Letter Channel}. Gli obiettivi obbligatori O01-O03 definiti in \ref{Obiettivi fissati} risultano pertanto soddisfatti, come riportato nelle tabelle di tracciamento dei requisiti.
+\section{Sintesi del lavoro svolto}
+Il presente lavoro ha affrontato lo studio, la progettazione e l'implementazione di un \textit{middleware} basato sul pattern \nameref{Content Enricher}, sviluppato secondo l'obiettivo di tirocinio descritto nel Capitolo \ref{Analisi dei Requisiti}. \\ \\
+Il sistema realizzato legge eventi da un \textit{topic} \nameref{Apache Kafka} sorgente, li arricchisce con dati letti da \nameref{PostgreSQL} e pubblica il risultato su un \textit{topic} di destinazione, gestendo esplicitamente i casi di dato mancante tramite il pattern \nameref{Dead Letter Channel}. 
+L'intera implementazione è realizzata tramite l'ecosistema \nameref{Spring} (Spring Boot, Spring Data JPA, Spring Kafka), come descritto nel Capitolo \ref{Codifica}. 
+Il Capitolo \ref{Middleware} ha inoltre inquadrato queste scelte implementative all'interno della teoria dei \textit{Middleware} e degli \textit{Enterprise Integration Patterns}, e ha esteso l'analisi, a livello concettuale, al confronto con Apache Flink come paradigma alternativo di \textit{stream processing}. \\ \\
+Gli obiettivi obbligatori O01-O03 definiti in fase di analisi dei requisiti risultano soddisfatti, come riportato nelle relative tabelle di tracciamento; gli obiettivi desiderabili e facoltativi relativi al confronto con Flink e ai test di performance sono discussi nella sezione \ref{Limiti e sviluppi futuri}.
 
-% \section{Limiti e sviluppi futuri}
-% Due obiettivi definiti in fase di analisi dei requisiti non sono stati portati a esecuzione, per priorità assegnata allo sviluppo dell'implementazione principale nel tempo a disposizione del tirocinio: l'implementazione equivalente in \textbf{Apache Flink} (D02, RFD-07, \ref{Ambito del confronto con Apache Flink}) e l'esecuzione dei \textbf{test di performance} (F01, RFF-08, \ref{Ambito dei test di performance}). \\ \\
-% Per entrambi, il presente lavoro definisce comunque una base pronta all'esecuzione: il Capitolo~\ref{Middleware Chapter} presenta i concetti teorici di Flink e un confronto concettuale con l'approccio Spring adottato (\ref{Confronto Spring Flink}), mentre il Capitolo~\ref{Codifica Chapter} ne definisce la progettazione concreta (\ref{Progettazione teorica Flink}) e gli strumenti con cui si eseguono i test di performance (\ref{Strumenti per i test di performance}). Una naturale prosecuzione del lavoro realizza questa pipeline e applica ad entrambe le implementazioni la medesima metodologia di valutazione definita nel Capitolo~\ref{Middleware Chapter}, permettendo un confronto fondato su dati anziché su sole considerazioni architetturali.
+\section{Conoscenze acquisite}
+Il percorso di tirocinio ha permesso di approfondire diverse competenze tecniche, in parte specifiche dello \textit{stack} tecnologico impiegato, in parte più generali rispetto alla progettazione di sistemi \textit{middleware}:
+\begin{itemize}
+    \item l'ecosistema \textbf{\nameref{Spring}}, in particolare il modello di \textit{\gls{Dependency Injection}} e \textit{\gls{Inversion of Control}} alla base di \nameref{Spring Boot}, l'astrazione \textit{repository} offerta da \nameref{Spring Data JPA} e il modello \textit{listener} di Spring Kafka, discussi nel dettaglio nel Capitolo \ref{Codifica};
+    \item i concetti fondamentali di \textbf{\nameref{Apache Kafka}}: \textit{topic}, partizione, \textit{offset}, \textit{consumer group}, semantica di consegna e il loro impatto sulle scelte architetturali di un sistema \textit{event-driven}, approfonditi nel Capitolo \ref{Middleware};
+    \item gli \textbf{Enterprise Integration Patterns}, in particolare \nameref{Content Enricher} e \nameref{Dead Letter Channel}, come vocabolario condiviso per descrivere problemi ricorrenti nell'integrazione di sistemi distribuiti, applicati concretamente nell'implementazione del \textit{middleware};
+    \item l'uso di \textbf{Docker} e \textbf{Docker Compose} per la definizione di un ambiente di sviluppo riproducibile, comprendente \nameref{Apache Kafka}, \nameref{PostgreSQL} e i relativi strumenti di ispezione;
+    \item i concetti di base della piattaforma \textbf{Apache Flink}: \gls{Kafka Source}, \gls{Kafka Sink}, \gls{Side Output}, utili a comprendere le differenze tra un modello di elaborazione \textit{event-driven} a \textit{listener} e uno \textit{stream processing} nativo.
+\end{itemize}
+
+\section{Limiti e sviluppi futuri}
+\label{Limiti e sviluppi futuri}
+Due obiettivi definiti in fase di analisi dei requisiti non sono stati portati a termine, per la priorità assegnata allo sviluppo dell'implementazione principale nel tempo a disposizione del tirocinio: l'implementazione equivalente in \textbf{Apache Flink} (D02, RFD-07, \ref{Ambito del confronto con Apache Flink}) e l'esecuzione dei \textbf{test di performance} (F01, RFF-08, \ref{Ambito dei test di performance}). \\ \\
+Per entrambi, il presente lavoro non si è fermato alla sola indicazione dell'obiettivo mancato, ma ha definito una base pronta all'esecuzione:
+\begin{itemize}
+    \item riguardo ad \textbf{Apache Flink}, il Capitolo \ref{Middleware} presenta i concetti teorici della piattaforma e un confronto concettuale con l'approccio Spring adottato (\ref{Confronto concettuale con l'approccio Spring adottato}), mentre il Capitolo \ref{Codifica} ne definisce la progettazione concreta di una pipeline equivalente, sugli stessi contratti dei messaggi e sugli stessi \textit{topic} già implementati (\ref{Progettazione di una pipeline in Apache Flink});
+    \item riguardo ai \textbf{test di performance}, il Capitolo \ref{Middleware} definisce le metriche di valutazione e la metodologia di test (\ref{Valutazione delle prestazioni}), mentre il Capitolo \ref{Codifica} indica gli strumenti concreti con cui tali test si eseguirebbero, dato lo \textit{stack} tecnologico impiegato (\ref{Strumenti per i test di performance}).
+\end{itemize}
+Una naturale prosecuzione del lavoro consiste quindi nel realizzare l'implementazione Flink secondo la progettazione già definita, ed eseguire su entrambe le implementazioni, quella basata su Spring e quella basata su Flink, la medesima metodologia di test di performance, permettendo così un confronto fondato su dati concreti.
 
 \newpage
