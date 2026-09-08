@@ -5,12 +5,12 @@
 
 \newglossaryentry{Bean}{
     name={Bean},
-    description={classi che incapsulano uno o più oggetti in un unico oggetto standardizzato (il \textit{bean}). Questa standardizzazione consente di gestire i \textit{bean} in modo più generico, facilitando il riutilizzo del codice e l'introspezione. Ciò permette, a sua volta, di trattare i \textit{bean} come componenti software e di manipolarli visivamente tramite editor e \acrshort{IDE} senza bisogno di alcuna configurazione iniziale né di conoscere alcun dettaglio di implementazione interna.}  
+    description={classi che incapsulano uno o più oggetti in un unico oggetto standardizzato (il \gls{Bean}). Questa standardizzazione consente di gestire i \gls{Bean} in modo più generico, facilitando il riutilizzo del codice e l'introspezione. Ciò permette, a sua volta, di trattare i \gls{Bean} come componenti \textit{software} e di manipolarli visivamente tramite \textit{editor} e \acrshort{IDE} senza bisogno di alcuna configurazione iniziale né di conoscere alcun dettaglio di implementazione interna.}  
 }
 
 \newglossaryentry{Checkpointing}{
     name={Checkpointing},
-    description={tecnica che garantisce la tolleranza ai guasti nei sistemi informatici. Consiste nel salvare un’istantanea dello stato di un’applicazione, in modo che questa possa riavviarsi da quel punto in caso di guasto. Ciò è particolarmente importante per le applicazioni a esecuzione prolungata che vengono eseguite in sistemi informatici soggetti a guasti}  
+    description={tecnica che garantisce la tolleranza ai guasti nei sistemi informatici. Consiste nel salvare un'istantanea dello stato di un'applicazione, in modo che questa possa riavviarsi da quel punto in caso di guasto. Ciò è particolarmente importante per le applicazioni a esecuzione prolungata che vengono eseguite in sistemi informatici soggetti a guasti}  
 }
 
 \newglossaryentry{Dependency Injection}{
@@ -18,19 +18,29 @@
     description={tecnica di programmazione in cui un oggetto o una funzione riceve altri oggetti o funzioni di cui ha bisogno, anziché crearli internamente. La \textit{Dependency Injection} mira a separare gli aspetti relativi alla creazione degli oggetti da quelli relativi al loro utilizzo, portando a programmi con un accoppiamento debole. Questo modello garantisce che un oggetto o una funzione che desideri utilizzare un determinato servizio non debba sapere come creare tali servizi. Al contrario, al "cliente" ricevente (oggetto o funzione) vengono fornite le sue dipendenze da un codice esterno (un "iniettore"), di cui esso non è a conoscenza}
 }
 
+\newglossaryentry{Framework}{
+    name={Framework},
+    description={insieme strutturato di librerie, strumenti e convenzioni che fornisce un'infrastruttura di base su cui costruire un'applicazione \textit{software}. A differenza di una singola libreria, che viene invocata dal codice dello sviluppatore, un \textit{\gls{Framework}} definisce lo scheletro dell'applicazione e ne richiama a sua volta il codice specifico (\gls{Inversion of Control}), occupandosi degli aspetti infrastrutturali comuni e lasciando allo sviluppatore la sola logica di dominio}
+}
+
 \newglossaryentry{Hibernate}{
     name={Hibernate},
-    description={strumento di mappatura oggetto-relazionale per il linguaggio di programmazione Java. Fornisce un framework per la mappatura di un modello di dominio orientato agli oggetti su un database relazionale. Hibernate risolve i problemi di disallineamento oggetto-relazionale sostituendo gli accessi diretti e persistenti al database con funzioni di gestione degli oggetti di alto livello}  
+    description={strumento di mappatura oggetto-relazionale per il linguaggio di programmazione \nameref{Java}. Fornisce un \textit{\gls{Framework}} per la mappatura di un modello di dominio orientato agli oggetti su un database relazionale. Hibernate risolve i problemi di disallineamento oggetto-relazionale sostituendo gli accessi diretti e persistenti al database con funzioni di gestione degli oggetti di alto livello}  
 }
 
 \newglossaryentry{Inversion of Control}{
     name={Inversion of Control},
-    description={espressione adottata separatamente dalla comunità dei programmatori Java per riferirsi specificatamente ai modelli di \textit{\gls{Dependency Injection}} (il passaggio di servizi agli oggetti che ne hanno bisogno) che si verificano con i "container \acrshort{IoC}" nei \textit{framework} Java come Spring. In questo senso, si riferisce al fatto di concedere al \textit{framework} il controllo sulle implementazioni delle dipendenze utilizzate dagli oggetti dell'applicazione, piuttosto che al significato originario di concedere al \textit{framework} il flusso di controllo}  
+    description={espressione adottata separatamente dalla comunità dei programmatori \nameref{Java} per riferirsi specificatamente ai modelli di \textit{\gls{Dependency Injection}} (il passaggio di servizi agli oggetti che ne hanno bisogno) che si verificano con i \textit{container} \acrshort{IoC} nei \textit{\gls{Framework}} \nameref{Java} come \nameref{Spring}. In questo senso, si riferisce al fatto di concedere al \textit{\gls{Framework}} il controllo sulle implementazioni delle dipendenze utilizzate dagli oggetti dell'applicazione, piuttosto che al significato originario di concedere al \textit{\gls{Framework}} il flusso di controllo}  
+}
+
+\newglossaryentry{Jakarta Persistence}{
+    name={Jakarta Persistence},
+    description={specifica \nameref{Java} che definisce un insieme \textit{standard} di annotazioni e interfacce per la mappatura oggetto-relazionale, implementata concretamente da strumenti come \gls{Hibernate}}
 }
 
 \newglossaryentry{Kafka Sink}{
     name={Kafka Sink},
-    description={connettore nativo offerto da Apache Flink per la scrittura di un flusso di eventi (\textit{stream}) su un \gls{Topic Kafka} di destinazione. Rappresenta il punto di uscita di una \textit{pipeline} Flink verso Kafka, complementare al \gls{Kafka Source}, e può essere configurato con garanzie di consegna diverse (\textit{at-least-once} o \textit{exactly-once}), quest'ultima ottenibile in combinazione con il meccanismo di \textit{\gls{Checkpointing}} della piattaforma}
+    description={connettore nativo offerto da Apache Flink per la scrittura di un flusso di eventi (\textit{stream}) su un \gls{Topic Kafka} di destinazione. Rappresenta il punto di uscita di una \textit{pipeline} Flink verso Kafka, complementare al \gls{Kafka Source}, e può essere configurato con garanzie di consegna diverse (\textit{At-least-once} o \textit{Exactly-once}), quest'ultima ottenibile in combinazione con il meccanismo di \textit{\gls{Checkpointing}} della piattaforma}
 }
 
 \newglossaryentry{Kafka Source}{
@@ -38,19 +48,19 @@
     description={connettore nativo offerto da Apache Flink per la lettura di un \gls{Topic Kafka} come flusso continuo di eventi (\textit{stream}). Si occupa della deserializzazione dei singoli messaggi nel formato atteso dall'applicazione e della gestione dell'\textit{offset} di lettura, rappresentando il punto di ingresso di una \textit{pipeline} Flink alimentata da Kafka}
 }
 
-\newglossaryentry{Lombok}{
-    name={Lombok},
-    description={libreria \nameref{Java} che si integra automaticamente con l'editor e gli strumenti di compilazione, arricchendo il codice \nameref{Java}.}  
+\newglossaryentry{KRaft}{
+    name={KRaft},
+    description={abbreviazione di Kafka Raft, l'architettura di consenso distribuito adottata dalle versioni più recenti di \nameref{Apache Kafka} per il coordinamento del \textit{cluster} (elezione del \textit{broker} controllore, gestione dei metadati), che elimina la dipendenza da Apache ZooKeeper, storicamente richiesto a questo scopo, unificando i ruoli di \textit{broker} e \textit{controller} anche in un singolo nodo}
 }
 
-\newglossaryentry{Middleware}{
-    name={Middleware},
-    description={software che funge da strato intermedio tra le applicazioni e le componenti sottostanti, come ad esempio sistemi operativi, \textit{database} o hardware, facilitando la comunicazione, l'integrazione e la gestione delle risorse nei sistemi distribuiti. Il suo ruolo primario è quello di nascondere la complessità dell'infrastruttura sottostante, garantendo interoperabilità, scalabilità e sicurezza}    
+\newglossaryentry{Lombok}{
+    name={Lombok},
+    description={libreria \nameref{Java} che si integra automaticamente con l'\textit{editor} e gli strumenti di compilazione, arricchendo il codice \nameref{Java}.}  
 }
 
 \newglossaryentry{Open Source}{
     name={Open Source},
-    description={software distribuito, generalmente in via gratuita, sotto i termini di una licenza open source}
+    description={software distribuito, generalmente in via gratuita, sotto i termini di una licenza \textit{\gls{Open Source}}}
 }
 
 \newglossaryentry{Side Output}{
@@ -67,12 +77,7 @@
 
 \newglossaryentry{Topic Kafka}{
     name={Topic Kafka},
-    description={categorie utilizzate per organizzare i messaggi. Ogni topic ha un nome unico per l'intero cluster Kafka.
+    description={categorie utilizzate per organizzare i messaggi. Ogni \textit{\nameref{Topic}} ha un nome unico per l'intero \textit{cluster} Kafka.
     I messaggi vengono inviati e letti da argomenti specifici. I produttori scrivono dati negli argomenti e i consumatori leggono dati dagli argomenti. 
-    In Kafka, gli argomenti sono partizionati e replicati attraverso i broker per tutta l'implementazione.  I broker si riferiscono a ciascuno dei nodi di un cluster Kafka. Le partizioni sono importanti perché permettono la parallelizzazione degli argomenti, consentendo un elevato \textit{\gls{Throughput}} dei messaggi}
-}
-
-\newglossaryentry{Visual Studio Code}{
-    name={Visual Studio Code},
-    description={editor di codice sorgente sviluppato da Microsoft per Windows, Linux e macOS. È un software libero e gratuito per uso personale e commerciale, anche se la versione ufficiale è sotto una licenza proprietaria. Permette di installare estensioni che aggiungono ulteriori funzionalità}
+    In Kafka, gli argomenti sono partizionati e replicati attraverso i \textit{broker} per tutta l'implementazione.  I \textit{broker} si riferiscono a ciascuno dei nodi di un \textit{cluster} Kafka. Le partizioni sono importanti perché permettono la parallelizzazione degli argomenti, consentendo un elevato \textit{\gls{Throughput}} dei messaggi}
 }

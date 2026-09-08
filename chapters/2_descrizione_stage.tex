@@ -1,12 +1,12 @@
 \chapter{Descrizione dello Stage}
 
 \section{Introduzione al progetto}
-Lo scopo principale di questo tirocinio sarà lo studio e l'implementazione di \gls{Middleware}. Principalmente verrà sviluppata con il framework \nameref{Spring} (in particolare SpringBoot, Spring Data/JPA e SprintBatch), inoltre confrontarla con la piattaforma Apache Flink, se possibile. \\ \\
+Lo scopo principale di questo tirocinio sarà lo studio e l'implementazione di \textit{Middleware}. Principalmente verrà sviluppata con il \textit{\gls{Framework}} \nameref{Spring} (in particolare \nameref{Spring Boot}, \nameref{Spring Data JPA} e \nameref{Spring Kafka}), inoltre confrontarla con la piattaforma Apache Flink, se possibile. \\ \\
 L'applicazione da sviluppare dovrà leggere i dati da un \gls{Topic Kafka}, arricchirli con dati presenti su \nameref{PostgreSQL} e caricare il dato finale su un altro \gls{Topic Kafka}.
 Pertanto, il compito dello studente sarà quello di studiare, progettare, sviluppare e implementare tutte queste funzionalità sulle tecnologie sopra riportate.
 
 \section{Organizzazione del lavoro}
-Il lavoro è stato suddiviso in due fasi principali: una prima fase dedicata allo studio delle tecnologie e degli strumenti da utilizzare, in particolare del framework \nameref{Spring}, e una seconda fase dedicata all'implementazione vera e propria. \\ \\
+Il lavoro è stato suddiviso in due fasi principali: una prima fase dedicata allo studio delle tecnologie e degli strumenti da utilizzare, in particolare del \textit{\gls{Framework}} \nameref{Spring}, e una seconda fase dedicata all'implementazione vera e propria. \\ \\
 Il tirocinio si è svolto prevalentemente in modalità remota, con presenza in azienda una volta a settimana per confrontarmi con il tutor aziendale sull'andamento del progetto e per individuare eventuali criticità da correggere.
 
 \newpage
@@ -14,29 +14,30 @@ Il tirocinio si è svolto prevalentemente in modalità remota, con presenza in a
 Per ogni rischio vengono indicati \textbf{descizione} e \textbf{soluzione}, inoltre la \textbf{probabilità} che esso accada e l'\textbf{impatto} che il danno causerebbe. 
 \begin{enumerate}
     \item \textbf{Curva di apprendimento ripida} \\ \\
-        \textbf{Probabilità:} Alta (quasi certo che accada con stack così ampio). \\ \\
+        \textbf{Probabilità:} Alta (quasi certo che accada con \textit{stack} così ampio). \\ \\
         \textbf{Impatto:} Medio (mitigabile con una fase di studio iniziale). \\ \\
-        \textbf{Descrizione:} il progetto prevede l'utilizzo di tecnologie e strumenti di cui non si ha esperienza (Spring Boot, Spring Data/JPA, Spring Batch, \nameref{Apache Kafka}, \nameref{PostgreSQL}, eventualmente Apache Flink); questo può comportare rallentamenti dovuti allo studio e all'adozione delle nuove tecnologie, riducendo di conseguenza il tempo disponibile per lo sviluppo. \\ \\
-        \textbf{Soluzione:} il periodo di tirocinio prevede una prima parte di studio delle tecnologie e degli strumenti che si andranno ad utilizzare, con particolare attenzione al framework \nameref{Spring}.
+        \textbf{Descrizione:} il progetto prevede l'utilizzo di tecnologie e strumenti di cui non si ha esperienza (\nameref{Spring Boot}, \nameref{Spring Data JPA}, \nameref{Apache Kafka}, \nameref{PostgreSQL}, eventualmente Apache Flink); questo può comportare rallentamenti dovuti allo studio e all'adozione delle nuove tecnologie, riducendo di conseguenza il tempo disponibile per lo sviluppo. \\ \\
+        \textbf{Soluzione:} il periodo di tirocinio prevede una prima parte di studio delle tecnologie e degli strumenti che si andranno ad utilizzare, con particolare attenzione al \textit{\gls{Framework}} \nameref{Spring}.
     \item \textbf{Ambiente di sviluppo} \\ \\
-        \textbf{Probabilità:} Media (problemi di setup sono comuni). \\ \\
+        \textbf{Probabilità:} Media (problemi di \textit{setup} sono comuni). \\ \\
         \textbf{Impatto:} Medio (risolvibili rapidamente con \nameref{Docker}). \\ \\
-        \textbf{Descrizione:} è necessario un ambiente che includa Kafka, PostgreSQL e tutti gli strumenti utilizzati, configurato in modo da funzionare in modo affidabile e da rendere eventuali modifiche facilmente ripristinabili. \\ \\
-        \textbf{Soluzione:} implementando il progetto tramite Docker, risulta più semplice e rapido il setup e l'integrazione di ogni strumento.
+        \textbf{Descrizione:} è necessario un ambiente che includa \nameref{Apache Kafka}, \nameref{PostgreSQL} e tutti gli strumenti utilizzati, configurato in modo da funzionare in modo affidabile e da rendere eventuali modifiche facilmente ripristinabili. \\ \\
+        \textbf{Soluzione:} implementando il progetto tramite \nameref{Docker}, risulta più semplice e rapido il \textit{setup} e l'integrazione di ogni strumento.
+    \newpage
     \item \textbf{Integrazione tra tecnologie eterogenee} \\ \\
         \textbf{Probabilità:} Alta (cuore tecnico del progetto). \\ \\
         \textbf{Impatto:} Alto (compromissione funzionalità principali). \\ \\
-        \textbf{Descrizione:} il flusso dati tra \nameref{Apache Kafka} e \nameref{PostgreSQL} comporta problemi tipici dei sistemi distribuiti: gestione della concorrenza, consistenza dei dati, latenza nelle query di arricchimento e gestione dei fallimenti parziali. \\ \\
-        \textbf{Soluzione:} definire una strategia di error handling.
+        \textbf{Descrizione:} il flusso dati tra \nameref{Apache Kafka} e \nameref{PostgreSQL} comporta problemi tipici dei sistemi distribuiti: gestione della concorrenza, consistenza dei dati, latenza nelle \textit{query} di arricchimento e gestione dei fallimenti parziali. \\ \\
+        \textbf{Soluzione:} definire una strategia di \textit{error handling}.
     \item \textbf{Gestione dati inconsistenti o mancanti durante l'arricchimento} \\ \\
-        \textbf{Probabilità:} Media (prevedibile in sistemi di arricchimento dati). \\ \\
+        \textbf{Probabilità:} Media (prevedibile in sistemi di arricchimento). \\ \\
         \textbf{Impatto:} Medio (con scarto l'impatto resta contenuto). \\ \\
-        \textbf{Descrizione:} può verificarsi il caso in cui il dato proveniente da \nameref{Apache Kafka} faccia riferimento a un record non presente in \nameref{PostgreSQL}; è quindi necessario definire una politica di gestione di questi casi. \\ \\
+        \textbf{Descrizione:} può verificarsi il caso in cui il dato proveniente da \nameref{Apache Kafka} faccia riferimento a un \textit{record} non presente in \nameref{PostgreSQL}. È quindi necessario definire una politica di gestione di questi casi. \\ \\
         \textbf{Soluzione:} in caso di dati errati o non trovati, questi vengono scartati e viene generata una notifica tramite messaggio di errore.
     \item \textbf{Confronto con Apache Flink} \\ \\
         \textbf{Probabilità:} Alta (molto probabile per vincoli di tempo). \\ \\
         \textbf{Impatto:} Basso (opzionale, quindi di impatto contenuto). \\ \\
-        \textbf{Descrizione:} Flink adotta un modello di programmazione molto diverso da Spring; il confronto tra le due tecnologie richiede una comprensione approfondita di entrambi i paradigmi per risultare significativo e non banale. \\ \\
+        \textbf{Descrizione:} Flink adotta un modello di programmazione molto diverso da Spring. Il confronto tra le due tecnologie richiede una comprensione approfondita di entrambi i paradigmi per risultare significativo e non banale. \\ \\
         \textbf{Soluzione:} tale attività viene indicata come obiettivo desiderabile e non obbligatorio.
 \end{enumerate}
 

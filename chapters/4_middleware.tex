@@ -2,40 +2,40 @@
 \label{Middleware}
 
 \section{Introduzione al concetto di Middleware}
-Nell'ambito dei sistemi informativi moderni, la crescente necessità di integrare applicazioni eterogenee, spesso sviluppate con tecnologie diverse e distribuite su più nodi, ha reso centrale il ruolo del \textit{middleware}. Con questo termine si indica genericamente quello strato \textit{software} che si colloca tra il sistema operativo e le applicazioni, con lo scopo di semplificare la comunicazione, la gestione dei dati e l'interoperabilità tra componenti distinte di un sistema distribuito. \\ \\
-Il presente tirocinio si colloca proprio in questo ambito: l'obiettivo è studiare, progettare e implementare un \textit{middleware} in grado di leggere dati da un topic Kafka, arricchirli con informazioni provenienti da un \textit{database} relazionale \nameref{PostgreSQL}, e pubblicare il risultato su un secondo topic Kafka. Questo capitolo introduce i concetti teorici alla base del \textit{middleware} in generale, per poi restringere il campo alle tecnologie specifiche impiegate nel progetto: \nameref{Spring} Boot, \nameref{Spring} Data JPA e \nameref{Apache Kafka}.
+Nell'ambito dei sistemi informativi moderni, la crescente necessità di integrare applicazioni eterogenee, spesso sviluppate con tecnologie diverse e distribuite, ha reso centrale il ruolo del \textit{Middleware}. Con questo termine si indica genericamente quello strato \textit{software} che si colloca tra il sistema operativo e le applicazioni, con lo scopo di semplificare la comunicazione, la gestione dei dati e l'interoperabilità tra componenti distinte di un sistema distribuito. \\ \\
+Il presente tirocinio si colloca proprio in questo ambito: l'obiettivo è studiare, progettare e implementare un \textit{Middleware} in grado di leggere dati da un \gls{Topic Kafka}, arricchirli con informazioni provenienti da un \textit{database} relazionale \nameref{PostgreSQL}, e pubblicare il risultato su un secondo \gls{Topic Kafka}. Questo capitolo introduce i concetti teorici alla base del \textit{Middleware} in generale, per poi restringere il campo alle tecnologie specifiche impiegate nel progetto.
 
 \section{Definizione e ruolo del Middleware}
-Il \textit{middleware} è un tipo di programma software che fornisce alle applicazioni software servizi che vanno oltre quelli offerti dal sistema operativo.
-È lo strato intermedio tra le applicazioni e le componenti sottostanti, come sistemi operativi o \textit{database}, facilitando cpsì la comunicazione, l'integrazione e la gestione delle risorse nei sistemi distribuiti. 
+Il \textit{Middleware} è un tipo di programma \textit{software} che fornisce alle applicazioni \textit{software} servizi che vanno oltre quelli offerti dal sistema operativo.
+È lo strato intermedio tra le applicazioni e le componenti sottostanti, come sistemi operativi o \textit{database}, facilitando così la comunicazione, l'integrazione e la gestione delle risorse nei sistemi distribuiti. 
 Il suo ruolo primario è quello di nascondere la complessità dell'infrastruttura sottostante, garantendo interoperabilità, scalabilità e sicurezza. \\ \\
 Le caratteristiche principali sono:
 \begin{itemize}
     \item \textbf{Disaccoppiamento:} i sistemi produttori e consumatori di informazioni non devono obbligatoriamente conoscersi o condividere lo stesso linguaggio, piattaforma o formato dati.
     \item \textbf{Interoperabilità:} consente la comunicazione tra applicazioni scritte in linguaggi diversi o eseguite su piattaforme differenti.
-    \item \textbf{Scalabilità e affidabilità:} molti \textit{middleware} offrono tolleranza ai guasti e garanzie di consegna dei messaggi.
+    \item \textbf{Scalabilità e affidabilità:} molti \textit{Middleware} offrono tolleranza ai guasti e garanzie di consegna dei messaggi.
 \end{itemize}
-Il \textit{middleware} sviluppato in questo progetto ha la funzione di ponte tra due flussi di eventi Kafka, arricchendo il dato in transito con informazioni recuperate da \nameref{PostgreSQL}. 
-Si tratta quindi di un \textit{middleware} orientato ai dati e agli eventi, piuttosto che di un semplice bus di comunicazione \acrshort{RPC}.
+Il \textit{Middleware} sviluppato in questo progetto ha la funzione di ponte tra due flussi di eventi Kafka, arricchendo il dato in transito con informazioni recuperate da \nameref{PostgreSQL}. 
+Si tratta quindi di un \textit{Middleware} orientato ai dati e agli eventi, piuttosto che di un semplice bus di comunicazione \acrshort{RPC}.
 
 \section{Classificazione dei Middleware}
-Sono state definite numerose categorie di \textit{middleware}, in base al settore in cui vengono impiegate o al modulo applicativo che servono. 
-Una bibliografia recente ha identificato le principali categorie di \textit{middleware} come segue: 
+Sono state definite numerose categorie di \textit{Middleware}, in base al settore in cui vengono impiegate o al modulo applicativo che servono. 
+Una bibliografia recente ha identificato le principali categorie di \textit{Middleware} come segue: 
 \begin{itemize}
-    \item \textbf{Transactional Middleware:} elaborazione di transazioni multiple sincrone/asincrone, fungendo da cluster di richieste associate provenienti da sistemi distribuiti (es. transazioni bancarie o pagamenti con carta di credito).
-    \item \textbf{Message-Oriented Middleware (\acrshort{MOM}):} basati sullo scambio di messaggi asincroni attraverso code o topic (es. \nameref{Apache Kafka}).
-    \item \textbf{Procedural Middleware:} architetture remote e locali per connettersi, trasmettere e recuperare le risposte software delle comunicazioni tra sistemi asincroni (operazione di chiamata).
-    \item \textbf{Object-Oriented Middleware:} simile al \textit{middleware} procedurale, ma incorpora i principi di progettazione della programmazione orientata agli oggetti. Dal punto di vista analitico, i suoi componenti software comprendono riferimenti agli oggetti, eccezioni ed ereditarietà delle proprietà tramite richieste di oggetti distribuiti.
+    \item \textbf{Transactional Middleware:} elaborazione di transazioni multiple sincrone/asincrone, fungendo da \textit{cluster} di richieste associate provenienti da sistemi distribuiti (es. transazioni bancarie o pagamenti con carta di credito).
+    \item \textbf{Message-Oriented Middleware (\acrshort{MOM}):} basati sullo scambio di messaggi asincroni attraverso code o \textit{\nameref{Topic}} (es. \nameref{Apache Kafka}).
+    \item \textbf{Procedural Middleware:} architetture remote e locali per connettersi, trasmettere e recuperare le risposte \textit{software} delle comunicazioni tra sistemi asincroni (operazione di chiamata).
+    \item \textbf{Object-Oriented Middleware:} simile al \textit{Middleware} procedurale, ma incorpora i principi di progettazione della programmazione orientata agli oggetti. Dal punto di vista analitico, i suoi componenti \textit{software} comprendono riferimenti agli oggetti, eccezioni ed ereditarietà delle proprietà tramite richieste di oggetti distribuiti.
 \end{itemize}
 Il progetto oggetto del tirocinio si colloca nella seconda categoria: si tratta infatti di un \textit{Message-Oriented Middleware} con funzionalità di arricchimento dati (\textit{data enrichment}), in cui il canale di comunicazione è rappresentato da Kafka e la logica di trasformazione è delegata a un componente applicativo (\nameref{Spring}).
 
 \section{Enterprise Integration Patterns}
 \label{Enterprise Integration Patterns}
-Per inquadrare correttamente il problema dal punto di vista architetturale, è utile fare riferimento agli \textit{Enterprise Integration Patterns} (\acrshort{EIP}), un catalogo di \textit{pattern} ricorrenti nell'integrazione di sistemi enterprise, che permette di descrivere il problema del progetto in termini standard e riconosciuti in letteratura.
+Per inquadrare correttamente il problema dal punto di vista architetturale, è utile fare riferimento agli \textit{Enterprise Integration Patterns} (\acrshort{EIP}), un catalogo di \textit{pattern} ricorrenti nell'integrazione di sistemi \textit{enterprise}, che permette di descrivere il problema del progetto in termini standard e riconosciuti in letteratura.
 
 \subsection{Content Enricher}
 \label{Content Enricher}
-Il \textit{pattern} più rilevante per questo lavoro è il \textit{Content Enricher} (mostrato in Fig. \ref{fig:Content Enricher}): un componente che riceve un messaggio contenente informazioni parziali e lo arricchisce con dati aggiuntivi provenienti da una fonte esterna (\textit{database} relazionale), producendo un messaggio più completo da inoltrare al passo successivo della \textit{pipeline}.
+Il \textit{pattern} più rilevante per questo lavoro è il \textit{Content Enricher} (Fig. \ref{fig:Content Enricher}): un componente che riceve un messaggio contenente informazioni parziali e lo arricchisce con dati aggiuntivi provenienti da una fonte esterna (\textit{database} relazionale), producendo un messaggio più completo da inoltrare al passo successivo della \textit{pipeline}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{assets/contentEnricher.drawio.png}
@@ -43,16 +43,16 @@ Il \textit{pattern} più rilevante per questo lavoro è il \textit{Content Enric
     \label{fig:Content Enricher}
 \end{figure}
 \noindent
-Nell'implementazione sviluppata, questo \textit{pattern} è realizzato concretamente dalla classe \textcolor{purple}{EnrichmentService}, che riceve in input un \textcolor{purple}{OrderEvent} (contenente, tra gli altri campi, un \textcolor{purple}{customerId}), interroga \nameref{PostgreSQL} tramite \textcolor{purple}{CustomerRepository} (Spring Data JPA) per recuperare i dati del cliente corrispondente, e produce in output un \textcolor{purple}{EnrichedOrder}, ovvero il messaggio arricchito con le informazioni mancanti.
+Nell'implementazione sviluppata, questo \textit{pattern} è realizzato concretamente dalla classe \textcolor{purple}{EnrichmentService}, che riceve in input un \textcolor{purple}{OrderEvent} (contenente, tra gli altri campi, un \textcolor{purple}{customerId}), interroga \nameref{PostgreSQL} tramite \textcolor{purple}{CustomerRepository} (\nameref{Spring Data JPA}) per recuperare i dati del cliente corrispondente, e produce in \textit{output} un \textcolor{purple}{EnrichedOrder}, ovvero il messaggio arricchito con le informazioni mancanti.
 
 \subsection{Dead Letter Channel}
 \label{Dead Letter Channel}
-Un secondo \textit{pattern}, altrettanto rilevante, è il Dead Letter Channel (mostrato in Fig. \ref{fig:Dead Letter Channel}). Questo \textit{pattern} affronta un problema tipico dei sistemi di integrazione basati su messaggi: cosa fare quando un messaggio non può essere elaborato correttamente? Le opzioni alternative sono entrambe insoddisfacenti:
+Un secondo \textit{pattern}, altrettanto rilevante, è il Dead Letter Channel (Fig. \ref{fig:Dead Letter Channel}). Questo \textit{pattern} affronta un problema tipico dei sistemi di integrazione basati su messaggi: cosa fare quando un messaggio non può essere elaborato correttamente? Le opzioni alternative sono entrambe insoddisfacenti:
 \begin{itemize}
     \item Bloccare la \textit{pipeline}, in attesa che il problema venga risolto manualmente, con il rischio di fermare l'elaborazione di tutti i messaggi successivi (in Kafka, il blocco su una partizione impedisce l'avanzamento dell'\textit{offset} per l'intera partizione);
     \item Scartare silenziosamente il messaggio, con conseguente perdita di dati e nessuna possibilità di analisi o recupero successivo.
 \end{itemize}
-Il \textit{pattern} \textit{Dead Letter Channel} propone invece una terza via: i messaggi che non possono essere elaborati vengono instradati su un canale separato (la \textit{dead letter queue}, o \acrshort{DLQ}), dedicato esclusivamente alla raccolta dei messaggi "falliti". 
+Il \textit{pattern} \textit{Dead Letter Channel} propone invece una terza via: i messaggi che non possono essere elaborati vengono instradati su un canale separato (\acrshort{DLQ}), dedicato esclusivamente alla raccolta dei messaggi "falliti". 
 Questo consente al flusso principale di proseguire senza interruzioni, mantenendo al contempo traccia dei messaggi problematici per un'analisi o un riprocessamento successivo.
 \begin{figure}[H]
     \centering
@@ -62,7 +62,7 @@ Questo consente al flusso principale di proseguire senza interruzioni, mantenend
 \end{figure}
 \noindent
 Nel progetto, questo \textit{pattern} è implementato nel modo seguente: quando \textcolor{purple}{EnrichmentService} tenta di arricchire un \textcolor{purple}{OrderEvent} con un \textcolor{purple}{customerId} non presente su \nameref{PostgreSQL}, viene sollevata una \textcolor{purple}{CustomerNotFoundException}. 
-Questa eccezione viene intercettata e gestita instradando il messaggio originale sul topic \textcolor{purple}{orders-input-dlq}, anziché proseguire verso \textcolor{purple}{EnrichedProducer} e il topic \textcolor{purple}{orders-output}. 
+Questa eccezione viene intercettata e gestita instradando il messaggio originale sul \textit{\nameref{Topic}} \textcolor{purple}{orders-input-dlq}, anziché proseguire verso \textcolor{purple}{EnrichedProducer} e il \textit{\nameref{Topic}} \textcolor{purple}{orders-output}. 
 In questo modo, un singolo dato incompleto o malformato non compromette l'elaborazione degli ordini successivi, e resta comunque disponibile per un'ispezione a posteriori (ad esempio tramite la Kafka UI predisposta nell'ambiente di sviluppo).
 
 \subsection{Altri pattern rilevanti}
@@ -71,7 +71,7 @@ In questo modo, un singolo dato incompleto o malformato non compromette l'elabor
 \label{Message Translator}
 Altri \textit{pattern} \acrshort{EIP} utili e applicabili al progetto sono:
 \begin{itemize}
-    \item \textbf{Message Channel:} collega le applicazioni tramite un canale di messaggi, in cui un'applicazione scrive le informazioni nel canale e l'altra le legge dal canale. I messaggi qui rappresentato dai topic Kafka (\textcolor{purple}{orders-input}, \textcolor{purple}{orders-output}, \textcolor{purple}{orders-input-dlq}).
+    \item \textbf{Message Channel:} collega le applicazioni tramite un canale di messaggi, in cui un'applicazione scrive le informazioni nel canale e l'altra le legge dal canale. I messaggi qui rappresentato dai \gls{Topic Kafka} (\textcolor{purple}{orders-input}, \textcolor{purple}{orders-output}, \textcolor{purple}{orders-input-dlq}).
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.75\textwidth]{assets/messageChannel.drawio.png}
@@ -91,119 +91,129 @@ Altri \textit{pattern} \acrshort{EIP} utili e applicabili al progetto sono:
     \end{figure}
 \end{itemize}
 
+\newpage
 \section{Apache Kafka come servizio di messaggistica}
 \label{Apache Kafka come servizio di messaggistica}
 
 \subsection{Introduzione e caratteristiche generali}
-\nameref{Apache Kafka} è una piattaforma distribuita per lo streaming di eventi, originariamente sviluppata da LinkedIn\footnote{LinkedIn - URL: \url{https://www.linkedin.com}} e successivamente rilasciata come progetto open source sviluppata da Apache Software Foundation\footnote{Apache Software Foundation - URL: \url{https://www.apache.org/}}. \\ \\
-A differenza dei tradizionali sistemi di messaggistica basati su code (come i classici Message Queue), Kafka nasce con l'obiettivo di gestire flussi di dati ad alto \textit{\gls{Throughput}}, bassa latenza e con garanzie di persistenza e ripetibilità della lettura, caratteristiche che lo rendono particolarmente adatto sia a scenari di semplice trasporto di messaggi, sia a scenari più complessi di \textit{event streaming} ed \textit{event sourcing}. \\ \\
+\nameref{Apache Kafka} è una piattaforma distribuita per lo \textit{streaming} di eventi, originariamente sviluppata da LinkedIn\footnote{LinkedIn - URL: \url{https://www.linkedin.com}} e successivamente rilasciata come progetto \textit{\gls{Open Source}} sviluppata da Apache Software Foundation\footnote{Apache Software Foundation - URL: \url{https://www.apache.org/}}. \\ \\
+A differenza dei tradizionali sistemi di messaggistica basati su \textit{code} (come i classici \textit{Message Queue}), Kafka nasce con l'obiettivo di gestire flussi di dati ad alto \textit{\gls{Throughput}}, bassa latenza e con garanzie di persistenza e ripetibilità della lettura, caratteristiche che lo rendono particolarmente adatto sia a scenari di semplice trasporto di messaggi, sia a scenari più complessi di \textit{event streaming} ed \textit{event sourcing}. \\ \\
 Nel contesto di questo progetto, Kafka non è impiegato semplicemente come canale di trasporto, ma come componente architetturale a tutti gli effetti: da esso dipendono sia l'ingresso dei dati grezzi nel sistema, sia l'uscita dei dati arricchiti.
 
 \subsection{Event streaming}
 \label{Event Streaming}
 L'\textit{event streaming} è l'equivalente digitale del sistema nervoso centrale del corpo umano. Rappresenta il fondamento tecnologico di un mondo “sempre attivo”, in cui le aziende sono sempre più definite dal \textit{software} e automatizzate, e in cui l'utente del \textit{software} è a sua volta un \textit{software}. \\ \\
-Dal punto di vista tecnico, lo streaming di eventi consiste in:
+Dal punto di vista tecnico, l'\textit{event streaming} consiste in:
 \begin{itemize}
-    \item acquisizione in tempo reale di dati provenienti da fonti quali \textit{database}, sensori, dispositivi mobili, servizi cloud e applicazioni software sotto forma di flussi di eventi; 
-    \item archiviazione duratura di tali flussi per un successivo recupero; nella manipolazione, elaborazione e risposta ai flussi di eventi sia in tempo reale che a posteriori; 
-    \item instradamento dei flussi di eventi verso diverse tecnologie di destinazione a seconda delle necessità.
+    \item \textbf{Acquisizione} in tempo reale di dati provenienti da fonti quali \textit{database}, sensori, dispositivi mobili, servizi cloud e applicazioni software sotto forma di flussi di eventi; 
+    \newpage
+    \item \textbf{Archiviazione} duratura di tali flussi per un successivo recupero; nella manipolazione, elaborazione e risposta ai flussi di eventi sia in tempo reale che a posteriori; 
+    \item \textbf{Instradamento} dei flussi di eventi verso diverse tecnologie di destinazione a seconda delle necessità.
 \end{itemize}
 L'\textit{event streaming} garantisce quindi un flusso continuo e l'interpretazione dei dati, in modo che le informazioni giuste si trovino nel posto giusto, al momento giusto.
 
 \subsection{Architettura e concetti fondamentali}
 \label{Architettura e concetti fondamentali}
-\paragraph{Producer e Consumer} I produttori sono quelle applicazioni client che pubblicano (scrivono) eventi su Kafka, mentre i consumatori sono quelle che si abbonano (leggono ed elaborano) a tali eventi. 
+\paragraph{Producer e Consumer} I produttori sono quelle applicazioni \textit{client} che pubblicano (scrivono) eventi su Kafka, mentre i consumatori sono quelle che si abbonano (leggono ed elaborano) a tali eventi. 
 In Kafka, produttori e consumatori sono completamente disaccoppiati e indipendenti l'uno dall'altro, il che costituisce un elemento chiave del design per ottenere l'elevata scalabilità (i produttori non devono mai attendere i consumatori). \\ \\
-Nel \textit{middleware} sviluppato, l'applicazione stessa riveste entrambi i ruoli: agisce come consumer rispetto al topic sorgente (da cui legge i dati grezzi da arricchire) e come producer rispetto al topic di destinazione (su cui scrive il dato arricchito).
-\paragraph{Consumer Group} Kafka introduce il concetto di consumer group, un insieme di consumer identificati da uno stesso \textcolor{purple}{group.id}, che si ripartiscono automaticamente le partizioni di un topic, così che ciascun messaggio venga elaborato da un solo consumer all'interno del gruppo. Questo meccanismo consente di scalare orizzontalmente il \textit{middleware}, aggiungendo istanze aggiuntive dell'applicazione senza necessità di logica di bilanciamento del carico esplicita: sarà Kafka stesso a ridistribuire le partizioni tra i consumer disponibili (fenomeno noto come rebalance).
-\paragraph{Event} Gli eventi vengono organizzati e archiviati in modo permanente in argomenti (topic). Un argomento è simile a una cartella in un file system, mentre gli eventi sono i file contenuti in quella cartella. \\ \\
-Gli argomenti in Kafka sono sempre multi-producer e multi-consumer : un argomento può avere zero, uno o più produttori che vi scrivono eventi, così come zero, uno o più consumatori che si abbonano a tali eventi. Gli eventi in un argomento possono essere letti tutte le volte che è necessario: a differenza dei sistemi di messaggistica tradizionali, gli eventi non vengono eliminati dopo la lettura. È l'utente a definire per quanto tempo Kafka debba conservare gli eventi tramite un'impostazione di configurazione specifica per ogni argomento, trascorso il quale gli eventi più vecchi verranno eliminati. Le prestazioni di Kafka rimangono sostanzialmente costanti indipendentemente dalla dimensione dei dati, quindi l'archiviazione dei dati per lunghi periodi di tempo non presenta alcun problema.
-\paragraph{Topic} L'unità logica fondamentale di Kafka è il topic, un canale a cui i producer inviano messaggi e da cui i consumer li leggono. \\ \\
-Ogni topic è fisicamente suddiviso in una o più partition, che rappresentano l'unità di parallelismo: ogni partizione è una sequenza ordinata e immutabile di messaggi, identificati da un numero progressivo detto offset.
-Questa distribuzione dei dati è molto importante per la scalabilità, poiché consente alle applicazioni client di leggere e scrivere i dati da e verso molti broker contemporaneamente. Quando un nuovo evento viene pubblicato su un argomento, viene effettivamente aggiunto a una delle partizioni dell'argomento (mostrato in Fig. \ref{fig:Partition}). \\ \\
-Per garantire la tolleranza ai guasti e l'alta disponibilità dei dati, ogni argomento può essere replicato, anche tra diverse aree geografiche o data center, in modo che ci siano sempre più broker in possesso di una copia dei dati nel caso in cui si verifichino problemi, si desideri eseguire operazioni di manutenzione sui broker e così via. 
-Un'impostazione comune in produzione è un fattore di replica pari a 3, ovvero ci saranno sempre tre copie dei dati. Questa replica viene eseguita a livello di partizioni degli argomenti.
+Nel \textit{Middleware} sviluppato, l'applicazione stessa riveste entrambi i ruoli: agisce come \textit{consumer} rispetto al \textit{\nameref{Topic}} sorgente (da cui legge i dati grezzi da arricchire) e come \textit{producer} rispetto al \textit{\nameref{Topic}} di destinazione (su cui scrive il dato arricchito).
+\paragraph{Consumer Group} Kafka introduce il concetto di \textit{consumer group}, un insieme di \textit{consumer} identificati da uno stesso \textcolor{purple}{group.id}, che si ripartiscono automaticamente le partizioni di un \textit{\nameref{Topic}}, così che ciascun messaggio venga elaborato da un solo consumer all'interno del gruppo. Questo meccanismo consente di scalare orizzontalmente il \textit{Middleware}, aggiungendo istanze aggiuntive dell'applicazione senza necessità di logica di bilanciamento del carico esplicita: sarà Kafka stesso a ridistribuire le partizioni tra i \textit{consumer} disponibili (fenomeno noto come \textit{rebalance}).
+\newpage
+\paragraph{Event} Gli eventi vengono organizzati e archiviati in modo permanente in argomenti (\textit{\nameref{Topic}}). Un argomento è simile a una cartella in un \textit{file system}, mentre gli eventi sono i file contenuti in quella cartella. \\ \\
+Gli argomenti in Kafka sono sempre \textit{multi-producer} e \textit{multi-consumer}: un argomento può avere zero, uno o più produttori che vi scrivono eventi, così come zero, uno o più consumatori che si abbonano a tali eventi. Gli eventi in un argomento possono essere letti tutte le volte che è necessario: a differenza dei sistemi di messaggistica tradizionali, gli eventi non vengono eliminati dopo la lettura. È l'utente a definire per quanto tempo Kafka debba conservare gli eventi tramite un'impostazione di configurazione specifica per ogni argomento, trascorso il quale gli eventi più vecchi verranno eliminati. Le prestazioni di Kafka rimangono sostanzialmente costanti indipendentemente dalla dimensione dei dati, quindi l'archiviazione dei dati per lunghi periodi di tempo non presenta alcun problema.
+\paragraph{Topic}\label{Topic} L'unità logica fondamentale di Kafka è il \textit{\nameref{Topic}}, un canale a cui i \textit{producer} inviano messaggi e da cui i \textit{consumer} li leggono. \\ \\
+Ogni \textit{\nameref{Topic}} è fisicamente suddiviso in una o più \textit{partition}, che rappresentano l'unità di parallelismo: ogni partizione è una sequenza ordinata e immutabile di messaggi, identificati da un numero progressivo detto \textit{offset}.
+Questa distribuzione dei dati è molto importante per la scalabilità, poiché consente alle applicazioni \textit{client} di leggere e scrivere i dati da e verso molti \textit{broker} contemporaneamente. Quando un nuovo evento viene pubblicato su un argomento, viene effettivamente aggiunto a una delle partizioni dell'argomento (Fig. \ref{fig:Partition}).
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\textwidth]{assets/partition.drawio.png}
+    \includegraphics[width=0.60\textwidth]{assets/partition.drawio.png}
     \caption{Partition}
     \label{fig:Partition}
 \end{figure}
+\noindent
+Per garantire la tolleranza ai guasti e l'alta disponibilità dei dati, ogni argomento può essere replicato, anche tra diverse aree geografiche o \textit{data center}, in modo che ci siano sempre più \textit{broker} in possesso di una copia dei dati nel caso in cui si verifichino problemi, si desideri eseguire operazioni di manutenzione sui \textit{broker} e così via. 
+Un'impostazione comune in produzione è un fattore di replica pari a 3, ovvero ci saranno sempre tre copie dei dati. Questa replica viene eseguita a livello di partizioni degli argomenti.
 
-\paragraph{Broker e Cluster} Un cluster Kafka è composto da uno o più broker, ciascuno responsabile della gestione di un sottoinsieme di partizioni. La distribuzione dei dati su più broker, unita alla replica delle partizioni (controllata dal parametro replication factor), garantisce tolleranza ai guasti: in caso di indisponibilità di un broker, un'altra replica può assumere il ruolo di leader per la partizione interessata, senza perdita di dati.
+\paragraph{Broker e Cluster} Un \textit{cluster} Kafka è composto da uno o più \textit{broker}, ciascuno responsabile della gestione di un sottoinsieme di partizioni. La distribuzione dei dati su più \textit{broker}, unita alla replica delle partizioni (controllata dal parametro \textit{replication factor}), garantisce tolleranza ai guasti: in caso di indisponibilità di un \textit{broker}, un'altra replica può assumere il ruolo di \textit{leader} per la partizione interessata, senza perdita di dati.
 
 \subsection{Persistenza dei messaggi}
-Una delle caratteristiche distintive di Kafka rispetto ai tradizionali MOM è la persistenza dei messaggi su disco, per un periodo di retention configurabile, indipendentemente dal fatto che siano già stati letti da un consumer. \\ \\
+Una delle caratteristiche distintive di Kafka rispetto ai tradizionali \acrshort{MOM} è la persistenza dei messaggi su disco, per un periodo di \textit{retention configurabile}, indipendentemente dal fatto che siano già stati letti da un \textit{consumer}. \\ \\
 Questo consente di:
 \begin{itemize}
-    \item rileggere lo storico dei messaggi in caso di errore o necessità di riprocessamento;
-    \item gestire il disaccoppiamento temporale tra producer e consumer, che non devono essere necessariamente attivi nello stesso momento;
-    \item garantire resilienza del \textit{middleware} in caso di malfunzionamento temporaneo della componente di arricchimento (indisponibilità del \textit{database}), poiché i messaggi restano disponibili nel topic finché non vengono correttamente processati.
+    \item \textbf{Rileggere} lo storico dei messaggi in caso di errore o necessità di riprocessamento;
+    \item \textbf{Gestire} il disaccoppiamento temporale tra \textit{producer} e \textit{consumer}, che non devono essere necessariamente attivi nello stesso momento;
+    \item \textbf{Garantire} resilienza del \textit{Middleware} in caso di malfunzionamento temporaneo della componente di arricchimento (indisponibilità del \textit{database}), poiché i messaggi restano disponibili nel \textit{\nameref{Topic}} finché non vengono correttamente processati.
 \end{itemize}
+\newpage
 \subsection{Semantica di consegna}
 \label{Semantica di consegna}
 Dal punto di vista della semantica di consegna, Kafka supporta tre modalità:
 \begin{itemize}
-    \item \textbf{At-most-once:} il messaggio può essere perso, ma non elaborato più volte (offset committato prima dell'elaborazione).
-    \item \textbf{At-least-once:} il messaggio viene sempre elaborato, ma può essere elaborato più volte in caso di errore o riavvio (offset committato dopo l'elaborazione). È la modalità più comune nei sistemi che, come quello del progetto, non tollerano perdita di dati.
-    \item \textbf{Exactly-once:} garantisce che ogni messaggio venga elaborato esattamente una volta, tramite meccanismi di transazioni Kafka.
+    \item \textbf{At-most-once}: il messaggio può essere perso, ma non elaborato più volte (\textit{offset} committato prima dell'elaborazione).
+    \item \textbf{At-least-once}: il messaggio viene sempre elaborato, ma può essere elaborato più volte in caso di errore o riavvio (\textit{offset} committato dopo l'elaborazione). È la modalità più comune nei sistemi che, come quello del progetto, non tollerano perdita di dati.
+    \item \textbf{Exactly-once}: garantisce che ogni messaggio venga elaborato esattamente una volta, tramite meccanismi di transazioni Kafka.
 \end{itemize}
-Nel contesto del \textit{middleware} sviluppato, la scelta della semantica di consegna è un aspetto progettuale rilevante: poiché la fase di arricchimento comporta un'interrogazione al \textit{database} PostgreSQL, occorre valutare attentamente le implicazioni di un'eventuale elaborazione duplicata del medesimo messaggio.
+Nel contesto del \textit{Middleware} sviluppato, la scelta della semantica di consegna è un aspetto progettuale rilevante: poiché la fase di arricchimento comporta un'interrogazione al \textit{database} PostgreSQL, occorre valutare attentamente le implicazioni di un'eventuale elaborazione duplicata del medesimo messaggio.
 
-\section{Spring come piattaforma \textit{middleware}}
+\section{Spring come piattaforma \textit{Middleware}}
 \label{Spring Framework}
-Spring è tra i framework più diffusi in ambito enterprise per la costruzione di applicazioni Java robuste, modulari e facilmente integrabili con infrastrutture di messaggistica e basi di dati.
+Spring è tra i \textit{\gls{Framework}} più diffusi in ambito \textit{enterprise} per la costruzione di applicazioni \nameref{Java} robuste, modulari e facilmente integrabili con infrastrutture di messaggistica e basi di dati.
 
 \subsection{Spring Boot}
 \label{Spring Boot}
-Spring Boot rappresenta l'evoluzione del framework Spring pensata per semplificare la configurazione e l'avvio di applicazioni Java, tramite il paradigma dell'auto-configuration e della convention over configuration. \\ \\
-Alla base del framework resta il principio di \textit{\gls{Inversion of Control}} (\acrshort{IoC}), realizzato tramite \textit{Dependency Injection}: i componenti applicativi non istanziano direttamente le proprie dipendenze, ma le ricevono da un contenitore (l'application context), che ne gestisce il ciclo di vita. \\ \\
-Ai fini della realizzazione di un \textit{middleware}, questo approccio offre alcuni vantaggi rilevanti:
+Spring Boot rappresenta l'evoluzione del \textit{\gls{Framework}} Spring pensata per semplificare la configurazione e l'avvio di applicazioni \nameref{Java}, tramite il paradigma dell'\textit{\nameref{Auto Configuration}} e della \textit{\nameref{Convention over Configuration}}. \\ \\
+Alla base del \textit{\gls{Framework}} resta il principio di \textit{\gls{Inversion of Control}} (\acrshort{IoC}), realizzato tramite \textit{\gls{Dependency Injection}}: i componenti applicativi non istanziano direttamente le proprie dipendenze, ma le ricevono da un contenitore (l'\textit{application context}), che ne gestisce il ciclo di vita. \\ \\
+\newpage
+\noindent
+Ai fini della realizzazione di un \textit{Middleware}, questo approccio offre alcuni vantaggi rilevanti:
 \begin{itemize}
-    \item disaccoppiamento tra i vari componenti logici del sistema (lettura dei messaggi, logica di arricchimento, scrittura dei messaggi), che possono essere sviluppati, testati e sostituiti in modo indipendente;
-    \item integrazione facile e veloce con le principali infrastrutture \textit{enterprise} (\textit{broker} di messaggistica, basi di dati, sistemi di monitoraggio), grazie a un ricco ecosistema di starter e librerie ufficiali;
-    \item riduzione del codice infrastrutturale a carico dello sviluppatore, che può concentrarsi sulla logica di dominio.
+    \item \textbf{Disaccoppiamento} tra i vari componenti logici del sistema (lettura dei messaggi, logica di arricchimento, scrittura dei messaggi), che possono essere sviluppati, testati e sostituiti in modo indipendente;
+    \item \textbf{Integrazione} facile e veloce con le principali infrastrutture \textit{enterprise} (\textit{broker} di messaggistica, basi di dati, sistemi di monitoraggio), grazie a un ricco ecosistema di starter e librerie ufficiali;
+    \item \textbf{Riduzione} del codice infrastrutturale a carico dello sviluppatore, che può concentrarsi sulla logica di dominio.
 \end{itemize}
-\subsubsection{Auto-configuration}
-La configurazione automatica di Spring Boot è una funzionalità che configura automaticamente i componenti dell'applicazione in base alle dipendenze disponibili. \\ \\
+\subsubsection{Auto Configuration}
+\label{Auto Configuration}
+La configurazione automatica di \nameref{Spring Boot} è una funzionalità che configura automaticamente i componenti dell'applicazione in base alle dipendenze disponibili. \\ \\
 Crea e configura automaticamente i servizi e le impostazioni necessari per l'applicazione.
 Riduce la configurazione manuale e accelera lo sviluppo. \\ \\
 La configurazione automatica funziona tramite l'annotazione \textcolor{purple}{@EnableAutoConfiguration}.
-\subsubsection{Convention over configuration}
-Il principio \textit{Convention over configuration} (noto anche come \textit{coding by convention}) è un paradigma di progettazione software utilizzato dai framework che mira a ridurre il numero di decisioni che uno sviluppatore che utilizza il framework è tenuto a prendere, senza necessariamente rinunciare alla flessibilità e ai principi del \textit{Don't Repeat Yourself} (DRY). \\ \\
+\subsubsection{Convention over Configuration}
+\label{Convention over Configuration}
+Il principio \textit{Convention over configuration} (noto anche come \textit{Coding by Convention}) è un paradigma di progettazione \textit{software} utilizzato dai \textit{\gls{Framework}} che mira a ridurre il numero di decisioni che uno sviluppatore che utilizza il \textit{\gls{Framework}} è tenuto a prendere, senza necessariamente rinunciare alla flessibilità e ai principi del \textit{Don't Repeat Yourself} (\acrshort{DRY}). \\ \\
 La frase significa essenzialmente che uno sviluppatore deve specificare solo gli aspetti non convenzionali dell'applicazione.
 Quando la convenzione implementata dallo strumento corrisponde al comportamento desiderato, il sistema si comporta come previsto senza dover scrivere file di configurazione. Solo quando il comportamento desiderato si discosta dalla convenzione implementata è necessaria una configurazione esplicita.
 
 \subsection{Spring Data JPA}
 \label{Spring Data JPA}
-Spring Data JPA è il modulo dell'ecosistema Spring dedicato alla persistenza dei dati, costruito sopra la specifica JPA (Java Persistence API) e sull'implementazione di riferimento Hibernate. \\ \\
+Spring Data JPA è il modulo dell'ecosistema Spring dedicato alla persistenza dei dati, costruito sopra la specifica \acrshort{JPA} e sull'implementazione di riferimento \gls{Hibernate}. \\ \\
 Il suo contributo principale, dal punto di vista architetturale, è l'astrazione dell'accesso ai dati tramite il \textit{pattern} Repository.
-Lo sviluppatore definisce un'interfaccia che descrive le operazioni di accesso desiderate, senza doverne scrivere l'implementazione e le query SQL, che vengono generate automaticamente dal framework a partire dalle convenzioni di naming o da annotazioni dedicate. \\ \\
-Nel contesto di un \textit{middleware} di enrichment, questo modulo assume un ruolo centrale: è il componente che permette di interrogare la fonte dati esterna (PostgreSQL) necessaria a completare le informazioni presenti nel messaggio in transito, disaccoppiando la logica di arricchimento dal dettaglio implementativo dell'accesso al \textit{database}.
+Lo sviluppatore definisce un'interfaccia che descrive le operazioni di accesso desiderate, senza doverne scrivere l'implementazione e le query \acrshort{SQL}, che vengono generate automaticamente dal \textit{\gls{Framework}} a partire dalle convenzioni di \textit{naming} o da annotazioni dedicate. \\ \\
+Nel contesto di un \textit{Middleware} di \textit{enrichment}, questo modulo assume un ruolo centrale: è il componente che permette di interrogare la fonte dati esterna (\nameref{PostgreSQL}) necessaria a completare le informazioni presenti nel messaggio in transito, disaccoppiando la logica di arricchimento dal dettaglio implementativo dell'accesso al \textit{database}.
 
 \subsection{Spring Kafka}
 \label{Spring Kafka}
-Per la parte di integrazione con Apache Kafka, l'ecosistema Spring mette a disposizione Spring Kafka, un modulo che fornisce un'astrazione ad alto livello sopra il client Kafka nativo, semplificando la configurazione dei producer e dei consumer e integrandoli pienamente con il modello di \textit{\gls{Dependency Injection}} tipico di Spring Boot. \\ \\
-Il concetto centrale su cui si fonda Spring Kafka è quello di \textit{listener}: un componente applicativo si registra come consumatore di uno o più topic e viene invocato automaticamente ogni volta che un nuovo messaggio è disponibile, senza che lo sviluppatore lo debba gestire. Il modello di elaborazione risultante è quindi \textit{event-driven} e continuo: l'applicazione resta costantemente in ascolto, reagendo agli eventi non appena questi si presentano, senza necessità di una schedulazione periodica. \\ \\
-Questo paradigma si adatta molto bene a scenari come quello affrontato nel presente lavoro, in cui il flusso di dati non ha una fine definita a priori (uno stream potenzialmente illimitato di eventi) e in cui è desiderabile minimizzare la latenza tra la produzione di un evento e la sua elaborazione. Spring Kafka realizza , a livello applicativo, le astrazioni Kafka già introdotte nella sezione \ref{Architettura e concetti fondamentali} (topic, consumer group, offset). \\ \\
-Questi elementi rendono Spring Kafka una scelta architetturale coerente con il \textit{pattern} Content Enricher (descritto in \ref{Content Enricher}): il \textit{listener} funge da punto di ingresso del messaggio grezzo, delega la logica di arricchimento a un componente dedicato (tipicamente interfacciato con la base dati tramite Spring Data JPA), e infine si occupa della pubblicazione del messaggio arricchito sul topic di destinazione, chiudendo così il ciclo di elaborazione descritto nello schema architetturale generale del \textit{middleware}.
+Per la parte di integrazione con \nameref{Apache Kafka}, l'ecosistema Spring mette a disposizione Spring Kafka, un modulo che fornisce un'astrazione ad alto livello sopra il \textit{client} Kafka nativo, semplificando la configurazione dei \textit{producer} e dei \textit{consumer} e integrandoli pienamente con il modello di \textit{\gls{Dependency Injection}} tipico di Spring Boot. \\ \\
+Il concetto centrale su cui si fonda Spring Kafka è quello di \textit{listener}: un componente applicativo si registra come consumatore di uno o più \textit{\nameref{Topic}} e viene invocato automaticamente ogni volta che un nuovo messaggio è disponibile, senza che lo sviluppatore lo debba gestire. Il modello di elaborazione risultante è quindi \textit{event-driven} e continuo: l'applicazione resta costantemente in ascolto, reagendo agli eventi non appena questi si presentano, senza necessità di una schedulazione periodica. \\ \\
+Questo paradigma si adatta molto bene a scenari come quello affrontato nel presente lavoro, in cui il flusso di dati non ha una fine definita a priori (uno \textit{stream} potenzialmente illimitato di eventi) e in cui è desiderabile minimizzare la latenza tra la produzione di un evento e la sua elaborazione. Spring Kafka realizza , a livello applicativo, le astrazioni Kafka già introdotte nella sezione \ref{Architettura e concetti fondamentali} (\textit{\nameref{Topic}}, \textit{consumer group}, \textit{offset}). \\ \\
+Questi elementi rendono Spring Kafka una scelta architetturale coerente con il \textit{pattern} \nameref{Content Enricher} (descritto in \ref{Content Enricher}): il \textit{listener} funge da punto di ingresso del messaggio grezzo, delega la logica di arricchimento a un componente dedicato (tipicamente interfacciato con la base dati tramite \nameref{Spring Data JPA}), e infine si occupa della pubblicazione del messaggio arricchito sul \textit{\nameref{Topic}} di destinazione, chiudendo così il ciclo di elaborazione descritto nello schema architetturale generale del \textit{Middleware}.
 
 \section{Apache Flink come paradigma alternativo}
 \label{Apache Flink come paradigma alternativo}
-Apache Flink è un motore \gls{Open Source} di \textit{stream processing} distribuito, progettato nativamente per l'elaborazione continua di flussi di eventi, a differenza dell'approccio a \textit{listener} discreti adottato da \nameref{Spring Kafka}.
+Apache Flink è un motore \textit{\gls{Open Source}} di \textit{stream processing} distribuito, progettato nativamente per l'elaborazione continua di flussi di eventi, a differenza dell'approccio a \textit{listener} discreti adottato da \nameref{Spring Kafka}.
 
 \subsection{DataStream API}
 Il modello di programmazione principale di Flink è la \textbf{DataStream \acrshort{API}}, un'interfaccia dichiarativa che definisce una \textit{pipeline} come una sequenza di operatori applicati a un flusso continuo di eventi, anziché come un metodo invocato singolarmente per ciascun messaggio ricevuto (come avviene con \textcolor{purple}{@KafkaListener}). 
 Flink traduce questa sequenza in un grafo di esecuzione distribuito su più nodi (\textit{task manager}), che elabora gli eventi in parallelo lungo l'intero \textit{stream}.
 
+\newpage
 \subsection{Gestione nativa dello stato}
-A differenza dell'approccio adottato dal \textit{middleware} sviluppato, in cui ogni evento è arricchito tramite un'interrogazione sincrona e senza stato (\ref{Content Enricher}), Flink offre un meccanismo di \textbf{stato nativo distribuito}, reso tollerante ai guasti tramite \textit{\gls{Checkpointing}} periodico. 
-Questo permette, ad esempio, di mantenere in memoria una cache dei dati cliente più consultati, riducendo il numero di interrogazioni verso la fonte dati esterna.
+A differenza dell'approccio adottato dal \textit{Middleware} sviluppato, in cui ogni evento è arricchito tramite un'interrogazione sincrona e senza stato (\ref{Content Enricher}), Flink offre un meccanismo di \textbf{stato nativo distribuito}, reso tollerante ai guasti tramite \textit{\gls{Checkpointing}} periodico. 
+Questo permette, ad esempio, di mantenere in memoria una \textit{cache} dei dati cliente più consultati, riducendo il numero di interrogazioni verso la fonte dati esterna.
 
 \subsection{Async I/O}
 \label{Async I/O}
 Flink mette a disposizione un meccanismo di \textbf{Async I/O} per l'interazione con sistemi esterni senza bloccare il flusso di elaborazione in attesa di una risposta. 
-A differenza di una query \acrshort{JPA} sincrona, l'Async I/O invia più richieste concorrenti verso la base dati e riprende l'elaborazione di ciascun evento non appena la relativa risposta è disponibile, con un beneficio potenziale sul \textit{\gls{Throughput}} in scenari con latenza di rete o di \textit{database} non trascurabile.
+A differenza di una \textit{query} \acrshort{JPA} sincrona, l'Async I/O invia più richieste concorrenti verso la base dati e riprende l'elaborazione di ciascun evento non appena la relativa risposta è disponibile, con un beneficio potenziale sul \textit{\gls{Throughput}} in scenari con latenza di rete o di \textit{database} non trascurabile.
 
 \subsection{Confronto concettuale con l'approccio Spring adottato}
 \label{Confronto concettuale con l'approccio Spring adottato}
@@ -220,7 +230,7 @@ La tabella seguente riassume le differenze tra l'approccio implementato con \nam
         Accesso al database & \textit{Query} \acrshort{JPA} sincrona per evento & Async I/O con \textit{caching} tramite stato nativo \\ \hline
         Gestione degli errori & \textit{Try/catch} applicativo verso una \acrshort{DLQ} & \textit{Side output} nativo dell'operatore \\ \hline
         Semantica di consegna & \textit{At-least-once} & \textit{Exactly-once} end-to-end \\ \hline
-        Complessità operativa & Contenuta, framework maturo e diffuso & Superiore, richiede un \textit{cluster} Flink dedicato \\ \hline
+        Complessità operativa & Contenuta, \textit{\gls{Framework}} maturo e diffuso & Superiore, richiede un \textit{cluster} Flink dedicato \\ \hline
         \end{tabular}
     \caption{Confronto tra l'approccio Spring e il paradigma Flink}
     \label{Tabella confronto Spring Flink}
@@ -228,18 +238,19 @@ La tabella seguente riassume le differenze tra l'approccio implementato con \nam
 
 \section{Valutazione delle prestazioni}
 \label{Valutazione delle prestazioni}
-La valutazione delle prestazioni di un \textit{middleware} basato sul \textit{pattern} \nameref{Content Enricher} segue una metodologia specifica, che tiene conto della caratteristica strutturale di questo \textit{pattern}.
-Ogni evento elaborato comporta un'interrogazione verso una fonte dati esterna, che costituisce il candidato più probabile a collo di bottiglia dell'intera \textit{pipeline}, a differenza di un semplice inoltro di messaggi tra due \textit{topic}.
+La valutazione delle prestazioni di un \textit{Middleware} basato sul \textit{pattern} \nameref{Content Enricher} segue una metodologia specifica, che tiene conto della caratteristica strutturale di questo \textit{pattern}.
+Ogni evento elaborato comporta un'interrogazione verso una fonte dati esterna, che costituisce il candidato più probabile a collo di bottiglia dell'intera \textit{pipeline}, a differenza di un semplice inoltro di messaggi tra due \textit{\nameref{Topic}}.
 
 \subsection{Metriche di valutazione}
 Si individuano quattro metriche, ciascuna informativa di un aspetto diverso del comportamento del sistema:
 \begin{itemize}
-    \item \textbf{Throughput}: il numero di messaggi arricchiti con successo per unità di tempo, ovvero la capacità complessiva del \textit{middleware} di sostenere un determinato flusso di eventi in ingresso;
-    \item \textbf{Latenza \textit{end-to-end}}: il tempo intercorso tra la pubblicazione di un evento grezzo sul \textit{topic} sorgente (\textcolor{purple}{orders-input}) e la comparsa del corrispondente evento arricchito sul \textit{topic} di destinazione (\textcolor{purple}{orders-output}). Si rileva non solo il valore medio, ma anche i percentili, poiché in sistemi di messaggistica la coda della distribuzione è spesso più significativa della media;
-    \item \textbf{\textit{Consumer lag}:} la differenza tra l'\textit{offset} più recente scritto su un \textit{topic} e l'offset più recente letto dal \textit{consumer}. È una metrica particolarmente indicativa in questo contesto, poiché segnala se il \textit{middleware} riesce a "stare al passo" con il flusso di eventi in ingresso o se accumula un ritardo progressivo;
+    \item \textbf{Throughput}: il numero di messaggi arricchiti con successo per unità di tempo, ovvero la capacità complessiva del \textit{Middleware} di sostenere un determinato flusso di eventi in ingresso;
+    \item \textbf{Latenza \textit{end-to-end}}: il tempo intercorso tra la pubblicazione di un evento grezzo sul \textit{\nameref{Topic}} sorgente (\textcolor{purple}{orders-input}) e la comparsa del corrispondente evento arricchito sul \textit{\nameref{Topic}} di destinazione (\textcolor{purple}{orders-output}). Si rileva non solo il valore medio, ma anche i percentili, poiché in sistemi di messaggistica la coda della distribuzione è spesso più significativa della media;
+    \item \textbf{\textit{Consumer lag}:} la differenza tra l'\textit{offset} più recente scritto su un \textit{\nameref{Topic}} e l'\textit{offset} più recente letto dal \textit{consumer}. È una metrica particolarmente indicativa in questo contesto, poiché segnala se il \textit{Middleware} riesce a "stare al passo" con il flusso di eventi in ingresso o se accumula un ritardo progressivo;
     \item \textbf{Tempo di risposta della fonte dati esterna}: isolato dal resto della \textit{pipeline}, misura specificamente il costo dell'interrogazione compiuta nella fase di \textit{enrichment} (\ref{Content Enricher}).
 \end{itemize}
 
+\newpage
 \subsection{Metodologia di test}
 \label{Metodologia di test}
 La valutazione si articola in quattro scenari, di complessità crescente:

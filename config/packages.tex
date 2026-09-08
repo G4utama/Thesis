@@ -5,6 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{graphicx} % images
 \usepackage{hyperref}
+\usepackage{xurl} % url linebreak
 
 \usepackage[italian]{babel} % italian
 
@@ -50,3 +51,58 @@
   \hrule width \textwidth height 0.5pt
   \kern 2pt
 }
+
+% \usepackage{hyperref}
+% \hypersetup{
+%     colorlinks=true,
+%     linkcolor=black,      % \ref, \pageref, \nameref, sommario
+%     citecolor=black,     % \cite
+%     urlcolor=blue,      % \url, \href
+%     filecolor=black,
+%     menucolor=black,
+% }
+
+% \usepackage{etoolbox}
+
+% \pretocmd{\gls}{\begingroup\hypersetup{linkcolor=green}}{}{}
+% \apptocmd{\gls}{\endgroup}{}{}
+
+% \usepackage{etoolbox}
+
+% \pretocmd{\nameref}{\begingroup\hypersetup{linkcolor=green}}{}{}
+% \apptocmd{\nameref}{\endgroup}{}{}
+
+\usepackage{xcolor}
+% \definecolor{namerefcolor}{HTML}{FF0000}
+% \definecolor{glscolor}{HTML}{00FF00}
+% \definecolor{refcolor}{HTML}{0000FF}
+
+\usepackage{hyperref}
+\hypersetup{
+    hidelinks
+}
+
+\usepackage{etoolbox}
+
+% \AtBeginDocument{%
+%     \let\oldref\ref
+%     \renewcommand{\ref}[1]{\textcolor{blue}{\oldref{#1}}}
+% }
+
+\let\oldurl\url
+\renewcommand{\url}[1]{\textcolor{purple}{\oldurl{#1}}}
+
+% \let\oldnameref\nameref
+% \renewcommand{\nameref}[1]{\textcolor{namerefcolor}{\oldnameref{#1}}}
+
+\let\oldgls\gls
+\renewcommand{\gls}[2][]{%
+    \ifstrempty{#1}
+        {\oldgls{#2}}
+        {\oldgls[#1]{#2}}%
+    \textsubscript{\textcolor{blue}{\scriptsize G}}%
+}
+
+\makeatletter
+\renewcommand*\l@subsubsection{\@dottedtocline{3}{7em}{4.5em}}
+\makeatother

@@ -5,11 +5,12 @@
 \label{Tecnologie e strumenti}
 
 \subsection{Linguaggio e piattaforma}
-Il \textit{middleware} è stato sviluppato in \nameref{Java} e gestito tramite \nameref{Apache Maven} come \textit{build tool}, che si occupa della risoluzione delle dipendenze, della compilazione e del \textit{packaging} dell'applicazione in un \textcolor{purple}{jar} eseguibile.
+Il \textit{Middleware} è stato sviluppato in \nameref{Java} e gestito tramite \nameref{Apache Maven} come \textit{build tool}, che si occupa della risoluzione delle dipendenze, della compilazione e del \textit{packaging} dell'applicazione in un \textcolor{purple}{jar} eseguibile.
 
 \subsubsection{Java}
 \label{Java}
-Java è un linguaggio di programmazione ad alto livello, orientato agli oggetti e a tipizzazione statica, che si appoggia sull'omonima piattaforma \textit{software} di esecuzione, specificamente progettato per essere il più possibile indipendente dalla piattaforma \textit{hardware} di esecuzione (tramite compilazione in \textit{bytecode} prima e interpretazione poi da parte di una \acrshort{JVM}).
+\textbf{Java} è un linguaggio di programmazione ad alto livello, orientato agli oggetti e a tipizzazione statica, che si appoggia sull'omonima piattaforma \textit{software} di esecuzione, specificamente progettato per essere il più possibile indipendente dalla piattaforma \textit{hardware} di esecuzione (tramite compilazione in \textit{bytecode} prima e interpretazione poi da parte di una \acrshort{JVM}).
+\vspace{16pt}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.2\textwidth]{assets/java.png}
@@ -17,25 +18,28 @@ Java è un linguaggio di programmazione ad alto livello, orientato agli oggetti 
 \end{figure}
 
 \paragraph{Valore aggiunto al progetto}
-La tipizzazione statica di Java consente di individuare in fase di compilazione gran parte degli errori legati a un utilizzo scorretto dei contratti dei messaggi (\textcolor{purple}{OrderEvent}, \textcolor{purple}{EnrichedOrder}), un aspetto rilevante in un \textit{middleware} in cui la correttezza del formato dei dati scambiati è centrale. Inoltre, l'ecosistema Java è quello su cui si basa nativamente l'intero \textit{stack} tecnologico impiegato (\nameref{Spring}, i \textit{client} ufficiali di \nameref{Apache Kafka} e i \textit{driver} \acrshort{JDBC} per \nameref{PostgreSQL}), garantendo la massima compatibilità e il supporto per ciascuna di queste componenti.
+La tipizzazione statica di \nameref{Java} consente di individuare in fase di compilazione gran parte degli errori legati a un utilizzo scorretto dei contratti dei messaggi (\textcolor{purple}{OrderEvent}, \textcolor{purple}{EnrichedOrder}), un aspetto rilevante in un \textit{Middleware} in cui la correttezza del formato dei dati scambiati è centrale. Inoltre, l'ecosistema \nameref{Java} è quello su cui si basa nativamente l'intero \textit{stack} tecnologico impiegato (\nameref{Spring}, i \textit{client} ufficiali di \nameref{Apache Kafka} e i \textit{driver} \acrshort{JDBC} per \nameref{PostgreSQL}), garantendo la massima compatibilità e il supporto per ciascuna di queste componenti.
 
 \paragraph{Punti deboli}
-Rispetto a linguaggi più recenti pensati specificamente per microservizi \textit{cloud-native}, Java presenta un tempo di avvio della \acrshort{JVM} e un consumo di memoria a \textit{runtime} superiori.
+Rispetto a linguaggi più recenti pensati specificamente per microservizi \textit{cloud-native}, \nameref{Java} presenta un tempo di avvio della \acrshort{JVM} e un consumo di memoria a \textit{runtime} superiori.
 
 \paragraph{Competitor principali}
 \begin{itemize}
-    \item \textbf{C\#:} principale linguaggo concorrente per lo sviluppo di applicazioni enterprise di questo tipo;
-    \item \textbf{Kotlin:} in ambito \acrshort{JVM}, quindi più facilmente compatibile con le librerie Java impiegate nel progetto.
+    \item \textbf{C\#}\footnote{C\# - URL: \url{https://dotnet.microsoft.com/en-us/languages/csharp}}: principale linguaggo concorrente per lo sviluppo di applicazioni enterprise di questo tipo;
+    \item \textbf{Kotlin}\footnote{Kotlin - URL: \url{https://kotlinlang.org/}}: in ambito \acrshort{JVM}, quindi più facilmente compatibile con le librerie \nameref{Java} impiegate nel progetto.
 \end{itemize}
 
 \paragraph{Motivazione della scelta}
-La scelta di Java è coerente con l'obiettivo del tirocinio, che prevedeva esplicitamente lo studio e l'implementazione del \textit{middleware} tramite il framework \nameref{Spring}, basato su Java. Inoltre, la maggior integrazione di Java con Kafka e \acrshort{JPA} lo rende una scelta più solida, in questo contesto specifico.
+La scelta di \nameref{Java} è coerente con l'obiettivo del tirocinio, che prevedeva esplicitamente lo studio e l'implementazione del \textit{Middleware} tramite il \textit{\gls{Framework}} \nameref{Spring}, basato su \nameref{Java}. Inoltre, la maggior integrazione di \nameref{Java} con Kafka e \acrshort{JPA} lo rende una scelta più solida, in questo contesto specifico.
 
 \subsubsection{Apache Maven}
 \label{Apache Maven}
-Apache Maven è uno strumento di gestione di progetti \textit{software} basati su \nameref{Java} e \textit{build automation}. \\
-Maven usa un costrutto conosciuto come \acrshort{POM}; un file \acrshort{XML} che descrive le dipendenze fra il progetto, le varie versioni di librerie necessarie e le dipendenze fra di esse. In questo modo si separano le librerie dalla \textit{directory} di progetto utilizzando questo file descrittivo per definirne le relazioni. \\
+\textbf{Apache Maven} è uno strumento di gestione di progetti \textit{software} basati su \nameref{Java} e \textit{build automation}.
+Maven usa un costrutto conosciuto come \acrshort{POM}, un file \acrshort{XML} che descrive le dipendenze fra il progetto, le varie versioni di librerie necessarie e le dipendenze fra di esse. In questo modo si separano le librerie dalla \textit{directory} di progetto utilizzando questo file descrittivo per definirne le relazioni. \\
+\newpage
+\noindent
 Maven effettua automaticamente il \textit{download} di librerie \nameref{Java} e \textit{plug-in} Maven dai vari \textit{repository} definiti scaricandoli in locale o in un \textit{repository} centralizzato lato sviluppo. Questo permette di recuperare in modo uniforme i vari file \acrshort{JAR} e di poter spostare il progetto indipendentemente da un ambiente all'altro avendo la sicurezza di utilizzare sempre le stesse versioni delle librerie.
+\vspace{16pt}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\textwidth]{assets/apacheMaven.png}
@@ -50,25 +54,27 @@ Maven non dispone nativamente di un sistema di \textit{caching} incrementale del
 
 \paragraph{Competitor principali}
 \begin{itemize}
-    \item \textbf{Gradle:} utilizza uno \textit{script} basato su Groovy o Kotlin al posto dell'\acrshort{XML} e offre un sistema di \textit{build} incrementale generalmente più \textit{performante}.
+    \item \textbf{Gradle}\footnote{Gradle - URL: \url{https://gradle.org/}}: utilizza uno \textit{script} basato su Groovy o Kotlin al posto dell'\acrshort{XML} e offre un sistema di \textit{build} incrementale generalmente più \textit{performante}.
 \end{itemize}
 
 \paragraph{Motivazione della scelta}
 Maven è stato preferito a Gradle principalmente per la sua maggiore diffusione e documentazione nell'ambito specifico dei progetti \nameref{Spring Boot}, nonché per la maggiore semplicità del formato dichiarativo \acrshort{XML} rispetto a uno \textit{script} Groovy/Kotlin.
 
+\newpage
 \subsection{Framework applicativo}
-Il progetto si basa principalmente sul framework Spring, in particolare i seguenti moduli:
+Il progetto si basa principalmente sul \textit{\gls{Framework}} \nameref{Spring}, in particolare i seguenti moduli:
 \begin{itemize}
-    \item \textbf{Spring Boot:} per semplificare la configurazione e l'avvio di applicazioni Java
-    \item \textbf{Spring Data JPA:} per la persistenza dei dati
-    \item \textbf{Spring Kafka:} per l'integrazione dichiarativa con \nameref{Apache Kafka} (consumer, producer, listener)
+    \item \textbf{Spring Boot:} per semplificare la configurazione e l'avvio di applicazioni \nameref{Java};
+    \item \textbf{Spring Data JPA:} per la persistenza dei dati;
+    \item \textbf{Spring Kafka:} per l'integrazione dichiarativa con \nameref{Apache Kafka} (\textit{consumer}, \textit{producer}, \textit{listener}).
 \end{itemize}
 
 \subsubsection{Spring}
 \label{Spring}
-Spring è un framework \gls{Open Source} per lo sviluppo di applicazioni su piattaforma Java.
-A questo framework sono associati tanti altri progetti, che hanno nomi composti come Spring Boot, Spring Data JPA e Spring Kafka.
-Questi progetti sono stati ideati per fornire funzionalità aggiuntive al framework.
+\textbf{Spring} è un \textit{\gls{Framework}} \textit{\gls{Open Source}} per lo sviluppo di applicazioni su piattaforma \nameref{Java}.
+A questo \textit{\gls{Framework}} sono associati tanti altri progetti, che hanno nomi composti come \nameref{Spring Boot}, \nameref{Spring Data JPA} e \nameref{Spring Kafka}.
+Questi progetti sono stati ideati per fornire funzionalità aggiuntive al \textit{\gls{Framework}}.
+\vspace{16pt}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\textwidth]{assets/spring.png}
@@ -76,34 +82,37 @@ Questi progetti sono stati ideati per fornire funzionalità aggiuntive al framew
 \end{figure}
 
 \paragraph{Valore aggiunto al progetto}
-Spring, tramite i suoi moduli specializzati, fornisce per ciascuna delle fasi tipiche del \textit{middleware} un'astrazione dedicata: \textbf{Spring Boot}, \textbf{Spring Data JPA} , \textbf{Spring Kafka}.
+\nameref{Spring}, tramite i suoi moduli specializzati, fornisce per ciascuna delle fasi tipiche del \textit{Middleware} un'astrazione dedicata: \nameref{Spring Boot}, \nameref{Spring Data JPA} , \nameref{Spring Kafka}.
 
 \paragraph{Punti deboli}
-Spring Boot ha un \textit{footprint} di memoria e un tempo di avvio superiori rispetto a framework concorrenti pensati specificamente per ambienti \textit{cloud-native} con \textit{scaling} rapido, aspetto non critico per il \textit{middleware} sviluppato, ma potenzialmente rilevante in un contesto di produzione con requisiti di scalabilità orizzontale molto stringenti.
+\nameref{Spring Boot} ha un \textit{footprint} di memoria e un tempo di avvio superiori rispetto a \textit{\gls{Framework}} concorrenti pensati specificamente per ambienti \textit{cloud-native} con \textit{scaling} rapido, aspetto non critico per il \textit{Middleware} sviluppato, ma potenzialmente rilevante in un contesto di produzione con requisiti di scalabilità orizzontale molto stringenti.
 
+\newpage
 \paragraph{Competitor principali}
 \begin{itemize}
-    \item \textbf{Quarkus} e \textbf{Micronaut}: principali \textit{framework} concorrenti in ambito Java enterprise, entrambi progettati specificamente per ridurre tempo di avvio e consumo di memoria in ambienti containerizzati;
-    \item \textbf{Jakarta EE:} standard enterprise su cui lo stesso Spring si è storicamente ispirato;
-    \item \textbf{Apache Camel:} \textit{framework} di integrazione che implementa nativamente numerosi \textit{Enterprise Integration Patterns} (si veda \ref{Progettazione}).
+    \item \textbf{Quarkus}\footnote{Quarkus - URL: \url{https://quarkus.io/}} e \textbf{Micronaut}\footnote{Micronaut - URL: \url{https://micronaut.io/}}: principali \textit{\gls{Framework}} concorrenti in ambito \nameref{Java} \textit{enterprise}, entrambi progettati specificamente per ridurre tempo di avvio e consumo di memoria in ambienti containerizzati;
+    \item \textbf{Jakarta EE}\footnote{Jakarta EE - URL: \url{https://jakarta.ee/}}: standard \textit{enterprise} su cui lo stesso Spring si è storicamente ispirato;
+    \item \textbf{Apache Camel}\footnote{Apache Camel - URL: \url{https://camel.apache.org/}}: \textit{\gls{Framework}} di integrazione che implementa nativamente numerosi \textit{\nameref{Enterprise Integration Patterns}} (si veda \ref{Progettazione}).
 \end{itemize}
 
 \paragraph{Motivazione della scelta}
-Spring è stato indicato esplicitamente come tecnologia di riferimento per l'attività di tirocinio, in coerenza con il suo ruolo di \textit{framework enterprise} \nameref{Java} più diffuso e documentato.
+\nameref{Spring} è stato indicato esplicitamente come tecnologia di riferimento per l'attività di tirocinio, in coerenza con il suo ruolo di \textit{\gls{Framework}} \textit{enterprise} \nameref{Java} più diffuso e documentato.
 
 \subsection{Infrastruttura di supporto}
-L'ambiente di sviluppo è orchestrato tramite Docker e Docker Compose, secondo la definizione riportata nel \textit{file} \textcolor{purple}{docker-compose.yml}, che avvia tre servizi containerizzati:
+L'ambiente di sviluppo è orchestrato tramite \nameref{Docker} e \nameref{Docker} Compose, secondo la definizione riportata nel \textit{file} \textcolor{purple}{docker-compose.yml}, che avvia tre servizi containerizzati:
 \begin{itemize}
     \item \textbf{PostgreSQL:} il \textit{database} relazionale che ospita i dati di arricchimento;
-    \item \textbf{Apache Kafka:} configurato in modalità KRaft (Kafka Raft), l'architettura più recente che elimina la dipendenza da Apache ZooKeeper per il coordinamento del \textit{cluster}, unificando i ruoli di \textit{broker} e \textit{controller} in un singolo nodo (scelta adeguata a un ambiente di sviluppo locale a singolo nodo);
-    \item \textbf{Kafka UI:} un'interfaccia web (esposta sulla porta \textcolor{purple}{8081}) che consente di ispezionare topic, partizioni, messaggi e \textit{consumer group} senza dover ricorrere alla sola riga di comando.
+    \item \textbf{Apache Kafka:} configurato in modalità \gls{KRaft} (Kafka Raft), l'architettura più recente che elimina la dipendenza da Apache ZooKeeper per il coordinamento del \textit{cluster}, unificando i ruoli di \textit{broker} e \textit{controller} in un singolo nodo (scelta adeguata a un ambiente di sviluppo locale a singolo nodo);
+    \item \textbf{Kafka UI:} un'interfaccia web (esposta sulla porta \textcolor{purple}{8081}) che consente di ispezionare \textit{\nameref{Topic}}, partizioni, messaggi e \textit{consumer group} senza dover ricorrere alla sola riga di comando.
 \end{itemize}
 Questa infrastruttura consente di riprodurre in locale, in modo rapido e ripetibile, un ambiente rappresentativo di un \textit{deployment} di produzione, mantenendo però la semplicità necessaria in fase di sviluppo e test.
 
+\newpage
 \subsubsection{Docker}
 \label{Docker}
-Docker è un popolare \textit{software} libero che utilizza la virtualizzazione a livello di sistema operativo per eseguire applicazioni in ambienti isolati chiamati \textit{container}. \\
-I container Docker sono un'estensione dei \textit{container} del sistema operativo. Docker supporta sia i container Linux che quelli Windows. È possibile utilizzare Docker con container Linux anche nei sistemi Windows e MacOS grazie a tecniche di virtualizzazione.
+\textbf{Docker} è un popolare \textit{software} libero che utilizza la virtualizzazione a livello di sistema operativo per eseguire applicazioni in ambienti isolati chiamati \textit{container}. \\
+I container \nameref{Docker} sono un'estensione dei \textit{container} del sistema operativo. \nameref{Docker} supporta sia i container Linux che quelli Windows. È possibile utilizzare \nameref{Docker} con container Linux anche nei sistemi Windows e MacOS grazie a tecniche di virtualizzazione.
+\vspace{16pt}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\textwidth]{assets/docker.png}
@@ -111,68 +120,74 @@ I container Docker sono un'estensione dei \textit{container} del sistema operati
 \end{figure}
 
 \paragraph{Valore aggiunto al progetto}
-Docker Compose ha permesso di definire, in un unico \textit{file} dichiarativo, l'intero ambiente necessario al funzionamento del \textit{middleware} (\nameref{PostgreSQL}, \nameref{Apache Kafka} e Kafka UI), rendendolo riproducibile con un singolo comando su qualsiasi macchina di sviluppo, senza necessità di installare manualmente ciascun componente. Questo ha semplificato notevolmente sia lo sviluppo sia l'eventuale verifica del funzionamento del sistema, descritta in \ref{Implementazione}.
+\nameref{Docker} Compose ha permesso di definire, in un unico \textit{file} dichiarativo, l'intero ambiente necessario al funzionamento del \textit{Middleware} (\nameref{PostgreSQL}, \nameref{Apache Kafka} e Kafka UI), rendendolo riproducibile con un singolo comando su qualsiasi macchina di sviluppo, senza necessità di installare manualmente ciascun componente. Questo ha semplificato notevolmente sia lo sviluppo sia l'eventuale verifica del funzionamento del sistema, descritta in \ref{Implementazione}.
 
 \paragraph{Punti deboli}
-La virtualizzazione a livello di sistema operativo, per quanto più leggera rispetto a una macchina virtuale tradizionale, introduce comunque un certo \textit{overhead} prestazionale rispetto all'esecuzione nativa. Inoltre, Docker richiede l'esecuzione di un \textit{daemon} centrale, tipicamente con privilegi elevati, aspetto che pone alcune criticità di sicurezza note e mitigate solo parzialmente rispetto ad alternative più recenti.
+La virtualizzazione a livello di sistema operativo, per quanto più leggera rispetto a una macchina virtuale tradizionale, introduce comunque un certo \textit{overhead} prestazionale rispetto all'esecuzione nativa. Inoltre, \nameref{Docker} richiede l'esecuzione di un \textit{daemon} centrale, tipicamente con privilegi elevati, aspetto che pone alcune criticità di sicurezza note e mitigate solo parzialmente rispetto ad alternative più recenti.
 
 \paragraph{Competitor principali}
 \begin{itemize}
-    \item \textbf{Podman:} compatibile con le stesse immagini e con gli stessi file \textit{compose} di Docker, ma con un'architettura \textit{daemonless} e supporto nativo per l'esecuzione senza privilegi di amministratore (\textit{rootless}).
+    \item \textbf{Podman}\footnote{Podman - URL: \url{https://podman.io/}}: compatibile con le stesse immagini e con gli stessi file \textit{compose} di \nameref{Docker}, ma con un'architettura \textit{daemonless} e supporto nativo per l'esecuzione senza privilegi di amministratore (\textit{rootless}).
 \end{itemize}
 
+\newpage
 \paragraph{Motivazione della scelta}
-Docker è stato scelto per la sua diffusione, garantendo la disponibilità di immagini ufficiali già pronte per tutti i componenti necessari (\textcolor{purple}{postgres}, \textcolor{purple}{confluentinc/cp-kafka}, \textcolor{purple}{provectuslabs/kafka-ui}) e un'ampia documentazione. Rispetto a Podman, che pure avrebbe garantito funzionalità equivalenti con un modello di sicurezza migliore, Docker è stato preferito per la maggiore familiarità con lo strumento al momento dell'inizio del tirocinio.
+\nameref{Docker} è stato scelto per la sua diffusione, garantendo la disponibilità di immagini ufficiali già pronte per tutti i componenti necessari (\textcolor{purple}{postgres}, \textcolor{purple}{confluentinc/cp-kafka}, \textcolor{purple}{provectuslabs/kafka-ui}) e un'ampia documentazione. Rispetto a Podman, che pure avrebbe garantito funzionalità equivalenti con un modello di sicurezza migliore, \nameref{Docker} è stato preferito per la maggiore familiarità con lo strumento al momento dell'inizio del tirocinio.
 
 \subsubsection{PostgreSQL}
 \label{PostgreSQL}
-PostgreSQL è un completo \acrshort{DBMS} ad oggetti pubblicato con licenza libera (stile Licenza BSD). Spesso abbreviato come "Postgres", sebbene questo sia un nome vecchio dello stesso progetto, è una reale alternativa sia rispetto ad altri prodotti liberi come MySQL, Firebird SQL e MaxDB che a quelli a codice chiuso come Oracle, IBM Informix o DB2 ed offre caratteristiche uniche nel suo genere che lo pongono per alcuni aspetti all'avanguardia nel settore delle basi di dati.
+\textbf{PostgreSQL} è un completo \acrshort{DBMS} ad oggetti pubblicato con licenza libera. Spesso abbreviato come "Postgres", sebbene questo sia un nome vecchio dello stesso progetto, è una reale alternativa sia rispetto ad altri prodotti liberi come MySQL, Firebird SQL e MaxDB che a quelli a codice chiuso come Oracle, IBM Informix o DB2 ed offre caratteristiche uniche nel suo genere che lo pongono per alcuni aspetti all'avanguardia nel settore delle basi di dati.
+\vspace{16pt}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.3\textwidth]{assets/postgresql.png}
+    \includegraphics[width=0.20\textwidth]{assets/postgresql.png}
     \caption{PostgreSQL}
 \end{figure}
 
 \paragraph{Valore aggiunto al progetto}
-La piena conformità \acrshort{ACID} di PostgreSQL e la sua integrazione con \nameref{Spring} tramite \textit{Spring Data JPA}/\gls{Hibernate} hanno permesso di realizzare l'accesso ai dati senza scrivere \textit{query} \acrshort{SQL} esplicite (descritto in \ref{Implementazione}).
+La piena conformità \acrshort{ACID} di \nameref{PostgreSQL} e la sua integrazione con \nameref{Spring} tramite \nameref{Spring Data JPA} e \gls{Hibernate} hanno permesso di realizzare l'accesso ai dati senza scrivere \textit{query} \acrshort{SQL} esplicite (descritto in \ref{Implementazione}).
 
 \paragraph{Punti deboli}
-Per il caso d'uso specifico del progetto, la piena potenza relazionale di PostgreSQL risulta in parte sovradimensionata. Un \textit{database} più leggero sarebbe stato sufficiente in un contesto di solo sviluppo o test.
+Per il caso d'uso specifico del progetto, la piena potenza relazionale di \nameref{PostgreSQL} risulta in parte sovradimensionata. Un \textit{database} più leggero sarebbe stato sufficiente in un contesto di solo sviluppo o test.
 
+\newpage
 \paragraph{Competitor principali}
 \begin{itemize}
-    \item \textbf{MySQL} e \textbf{MariaDB:} tra i \acrshort{DBMS} \textit{open source} relazionali più diffusi;
-    \item \textbf{MongoDB:} \textit{database} \acrshort{NoSQL} documentale, per scenari in cui il modello dei dati fosse meno strutturato.
+    \item \textbf{MySQL}\footnote{MySQL - URL: \url{https://www.mysql.com/}} e \textbf{MariaDB}\footnote{MariaDB - URL: \url{https://mariadb.org/}}: tra i \acrshort{DBMS} \textit{\gls{Open Source}} relazionali più diffusi;
+    \item \textbf{MongoDB}\footnote{MongoDB - URL: \url{https://www.mongodb.com/}}: \textit{database} \acrshort{NoSQL} documentale, per scenari in cui il modello dei dati fosse meno strutturato.
 \end{itemize}
 
 \paragraph{Motivazione della scelta}
-PostgreSQL è stato scelto per la sua licenza libera, per la piena conformità agli standard \acrshort{SQL} e \acrshort{ACID} e per il supporto nativo offerto da Spring Data JPA/Hibernate. A differenza di un \textit{database} \acrshort{NoSQL}, la natura intrinsecamente strutturata e a schema fisso dei dati cliente (nome, email, città) rende inoltre un modello relazionale la scelta più naturale.
+\nameref{PostgreSQL} è stato scelto per la sua licenza libera, per la piena conformità agli standard \acrshort{SQL} e \acrshort{ACID} e per il supporto nativo offerto da \nameref{Spring Data JPA} e \gls{Hibernate}. A differenza di un \textit{database} \acrshort{NoSQL}, la natura intrinsecamente strutturata e a schema fisso dei dati cliente (nome, email, città) rende inoltre un modello relazionale la scelta più naturale.
 
 \subsubsection{Apache Kafka}
 \label{Apache Kafka}
-Apache Kafka è una piattaforma \gls{Open Source} di \textit{stream processing} scritta in Java e Scala e sviluppata dall'Apache Software Foundation. Il progetto mira a creare una piattaforma a bassa latenza ed alta velocità per la gestione di \textit{feed} dati in tempo reale. \\
+\textbf{Apache Kafka} è una piattaforma \textit{\gls{Open Source}} di \textit{stream processing} scritta in \nameref{Java} e Scala e sviluppata dall'Apache Software Foundation. Il progetto mira a creare una piattaforma a bassa latenza ed alta velocità per la gestione di \textit{feed} dati in tempo reale. \\
 Questo progetto viene usato principalmente per tutte le applicazioni di elaborazioni di \textit{stream} di dati in tempo reale.
+\vspace{16pt}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.4\textwidth]{assets/apacheKafka.png}
     \caption{Apache Kafka}
 \end{figure}
 
+\newpage
 \paragraph{Valore aggiunto al progetto}
-Kafka costituisce l'infrastruttura di messaggistica su cui si fonda l'intero \textit{middleware}, fungendo sia da sorgente (\textcolor{purple}{orders-input}) sia da destinazione (\textcolor{purple}{orders-output}, \textcolor{purple}{orders-input-dlq}) del flusso di dati (descritto in \ref{Progettazione}). La sua caratteristica di persistenza dei messaggi su disco, unita al disaccoppiamento temporale tra produttori e consumatori, ha permesso di realizzare un sistema resiliente. Un'eventuale indisponibilità temporanea di \nameref{PostgreSQL} non comporta la perdita di alcun evento, poiché i messaggi restano disponibili sul \textit{topic} finché non vengono correttamente elaborati.
+Kafka costituisce l'infrastruttura di messaggistica su cui si fonda l'intero \textit{Middleware}, fungendo sia da sorgente (\textcolor{purple}{orders-input}) sia da destinazione (\textcolor{purple}{orders-output}, \textcolor{purple}{orders-input-dlq}) del flusso di dati (descritto in \ref{Progettazione}). La sua caratteristica di persistenza dei messaggi su disco, unita al disaccoppiamento temporale tra produttori e consumatori, ha permesso di realizzare un sistema resiliente. Un'eventuale indisponibilità temporanea di \nameref{PostgreSQL} non comporta la perdita di alcun evento, poiché i messaggi restano disponibili sul \textit{\nameref{Topic}} finché non vengono correttamente elaborati.
 
 \paragraph{Punti deboli}
 Kafka introduce una complessità di configurazione e gestione superiore rispetto a un semplice \textit{message broker}, complessità che, per un volume di messaggi contenuto come quello gestito nell'ambito del progetto, non viene pienamente ripagata dai suoi vantaggi distintivi (\textit{\gls{Throughput}} elevato, scalabilità orizzontale su più nodi).
 
 \paragraph{Competitor principali}
 \begin{itemize}
-    \item \textbf{RabbitMQ} e \textbf{ActiveMQ:} \textit{message broker} tradizionali orientati alle code piuttosto che allo \textit{streaming} persistente di eventi;
-    \item \textbf{Apache Pulsar:} piattaforma di \textit{event streaming} più recente con un'architettura che separa \textit{storage} e \textit{serving}.
+    \item \textbf{RabbitMQ}\footnote{RabbitMQ - URL: \url{https://www.rabbitmq.com/}} e \textbf{ActiveMQ}\footnote{ActiveMQ - URL: \url{https://activemq.apache.org/}}: \textit{message broker} tradizionali orientati alle code piuttosto che allo \textit{streaming} persistente di eventi;
+    \item \textbf{Apache Pulsar}\footnote{Apache Pulsar - URL: \url{https://pulsar.apache.org/}}: piattaforma di \textit{event streaming} più recente con un'architettura che separa \textit{storage} e \textit{serving}.
 \end{itemize}
 
 \paragraph{Motivazione della scelta}
-La scelta di Apache Kafka è stata indicata esplicitamente come requisito del progetto di tirocinio. Rispetto ad alternative come RabbitMQ, Kafka offre nativamente la possibilità di rileggere lo storico dei messaggi (\textit{replay}) grazie alla persistenza configurabile, caratteristica non scontata nei tradizionali \textit{message broker} orientati alle code, dove un messaggio consumato viene tipicamente rimosso dalla coda.
+La scelta di \nameref{Apache Kafka} è stata indicata esplicitamente come requisito del progetto di tirocinio. Rispetto ad alternative come RabbitMQ, Kafka offre nativamente la possibilità di rileggere lo storico dei messaggi (\textit{replay}) grazie alla persistenza configurabile, caratteristica non scontata nei tradizionali \textit{message broker} orientati alle code, dove un messaggio consumato viene tipicamente rimosso dalla coda.
 
+\newpage
 \section{Progettazione}
 \label{Progettazione}
 Prima di procedere all'implementazione, sono state definite alcune scelte progettuali riguardanti il modello dei dati, la struttura dei \gls{Topic Kafka} e la gestione degli errori.
@@ -181,15 +196,15 @@ Prima di procedere all'implementazione, sono state definite alcune scelte proget
 \label{Modello dei dati}
 Sono stati definiti tre tipi di oggetti, ciascuno con una responsabilità precisa:
 \begin{itemize}
-    \item \textcolor{purple}{OrderEvent}: rappresenta il messaggio grezzo in ingresso, contenente un identificativo dell'ordine (\textcolor{purple}{orderId}), un riferimento al cliente (\textcolor{purple}{customerId}) e i dati dell'ordine stesso (\textcolor{purple}{product}, \textcolor{purple}{amount});
+    \item \textcolor{purple}{OrderEvent}: messaggio grezzo in ingresso, contenente un identificativo dell'ordine (\textcolor{purple}{orderId}), un riferimento al cliente (\textcolor{purple}{customerId}) e i dati dell'ordine stesso (\textcolor{purple}{product}, \textcolor{purple}{amount});
     \item \textcolor{purple}{Customer}: entità contenente i dati del cliente (\textcolor{purple}{fullName}, \textcolor{purple}{email}, \textcolor{purple}{city}) necessari all'arricchimento;
-    \item \textcolor{purple}{EnrichedOrder}: rappresenta il messaggio finale pubblicato in uscita, che unisce i dati dell'ordine originario con i dati del cliente recuperati da \nameref{PostgreSQL}, più un \textit{timestamp} (\textcolor{purple}{enrichedAt}) che documenta il momento dell'arricchimento.
+    \item \textcolor{purple}{EnrichedOrder}: messaggio finale pubblicato in uscita, che unisce i dati dell'ordine originario con i dati del cliente recuperati da \nameref{PostgreSQL}, più un \textit{timestamp} (\textcolor{purple}{enrichedAt}) che documenta il momento dell'arricchimento.
 \end{itemize}
-Questa separazione segue il pattern \nameref{Content Enricher}: il messaggio in ingresso è  "povero", mentre il contratto in uscita è "arricchito" con informazioni che il produttore originario dell'evento non possiede.
+Questa separazione segue il \textit{pattern} \nameref{Content Enricher}: il messaggio in ingresso è  "povero", mentre il contratto in uscita è "arricchito" con informazioni che il produttore originario dell'evento non possiede.
 
 \subsection{Progettazione dei topic Kafka}
 \label{Progettazione dei topic Kafka}
-Sono stati previsti tre topic, ciascuno con un numero di partizioni proporzionato al ruolo previsto:
+Sono stati previsti tre \textit{\nameref{Topic}}, ciascuno con un numero di partizioni proporzionato al ruolo previsto:
 \begin{table}[H]
     \setlength{\tabcolsep}{10pt} % Default value: 6pt
     \def\arraystretch{1.5} % Default value: 1
@@ -199,24 +214,25 @@ Sono stati previsti tre topic, ciascuno con un numero di partizioni proporzionat
         \textbf{Topic} & \textbf{Partizioni} & \textbf{Ruolo} \\ \hline
         \textcolor{purple}{orders-input} & 3 & ingresso degli ordini grezzi \\ \hline
         \textcolor{purple}{orders-output} & 3 & uscita degli ordini arricchiti \\ \hline
-        \textcolor{purple}{orders-input-dlq} & 1 & dead letter queue per ordini non arricchibili \\ \hline
+        \textcolor{purple}{orders-input-dlq} & 1 & \acrshort{DLQ} per ordini non arricchibili \\ \hline
     \end{tabular}
     \caption{Tabella dei topic}
     \label{Tabella dei topic}
 \end{table}
 \noindent
-Il numero di partizioni maggiore per i topic di flusso principale (\textcolor{purple}{orders-input}, \textcolor{purple}{orders-output}) consente il parallelismo in lettura/scrittura descritto in \ref{Event Streaming}.
+Il numero di partizioni maggiore per i \textit{\nameref{Topic}} di flusso principale (\textcolor{purple}{orders-input}, \textcolor{purple}{orders-output}) consente il parallelismo in \sloppy lettura/scrittura descritto in \ref{Event Streaming}.
 La singola partizione per la \acrshort{DLQ} riflette invece un volume atteso più basso e la priorità data alla semplicità di ispezione rispetto al parallelismo.
 
+\newpage
 \subsection{Progettazione del flusso di elaborazione}
 Il flusso di elaborazione è stato progettato secondo la seguente sequenza logica:
 \begin{enumerate}
     \item un evento ordine viene pubblicato su \textcolor{purple}{orders-input};
-    \item il middleware consuma il messaggio;
-    \item il middleware tenta di recuperare i dati del cliente corrispondente su \nameref{PostgreSQL};
+    \item il \textit{Middleware} consuma il messaggio;
+    \item il \textit{Middleware} tenta di recuperare i dati del cliente corrispondente su \nameref{PostgreSQL};
     \begin{enumerate}
         \item se il cliente viene trovato, viene composto il messaggio arricchito e pubblicato su \textcolor{purple}{orders-output};
-        \item se il cliente non viene trovato, l'evento originario viene instradato su \textcolor{purple}{orders-input-dlq}, secondo il pattern \nameref{Dead Letter Channel} descritto in \ref{Dead Letter Channel};
+        \item se il cliente non viene trovato, l'evento originario viene instradato su \textcolor{purple}{orders-input-dlq}, secondo il \textit{pattern} \nameref{Dead Letter Channel} descritto in \ref{Dead Letter Channel};
     \end{enumerate}
 \end{enumerate}
 \begin{figure}[H]
@@ -224,7 +240,7 @@ Il flusso di elaborazione è stato progettato secondo la seguente sequenza logic
     \includegraphics[width=0.5\textwidth]{assets/flusso.drawio.png}
     \caption{Flusso di elaborazione}
 \end{figure}
-Questa progettazione garantisce che, in caso di arresto anomalo dell'applicazione tra la lettura del messaggio e la sua elaborazione completa, il messaggio venga riletto al riavvio (semantica at-least-once, discussa in \ref{Semantica di consegna}), evitando così perdite di dati a scapito di un'eventuale elaborazione duplicata.
+Questa progettazione garantisce che, in caso di arresto anomalo dell'applicazione tra la lettura del messaggio e la sua elaborazione completa, il messaggio venga riletto al riavvio (semantica \textit{At-least-once}, discussa in \ref{Semantica di consegna}), evitando così perdite di dati a scapito di un'eventuale elaborazione duplicata.
 
 \section{Implementazione}
 \label{Implementazione}
@@ -248,19 +264,19 @@ public class EnrichmentMiddlewareApplication {
 \textcolor{purple}{@SpringBootApplication} è un'annotazione che ne racchiude tre:
 \begin{itemize}
     \item \textcolor{purple}{@SpringBootConfiguration} (specializzazione di \textcolor{purple}{@Configuration}): indica che la classe può definire \gls{Bean} gestiti dal container \nameref{Spring};
-    \item \textcolor{purple}{@EnableAutoConfiguration}: attiva il meccanismo di \textit{auto-configuration} di \nameref{Spring Boot}, che analizza le dipendenze presenti nel classpath e configura automaticamente i \gls{Bean} necessari;
+    \item \textcolor{purple}{@EnableAutoConfiguration}: attiva il meccanismo di \textit{\nameref{Auto Configuration}} di \nameref{Spring Boot}, che analizza le dipendenze presenti nel \textit{classpath} e configura automaticamente i \gls{Bean} necessari;
     \item \textcolor{purple}{@ComponentScan}: scansiona il \textit{package} corrente alla ricerca di classi annotate con gli stereotipi (\textcolor{purple}{@Component}, \textcolor{purple}{@Service}, ...), registrandole automaticamente come \gls{Bean}.
 \end{itemize}
 Grazie a questa singola annotazione, l'intera applicazione viene rilevata e collegata automaticamente all'avvio, senza configurazione esplicita.
 
+\newpage
 \subsection{Modello dei dati}
 L'entità \textcolor{purple}{Customer}, mappata sulla tabella \textcolor{purple}{customers} di \nameref{PostgreSQL}:
 \begin{codelisting}[H]
 \begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
 @Entity
 @Table(name = "customers")
-@Getter 
-@Setter 
+@Getter @Setter 
 @NoArgsConstructor 
 @AllArgsConstructor
 public class Customer {
@@ -277,24 +293,23 @@ public class Customer {
 \caption{Customer}
 \end{codelisting}
 \noindent
-Le annotazioni Jakarta Persistence (\acrshort{JPA}), elaborate da \gls{Hibernate} a \textit{runtime}, definiscono il \textit{mapping} tra la classe \nameref{Java} e la tabella del \textit{database}:
+Le annotazioni \gls{Jakarta Persistence} (\acrshort{JPA}), elaborate da \gls{Hibernate} a \textit{runtime}, definiscono il \textit{mapping} tra la classe \nameref{Java} e la tabella del \textit{database}:
 \begin{itemize}
-    \item \textcolor{purple}{@Entity}: dichiara che la classe è un'entità persistente, cioè un oggetto il cui stato può essere salvato e recuperato dal database tramite \acrshort{JPA};
+    \item \textcolor{purple}{@Entity}: dichiara che la classe è un'entità persistente, cioè un oggetto il cui stato può essere salvato e recuperato dal \textit{database} tramite \acrshort{JPA};
     \item \textcolor{purple}{@Table(name = "customers")}: specifica esplicitamente il nome della tabella a cui l'entità è mappata (in assenza di questa annotazione, \acrshort{JPA} userebbe per convenzione il nome della classe);
     \item \textcolor{purple}{@Id}: indica il campo che costituisce la chiave primaria della tabella;
     \item \textcolor{purple}{@Column(...)}: mappa un campo della classe su una colonna specifica, permettendo di personalizzarne il nome e i vincoli (ad esempio \textcolor{purple}{nullable = false}, che impone che il campo non possa essere nullo).
 \end{itemize}
 Le annotazioni \gls{Lombok}, agiscono in fase di compilazione: il compilatore, tramite un \textit{annotation processor}, genera automaticamente il codice sorgente corrispondente, che viene poi incluso nel \textit{bytecode} risultante, senza che sia visibile nel file:
 \begin{itemize}
-    \item \textcolor{purple}{@Getter} / \textcolor{purple}{@Setter}: generano rispettivamente i metodi \textit{getter} (\textcolor{purple}{getFullName()}, \textcolor{purple}{getEmail()}, ...) e i metodi \textit{setter} (\textcolor{purple}{setFullName(...)}, ...) per tutti i campi della classe;
+    \item \textcolor{purple}{@Getter}/\textcolor{purple}{@Setter}: generano rispettivamente i metodi \textit{getter} (\textcolor{purple}{getFullName()}, \textcolor{purple}{getEmail()}, ...) e i metodi \textit{setter} (\textcolor{purple}{setFullName(...)}, ...) per tutti i campi della classe;
     \item \textcolor{purple}{@NoArgsConstructor}: genera un costruttore vuoto (senza argomenti), richiesto obbligatoriamente dalla specifica \acrshort{JPA}, poiché \gls{Hibernate} deve poter istanziare l'entità tramite \textit{reflection} prima di popolarne i campi;
     \item \textcolor{purple}{@AllArgsConstructor}: genera un costruttore che accetta un parametro per ciascun campo della classe, utile per la creazione di istanze (ad esempio nei test).
 \end{itemize}
 I \acrshort{DTO} che rappresentano i contratti dei messaggi Kafka seguono un'impostazione analoga, con l'aggiunta di un'ulteriore annotazione \gls{Lombok}:
 \begin{codelisting}[H]
 \begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
-@Getter 
-@Setter 
+@Getter @Setter 
 @NoArgsConstructor 
 @AllArgsConstructor 
 @ToString
@@ -309,8 +324,7 @@ public class OrderEvent {
 \end{codelisting}
 \begin{codelisting}[H]
 \begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
-@Getter 
-@Setter 
+@Getter @Setter 
 @NoArgsConstructor 
 @AllArgsConstructor 
 @ToString
@@ -342,12 +356,13 @@ public interface CustomerRepository
 \caption{CustomerRepository}
 \end{codelisting}
 \noindent
-Qui non compaiono annotazioni esplicite: è sufficiente che l'interfaccia estenda \textcolor{purple}{JpaRepository<Customer, Long>} (dove \textcolor{purple}{Customer} è il tipo dell'entità e \textcolor{purple}{Long} il tipo della sua chiave primaria) perché \nameref{Spring Data JPA} generi automaticamente, a \textit{runtime}, un'implementazione proxy dell'interfaccia, fornendo di \textit{default} i metodi \acrshort{CRUD} più comuni (\textcolor{purple}{findById}, \textcolor{purple}{save}, \textcolor{purple}{deleteById}, \textcolor{purple}{findAll}, ...). \\ \\
-Questo meccanismo, che non richiede annotazioni perché il comportamento è determinato dall'interfaccia ereditata, è ciò che permette al progetto di interrogare \nameref{PostgreSQL} senza scrivere alcuna query \acrshort{SQL} esplicita.
+Qui non compaiono annotazioni esplicite: è sufficiente che l'interfaccia estenda \textcolor{purple}{JpaRepository<Customer, Long>} (dove \textcolor{purple}{Customer} è il tipo dell'entità e \textcolor{purple}{Long} il tipo della sua chiave primaria) perché \nameref{Spring Data JPA} generi automaticamente, a \textit{runtime}, un'implementazione \textit{proxy} dell'interfaccia, fornendo di \textit{default} i metodi \acrshort{CRUD} più comuni (\textcolor{purple}{findById}, \textcolor{purple}{save}, \textcolor{purple}{deleteById}, \textcolor{purple}{findAll}, ...). \\ \\
+Questo meccanismo, che non richiede annotazioni perché il comportamento è determinato dall'interfaccia ereditata, è ciò che permette al progetto di interrogare \nameref{PostgreSQL} senza scrivere alcuna \textit{query} \acrshort{SQL} esplicita.
 
+\newpage
 \subsection{Logica di enrichment}
 \label{Logica di enrichment}
-Il cuore applicativo del pattern \nameref{Content Enricher} è la classe \textcolor{purple}{EnrichmentService}:
+Il cuore applicativo del \textit{pattern} \nameref{Content Enricher} è la classe \textcolor{purple}{EnrichmentService}:
 \begin{codelisting}[H]
 \begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
 @Slf4j
@@ -383,9 +398,10 @@ public class EnrichmentService {
 Questa classe è composta da quattro annotazioni:
 \begin{itemize}
     \item \textcolor{purple}{@Slf4j}: inietta automaticamente un campo statico \textcolor{purple}{log} di tipo \textcolor{purple}{Logger}, consente di scrivere direttamente \textcolor{purple}{log.debug(...)}.
-    \item \textcolor{purple}{@Service}: è una specializzazione di \textcolor{purple}{@Component}, che identifica la classe come componente contenente logica di business. Dal punto di vista del container \nameref{Spring} il comportamento è identico a \textcolor{purple}{@Component} (la classe viene rilevata dal \textcolor{purple}{@ComponentScan} e registrata come \gls{Bean}), ma l'uso di \textcolor{purple}{@Service} comunica esplicitamente l'intento architetturale della classe, migliorando la leggibilità del codice.
+    \item \textcolor{purple}{@Service}: è una specializzazione di \textcolor{purple}{@Component}, che identifica la classe come componente contenente logica di business. Dal punto di vista del \textit{container} \nameref{Spring} il comportamento è identico a \textcolor{purple}{@Component} (la classe viene rilevata dal \textcolor{purple}{@ComponentScan} e registrata come \gls{Bean}), ma l'uso di \textcolor{purple}{@Service} comunica esplicitamente l'intento architetturale della classe, migliorando la leggibilità del codice.
+    \newpage
     \item \textcolor{purple}{@RequiredArgsConstructor}: genera un costruttore con un parametro per ciascun campo dichiarato \textcolor{purple}{final} (in questo caso \textcolor{purple}{customerRepository}). Combinata con l'assenza di un costruttore esplicito, questa annotazione realizza la \textit{\gls{Dependency Injection}} tramite costruttore: \nameref{Spring}, individuando un unico costruttore, lo invoca automaticamente iniettando il \gls{Bean} \textcolor{purple}{CustomerRepository} disponibile nel \textit{container}. Questo approccio è preferibile rispetto all'iniezione tramite campo (\textcolor{purple}{@Autowired}), poiché rende le dipendenze esplicite, immutabili e facilmente testabili.
-    \item \textcolor{purple}{@Transactional(readOnly = true)}: delimita una transazione database attorno all'esecuzione del metodo \textcolor{purple}{enrich}. Il parametro \textcolor{purple}{readOnly = true} segnala esplicitamente che il metodo esegue solo operazioni di lettura, permettendo a \gls{Hibernate} di applicare alcune ottimizzazioni (ad esempio disabilitando il \textit{dirty checking}, ovvero il meccanismo che traccia le modifiche alle entità per determinare se sia necessario un aggiornamento sul database). Sebbene nel caso specifico l'operazione compiuta sia una singola \textit{query}, l'uso esplicito di \textcolor{purple}{@Transactional} rende il comportamento robusto anche a future estensioni del metodo che coinvolgano più interrogazioni.
+    \item \textcolor{purple}{@Transactional(readOnly = true)}: delimita una transazione database attorno all'esecuzione del metodo \textcolor{purple}{enrich}. Il parametro \textcolor{purple}{readOnly = true} segnala esplicitamente che il metodo esegue solo operazioni di lettura, permettendo a \gls{Hibernate} di applicare alcune ottimizzazioni (ad esempio disabilitando il \textit{dirty checking}, ovvero il meccanismo che traccia le modifiche alle entità per determinare se sia necessario un aggiornamento sul \textit{database}). Sebbene nel caso specifico l'operazione compiuta sia una singola \textit{query}, l'uso esplicito di \textcolor{purple}{@Transactional} rende il comportamento robusto anche a future estensioni del metodo che coinvolgano più interrogazioni.
 \end{itemize}
 
 \newpage
@@ -429,20 +445,21 @@ public class OrderConsumer {
 \caption{OrderConsumer}
 \end{codelisting}
 \begin{itemize}
-    \item \textcolor{purple}{@Component}: indica che la classe deve essere gestita come \gls{Bean} dal \textit{container}. Usato, invece di \textcolor{purple}{@Service}, perché la classe non contiene logica di business.
-    \item \textcolor{purple}{@KafkaListener}: è l'annotazione che realizza concretamente il modello \textit{listener} descritto in \ref{Spring Kafka}. Applicata a un metodo, ne fa un punto di ricezione automatica dei messaggi pubblicati sul topic specificato:
+    \item \textcolor{purple}{@Component}: indica che la classe deve essere gestita come \gls{Bean} dal \textit{container}. Usato, invece di \textcolor{purple}{@Service}, perché la classe non contiene logica di \textit{business}.
+    \newpage
+    \item \textcolor{purple}{@KafkaListener}: è l'annotazione che realizza concretamente il modello \textit{listener} descritto in \ref{Spring Kafka}. Applicata a un metodo, ne fa un punto di ricezione automatica dei messaggi pubblicati sul \textit{\nameref{Topic}} specificato:
     \begin{itemize}
-        \item \textcolor{purple}{topics = "\${app.kafka.topic.input}"}: il nome del topic da ascoltare non è scritto staticamente, ma iniettato da configurazione tramite la sintassi \textit{placeholder} \textcolor{purple}{\${...}}, che Spring risolve leggendo la proprietà corrispondente da \textcolor{purple}{application.yml} (in questo caso \textcolor{purple}{orders-input}). Questo disaccoppia il codice dal valore concreto del nome del topic, rendendolo configurabile per ambiente (sviluppo, test, produzione) senza modifiche al codice sorgente;
+        \item \textcolor{purple}{topics = "\${app.kafka.topic.input}"}: il nome del \textit{\nameref{Topic}} da ascoltare non è scritto staticamente, ma iniettato da configurazione tramite la sintassi \textit{placeholder} \textcolor{purple}{\${...}}, che Spring risolve leggendo la proprietà corrispondente da \textcolor{purple}{application.yml} (in questo caso \textcolor{purple}{orders-input}). Questo disaccoppia il codice dal valore concreto del nome del \textit{\nameref{Topic}}, rendendolo configurabile per ambiente (sviluppo, test, produzione) senza modifiche al codice sorgente;
         \item \textcolor{purple}{groupId = "\${spring.kafka.consumer.group-id}"}: allo stesso modo, il \textit{consumer group} (introdotto in \ref{Architettura e concetti fondamentali}) è delegato in configurazione.
     \end{itemize}
-    Il metodo annotato accetta come parametri un \textcolor{purple}{ConsumerRecord<String, OrderEvent>}, l'involucro nativo del \textit{client} Kafka che espone, oltre al \textit{payload} deserializzato, anche metadati quali topic, partizione e \textit{offset}, e un oggetto \textcolor{purple}{Acknowledgment}, che rappresenta il meccanismo tramite cui il metodo conferma esplicitamente l'elaborazione del messaggio (\textcolor{purple}{ack.acknowledge()}), coerentemente con la modalità \textcolor{purple}{ack-mode: manual} configurata in \textcolor{purple}{application.yml}.
+    Il metodo annotato accetta come parametri un \textcolor{purple}{ConsumerRecord<String, OrderEvent>}, l'involucro nativo del \textit{client} Kafka che espone, oltre al \textit{payload} deserializzato, anche metadati quali \textit{\nameref{Topic}}, partizione e \textit{offset}, e un oggetto \textcolor{purple}{Acknowledgment}, che rappresenta il meccanismo tramite cui il metodo conferma esplicitamente l'elaborazione del messaggio (\textcolor{purple}{ack.acknowledge()}), coerentemente con la modalità \textcolor{purple}{ack-mode: manual} configurata in \textcolor{purple}{application.yml}.
 \end{itemize}
 La \textcolor{purple}{CustomerNotFoundException} (errore atteso) viene gestita instradando il messaggio sulla \acrshort{DLQ} e confermando comunque l'\textit{offset}.
 Un'eccezione imprevista, invece, lascia l'\textit{offset} non confermato, così da consentire un nuovo tentativo di elaborazione al riavvio del \textit{consumer}.
-% Si noti come il blocco \textcolor{purple}{try/catch} traduca direttamente in codice la decisione progettuale illustrata al passo 4-6 dello schema in Y.2.3: la \textcolor{purple}{CustomerNotFoundException} (errore atteso) viene gestita instradando il messaggio sulla DLQ e confermando comunque l'offset (il messaggio è stato "gestito", seppur con esito negativo); un'eccezione imprevista, invece, lascia l'offset non confermato, così da consentire un nuovo tentativo di elaborazione al riavvio del consumer. \\ \\
 
+\newpage
 \subsection{Producer}
-La classe \textcolor{purple}{EnrichedProducer} si occupa della pubblicazione, sia sul topic di \textit{output} sia sulla \acrshort{DLQ}:
+La classe \textcolor{purple}{EnrichedProducer} si occupa della pubblicazione, sia sul \textit{\nameref{Topic}} di \textit{output} sia sulla \acrshort{DLQ}:
 \begin{codelisting}[H]
 \begin{minted}[fontsize=\small,frame=single,framesep=10pt]{java}
 @Slf4j
@@ -476,7 +493,9 @@ Rispetto alle classi precedenti, qui compare una nuova annotazione:
 \begin{itemize}
     \item \textcolor{purple}{@Value("\${app.kafka.topic.output}")}: a differenza di \textcolor{purple}{@KafkaListener}, dove il \textit{placeholder} è risolto internamente all'annotazione stessa, \textcolor{purple}{@Value} è un'annotazione generica che può essere applicata a un campo per iniettarvi direttamente un valore letto dalla configurazione. Il campo \textcolor{purple}{outputTopic} viene così valorizzato automaticamente da \nameref{Spring} all'atto della creazione del \gls{Bean}, senza bisogno di leggerlo esplicitamente da un oggetto \textcolor{purple}{Environment}.
 \end{itemize}
-Il metodo \textcolor{purple}{sendEnriched} utilizza \textcolor{purple}{KafkaTemplate<String, Object>}, il componente ad alto livello fornito da \nameref{Spring Kafka} per la produzione di messaggi (analogo, sul lato \textit{producer}, a ciò che \textcolor{purple}{@KafkaListener} rappresenta sul lato \textit{consumer}). \\ \\
+Il metodo \textcolor{purple}{sendEnriched} utilizza \textcolor{purple}{KafkaTemplate<String, Object>}, il componente ad alto livello fornito da \nameref{Spring Kafka} per la produzione di messaggi (analogo, sul lato \textit{producer}, a ciò che \textcolor{purple}{@KafkaListener} rappresenta sul lato \textit{consumer}).
+\newpage
+\noindent
 Il metodo \textcolor{purple}{send(...)} restituisce un \textcolor{purple}{CompletableFuture}, sul quale viene registrata tramite \textcolor{purple}{whenComplete(...)} una \textit{callback} asincrona per il \textit{logging} dell'esito della pubblicazione, \textit{pattern} coerente con la natura non bloccante dell'invio dei messaggi Kafka.
 
 \subsection{Sintesi delle annotazioni utilizzate}
@@ -490,12 +509,12 @@ La tabella seguente riassume, per libreria di provenienza, tutte le annotazioni 
         \textbf{Annotazione} & \textbf{Libreria} & \textbf{Funzione} \\ \hline
         \textcolor{purple}{@SpringBootApplication} & Spring Boot & \textit{auto-configuration} + \textit{component scan} \\ \hline
         \textcolor{purple}{@Component} & Spring Core & registra un \gls{Bean} generico \\ \hline
-        \textcolor{purple}{@Service} & Spring Core & registra un \gls{Bean} di logica di business \\ \hline
+        \textcolor{purple}{@Service} & Spring Core & registra un \gls{Bean} di logica di \textit{business} \\ \hline
         \textcolor{purple}{@RequiredArgsConstructor} & Lombok & costruttore per i campi \textcolor{purple}{final} -> \textit{\gls{Dependency Injection}} \\ \hline
-        \textcolor{purple}{@Transactional} & Spring & delimita una transazione database \\ \hline
-        \textcolor{purple}{@KafkaListener} & Spring Kafka & registra un \textit{listener} su un topic \\ \hline
+        \textcolor{purple}{@Transactional} & Spring & delimita una transazione \textit{database} \\ \hline
+        \textcolor{purple}{@KafkaListener} & Spring Kafka & registra un \textit{listener} su un \textit{\nameref{Topic}} \\ \hline
         \textcolor{purple}{@Value} & Spring Core & inietta un valore da configurazione \\ \hline
-        \textcolor{purple}{@Entity} / \textcolor{purple}{@Table} / \textcolor{purple}{@Id} / \textcolor{purple}{@Column} & Jakarta Persistence & \textit{mapping} oggetto-relazionale \\ \hline
+        \textcolor{purple}{@Entity} / \textcolor{purple}{@Table} / \textcolor{purple}{@Id} / \textcolor{purple}{@Column} & \gls{Jakarta Persistence} & \textit{mapping} oggetto-relazionale \\ \hline
         \textcolor{purple}{@Getter} / \textcolor{purple}{@Setter} & Lombok & generano accessori \\ \hline
         \textcolor{purple}{@NoArgsConstructor} / \textcolor{purple}{@AllArgsConstructor} & Lombok & generano costruttori \\ \hline
         \textcolor{purple}{@ToString} & Lombok & genera il metodo \textcolor{purple}{toString()} \\ \hline
@@ -505,11 +524,13 @@ La tabella seguente riassume, per libreria di provenienza, tutte le annotazioni 
     \label{Tabella delle annotazioni}
 \end{table}
 \noindent
+\newpage
+\noindent
 Questa distinzione per provenienza è utile dal punto di vista didattico: 
 \begin{itemize}
     \item le annotazioni \gls{Lombok} agiscono a livello di compilazione, generando codice altrimenti scritto manualmente;
-    \item le annotazioni Jakarta Persistence sono elaborate da \gls{Hibernate} a \textit{runtime} per il \textit{mapping} oggetto-relazionale;
-    \item le annotazioni \nameref{Spring} (Core e Kafka) sono invece elaborate dal container \acrshort{IoC} all'avvio dell'applicazione, per la registrazione dei \gls{Bean}, l'iniezione delle dipendenze e la configurazione dei \textit{listener}.
+    \item le annotazioni \gls{Jakarta Persistence} sono elaborate da \gls{Hibernate} a \textit{runtime} per il \textit{mapping} oggetto-relazionale;
+    \item le annotazioni \nameref{Spring} (Core e Kafka) sono invece elaborate dal \textit{container} \acrshort{IoC} all'avvio dell'applicazione, per la registrazione dei \gls{Bean}, l'iniezione delle dipendenze e la configurazione dei \textit{listener}.
 \end{itemize}
 
 \section{Progettazione di una pipeline in Apache Flink}
@@ -518,28 +539,30 @@ Sulla base dei concetti presentati in \ref{Confronto concettuale con l'approccio
 
 \subsection{Sorgente e formato dei dati}
 \label{Sorgente e formato dei dati}
-Il punto di ingresso della pipeline è un \textbf{\gls{Kafka Source}}, il connettore nativo che Flink mette a disposizione per consumare un \textit{topic} Kafka come \textit{stream} di eventi, deserializzando ciascun \textit{record} nel medesimo formato \textcolor{purple}{OrderEvent} già impiegato nell'implementazione Spring (\ref{Modello dei dati}).
+Il punto di ingresso della \textit{pipeline} è un \gls{Kafka Source}, il connettore nativo che Flink mette a disposizione per consumare un \gls{Topic Kafka} come \textit{stream} di eventi, deserializzando ciascun \textit{record} nel medesimo formato \textcolor{purple}{OrderEvent} già impiegato nell'implementazione \nameref{Spring} (\ref{Modello dei dati}).
 
 \subsection{Fase di enrichment}
 La logica di arricchimento, equivalente a quella incapsulata da \textcolor{purple}{EnrichmentService} (\ref{Logica di enrichment}), si realizza tramite un operatore di tipo \textbf{Async I/O} (\ref{Async I/O}), che interroga in modo non bloccante la tabella \textcolor{purple}{customers} su \nameref{PostgreSQL} a partire dal \textcolor{purple}{customerId} presente in ciascun \textcolor{purple}{OrderEvent}, e produce in \textit{output} il medesimo \textcolor{purple}{EnrichedOrder} già definito nel progetto.
 
+\newpage
 \subsection{Gestione degli errori}
 \label{Gestione degli errori}
-La gestione dei clienti non trovati, realizzata in Spring tramite \textcolor{purple}{CustomerNotFoundException} e il pattern \nameref{Dead Letter Channel} (\ref{Dead Letter Channel}), si realizza in Flink tramite un \textbf{\gls{Side Output}}: un canale di uscita secondario, associato all'operatore di \textit{enrichment}, verso cui si instradano gli eventi per cui il \textit{lookup} su \nameref{PostgreSQL} non produce alcun risultato, stesso principio architetturale, meccanismo nativo della piattaforma anziché \textit{try/catch} applicativo.
+La gestione dei clienti non trovati, realizzata in \nameref{Spring} tramite \textcolor{purple}{CustomerNotFoundException} e il \textit{pattern} \nameref{Dead Letter Channel} (\ref{Dead Letter Channel}), si realizza in Flink tramite un \gls{Side Output}: un canale di uscita secondario, associato all'operatore di \textit{enrichment}, verso cui si instradano gli eventi per cui il \textit{lookup} su \nameref{PostgreSQL} non produce alcun risultato, stesso principio architetturale, meccanismo nativo della piattaforma anziché \textit{try/catch} applicativo.
 
 \subsection{Destinazione e garanzie di consegna}
 \label{Destinazione e garanzie di consegna}
-Il messaggio arricchito e l'eventuale messaggio instradato sul canale di errore vengono pubblicati rispettivamente su \textcolor{purple}{orders-output} e \textcolor{purple}{orders-input-dlq} tramite un \textbf{\gls{Kafka Sink}}. 
-Sul piano della semantica di consegna (\ref{Semantica di consegna}), il \textit{checkpointing} periodico dell'intero stato della \textit{pipeline}, incluso l'\textit{offset} Kafka in lettura, garantisce una semantica \textit{exactly-once end-to-end} se combinato con un Kafka Sink transazionale, una garanzia più forte rispetto alla semantica \textit{at-least-once} realizzata nell'implementazione Spring.
+Il messaggio arricchito e l'eventuale messaggio instradato sul canale di errore vengono pubblicati rispettivamente su \textcolor{purple}{orders-output} e \textcolor{purple}{orders-input-dlq} tramite un \gls{Kafka Sink}. 
+Sul piano della semantica di consegna (\ref{Semantica di consegna}), il \textit{checkpointing} periodico dell'intero stato della \textit{pipeline}, incluso l'\textit{offset} Kafka in lettura, garantisce una semantica \textit{Exactly-once end-to-end} se combinato con un Kafka Sink transazionale, una garanzia più forte rispetto alla semantica \textit{At-least-once} realizzata nell'implementazione \nameref{Spring}.
 
 \section{Strumenti per i test di performance}
 \label{Strumenti per i test di performance}
 Dato lo \textit{stack} tecnologico descritto in \ref{Tecnologie e strumenti}, la metodologia di valutazione definita in \ref{Valutazione delle prestazioni} si realizza con i seguenti strumenti, in gran parte già presenti nell'ambiente di sviluppo predisposto per il progetto.
 
 \subsection{Generazione del carico}
-Il carico si genera con \textcolor{purple}{kafka-producer-perf-test.sh}, lo script incluso nella distribuzione Kafka già containerizzata in \nameref{Docker}, che pubblica un volume controllato di eventi \textcolor{purple}{OrderEvent} su \textcolor{purple}{orders-input}, con parametri configurabili quali: numero totale di messaggi, dimensione del \textit{payload} e \textit{\gls{Throughput}} massimo. 
+Il carico si genera con \textcolor{purple}{kafka-producer-perf-test.sh}, lo \textit{script} incluso nella distribuzione Kafka già containerizzata in \nameref{Docker}, che pubblica un volume controllato di eventi \textcolor{purple}{OrderEvent} su \textcolor{purple}{orders-input}, con parametri configurabili quali: numero totale di messaggi, dimensione del \textit{payload} e \textit{\gls{Throughput}} massimo. 
 Per lo scenario con percentuale variabile di messaggi non arricchibili (si veda \ref{Metodologia di test}), il carico si genera invece con uno \textit{script} dedicato, che pubblica \textcolor{purple}{customerId} validi e non validi secondo una distribuzione controllata.
 
+\newpage
 \subsection{Osservazione del comportamento del sistema}
 Il \textit{consumer lag} si osserva in due modi complementari: 
 \begin{itemize}
@@ -548,11 +571,11 @@ Il \textit{consumer lag} si osserva in due modi complementari:
 \end{itemize}
 
 \subsection{Osservabilità applicativa}
-Il progetto include tra le dipendenze Maven \textcolor{purple}{spring-boot-starter-actuator}, che espone \textit{endpoint} \acrshort{HTTP} standard per il monitoraggio dello stato dell'applicazione. 
+Il progetto include tra le dipendenze \nameref{Apache Maven} \textcolor{purple}{spring-boot-starter-actuator}, che espone \textit{endpoint} \acrshort{HTTP} standard per il monitoraggio dello stato dell'applicazione. 
 Tale dipendenza si integra nativamente con \textbf{Micrometer}\footnote{Micrometer - URL: \url{https://micrometer.io/}}, libreria di strumentazione collegabile a \textbf{Prometheus}\footnote{Prometheus - URL: \url{https://prometheus.io/}} per la raccolta storica delle metriche e a \textbf{Grafana}\footnote{Grafana - URL: \url{https://grafana.com/}} per la loro visualizzazione tramite \textit{dashboard}, permettendo di correlare temporalmente il carico generato con le metriche applicative e di sistema.
 
 \subsection{Ambiente di test}
-L'ambiente \nameref{Docker} Compose predisposto per il progetto prevede un singolo nodo Kafka in modalità KRaft e una singola istanza \nameref{PostgreSQL}. 
-Qualunque risultato ottenuto in questo ambiente si legge come indicativo della bontà architetturale del \textit{middleware}, più che come misura assoluta delle prestazioni ottenibili in un \textit{deployment} distribuito su più nodi.
+L'ambiente \nameref{Docker} Compose predisposto per il progetto prevede un singolo nodo Kafka in modalità \gls{KRaft} e una singola istanza \nameref{PostgreSQL}. 
+Qualunque risultato ottenuto in questo ambiente si legge come indicativo della bontà architetturale del \textit{Middleware}, più che come misura assoluta delle prestazioni ottenibili in un \textit{deployment} distribuito su più nodi.
 
 \newpage
