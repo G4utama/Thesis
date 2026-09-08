@@ -1,0 +1,246 @@
+\documentclass[11pt,aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{minted}
+\usepackage{courier}
+\renewcommand*\familydefault{\ttdefault}
+
+\usetheme[pageofpages=of]{Unipd}
+
+\title[Middleware Spring per Enrichment Dati]{Sviluppo di un Middleware basato su Spring\\per l'Integrazione di Flussi di Dati}
+\author{Leonardo Baldo}
+\institute[Univ. di Padova]{Università degli Studi di Padova\\Relatore: Prof. Marco Zanella}
+\date{Anno Accademico 2024--2025}
+
+\begin{document}
+
+% ----------
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ----------
+\begin{frame}{L'azienda}
+    \begin{columns}[c]
+        \column{0.60\textwidth}
+        \begin{itemize}
+            \setlength\itemsep{12pt}
+            \item Stage presso \textbf{SyncLab S.r.l.}
+            \item Soluzioni informatiche, ricerca e sviluppo, \textit{system integrator}
+            \item Progetto: studio \textbf{Middleware} basato su Spring
+        \end{itemize}
+        \column{0.30\textwidth}
+        \begin{center}
+            \includegraphics[width=0.90\textwidth]{../assets/synclab.png}
+        \end{center}
+    \end{columns}
+\end{frame}
+
+% ----------
+\begin{frame}{Perché serve un Middleware?}
+    \begin{columns}[c]
+        \column{0.5\textwidth}
+        \textbf{Problema}:
+        \vspace{6pt}
+        \begin{itemize}
+            \setlength\itemsep{12pt}
+            \item \textbf{Connessioni} dirette con ogni sistema
+            \item Ognuno deve \textbf{conoscere} il formato dati dell'altro
+        \end{itemize}
+
+        \vspace{12pt}
+        \centering
+        \includegraphics[width=0.30\textwidth]{../assets/MiddlewareSenza.drawio.png} \\
+        {\scriptsize \textbf{Senza Middleware}}
+
+        \column{0.5\textwidth}
+        \textbf{Soluzione}:
+        \vspace{6pt}
+        \begin{itemize}
+            \setlength\itemsep{12pt}
+            \item Sistemi \textbf{eterogenei} che non comunicano direttamente
+            \item \textbf{Disaccoppiamento} tra produttori e consumatori
+        \end{itemize}
+
+        \vspace{12pt}
+        \centering
+        \includegraphics[width=0.30\textwidth]{../assets/MiddlewareCon.drawio.png} \\
+        {\scriptsize \textbf{Con Middleware}}
+    \end{columns}
+\end{frame}
+
+% ----------
+\begin{frame}{Pattern architetturali}
+    \begin{center}
+        \includegraphics[width=0.50\textwidth]{../assets/contentEnricher.drawio.png}\\[4pt]
+        \textbf{Content Enricher}: arricchisce il messaggio
+    \end{center}
+\end{frame}
+
+% ----------
+\begin{frame}{Pattern architetturali}
+    \begin{center}
+        \includegraphics[width=0.80\textwidth]{../assets/deadLetterChannel.drawio.png}\\[4pt]
+        \textbf{Dead Letter Channel}: isola gli errori
+    \end{center}
+\end{frame}
+
+% ----------
+\begin{frame}{Stack tecnologico}
+    \begin{columns}[c]
+        \column{0.3\textwidth}
+        \centering
+        {\scriptsize \textbf{Linguaggio e piattaforma}} \\[16pt]
+        \includegraphics[width=0.35\textwidth]{../assets/java.png} \\[16pt]
+        \includegraphics[width=0.75\textwidth]{../assets/apacheMaven.png}
+
+        \column{0.3\textwidth}
+        \centering
+        {\scriptsize \textbf{Framework applicativo}} \\[16pt]
+        \includegraphics[width=0.90\textwidth]{../assets/spring.png}
+
+        \column{0.3\textwidth}
+        \centering
+        {\scriptsize \textbf{Infrastruttura di supporto}} \\[16pt]
+        \includegraphics[width=0.35\textwidth]{../assets/postgresql.png} \\[16pt]
+        \includegraphics[width=0.70\textwidth]{../assets/apacheKafka.png} \\[16pt]
+        \includegraphics[width=0.75\textwidth]{../assets/docker.png}
+    \end{columns}
+\end{frame}
+
+% ----------
+\begin{frame}{Il progetto}
+    \begin{center}
+        \includegraphics[width=0.75\textwidth]{../assets/progetto.drawio.png}
+    \end{center}
+\end{frame}
+
+% ----------
+\begin{frame}[fragile]{Implementazione - un esempio}
+    \begin{columns}[c]
+        \column{0.40\textwidth}
+        Jakarta Persistence:
+        \vspace{6pt}
+        \begin{itemize}
+            \setlength\itemsep{10pt}
+            \item \textbf{@Entity} 
+            \item \textbf{@Table}, \textbf{@Id}, \textbf{@Column}
+        \end{itemize}
+        \vspace{12pt}
+        Lombok:
+        \vspace{6pt}
+        \begin{itemize}
+            \setlength\itemsep{10pt}
+            \item \textbf{@Getter}, \textbf{@Setter} 
+            \item \textbf{@NoArgsConstructor} 
+            \item \textbf{@AllArgsConstructor} 
+        \end{itemize}
+        \column{0.45\textwidth}
+        \footnotesize
+        \begin{minted}[fontsize=\scriptsize,frame=single,framesep=10pt]{java}
+@Entity
+@Table(name = "customers")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Customer {
+    @Id
+    private Long id;
+    @Column(name = "full_name", 
+        nullable = false)
+    private String fullName;
+    @Column(name = "email")
+    private String email;
+    @Column(name = "city")
+    private String city;
+}
+        \end{minted}
+    \end{columns}
+\end{frame}
+
+% ----------
+\begin{frame}{Ambiente di sviluppo}
+    \begin{itemize}
+        \setlength\itemsep{8pt}
+        \item \textbf{Docker}: Topic Kafka (KRaft), PostgreSQL, Kafka UI
+    \end{itemize}
+    \vspace{10pt}
+    \begin{center}
+        \begin{tabular}{|l|c|l|}
+            \hline
+            \textbf{Topic} & \textbf{Partizioni} & \textbf{Ruolo} \\
+            \hline
+            orders-input & 3 & ingresso \\
+            orders-output & 3 & uscita \\
+            orders-input-dlq & 1 & errori \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% ----------
+\begin{frame}{Comparazione - Apache Flink}
+    \begin{columns}[c]
+        \column{0.60\textwidth}
+        \begin{itemize}
+            \setlength\itemsep{12pt}
+            \item Obiettivo \textbf{desiderabile}, ma non obbligatorio
+            \item Modello \textbf{stream processing} nativo e continuo
+            \item Elabora \textbf{flussi continui} di dati
+            \item Studiato a livello \textbf{teorico}, non implementato
+        \end{itemize}
+        \column{0.30\textwidth}
+        \begin{center}
+        \includegraphics[width=0.75\textwidth]{../assets/ApacheFlink.png}\\[4pt]
+    \end{center}
+    \end{columns}
+\end{frame}
+
+% ----------
+\begin{frame}{Valutazione prestazioni}
+    \begin{itemize}
+        \setlength\itemsep{12pt}
+        \item \textbf{Throughput}: messaggi arricchiti per secondo
+        \item \textbf{Latenza end-to-end}: tempo tra evento grezzo e arricchito
+        \item \textbf{Consumer lag}: quanto il sistema \textit{rincorre}
+        \item \textbf{Costo interrogazione}: tempo di risposta fonte dati
+    \end{itemize}
+\end{frame}
+
+% ----------
+\begin{frame}{Vantaggi ottenuti}
+    \begin{itemize}
+        \setlength\itemsep{12pt}
+        \item Sistemi \textbf{disaccoppiati}, facilmente modificabili
+        \item Nessuna \textbf{perdita} di dati grazie a Kafka
+        \item Errori \textbf{isolati} tramite Dead Letter Channel
+        \item Ambiente \textbf{riproducibile} e facilmente replicabile
+    \end{itemize}
+\end{frame}
+
+% ----------
+\begin{frame}{Limiti e sviluppi futuri}
+    \textbf{Limiti}:
+    \vspace{6pt}
+    \begin{itemize}
+        \setlength\itemsep{12pt}
+        \item \textbf{Apache Flink} non implementato, solo progettato
+        \item \textbf{Test di performance} non eseguiti concretamente
+    \end{itemize}
+    \vspace{12pt}
+    \textbf{Prossimo passo}: eseguire quanto già progettato
+\end{frame}
+
+% ----------
+\begin{frame}
+    \begin{center}
+        {\Huge \textbf{Grazie per l'attenzione}}\\[25pt]
+        {\Large Domande?}
+    \end{center}
+\end{frame}
+
+\end{document}
